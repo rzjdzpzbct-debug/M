@@ -22,65 +22,73 @@
       align-items: center;
       color: #fff;
       padding: 20px;
+      overflow: hidden;
+      position: relative;
     }
 
-    /* كارت الواجهة بنفس تصميم iOS */
+    /* تأثير تساقط الثلج */
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      color: #fff;
+      font-size: 1em;
+      opacity: 0.8;
+      pointer-events: none;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0.2;
+      }
+    }
+
+    /* كارت الواجهة */
     .player-card {
       width: 100%;
       max-width: 360px;
-      background: rgba(40, 40, 40, 0.55);
+      background: rgba(30, 30, 35, 0.6);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-radius: 35px;
-      padding: 24px;
+      padding: 28px 24px 20px 24px;
       border: 1px solid rgba(255, 255, 255, 0.12);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    /* مربع ألبوم الغلاف للصورة */
-    .album-art {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      margin-bottom: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .album-art img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      z-index: 10;
     }
 
     /* تفاصيل السورة والشيخ */
     .track-info {
       text-align: center;
       width: 100%;
-      margin-bottom: 15px;
+      margin-top: 10px;
+      margin-bottom: 25px;
     }
 
     .track-title {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 600;
       color: #ffffff;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .track-subtitle {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.55);
     }
 
     /* شريط التقدم */
     .progress-container {
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     .progress-bar-bg {
@@ -131,7 +139,7 @@
     }
 
     .play-btn {
-      font-size: 2.4rem;
+      font-size: 2.5rem;
       color: #fff;
     }
 
@@ -168,21 +176,14 @@
       cursor: pointer;
     }
 
-    /* منطقة الأزرار */
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      justify-content: center;
-    }
-
+    /* زر البث السريع */
     .airplay-btn {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.12);
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       color: rgba(255, 255, 255, 0.9);
       padding: 10px 14px;
-      border-radius: 20px;
+      border-radius: 16px;
       font-size: 0.85rem;
       display: flex;
       align-items: center;
@@ -191,22 +192,35 @@
       cursor: pointer;
       backdrop-filter: blur(10px);
       transition: background 0.2s;
-      text-decoration: none;
+      margin-bottom: 15px;
     }
 
     .airplay-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.18);
     }
 
-    /* زر انستغرام الأحمر */
+    /* قائمة اختيار الإذاعات */
+    .playlist-select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 12px;
+      border-radius: 16px;
+      outline: none;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    /* زر انستغرام أسفل الواجهة كلياً */
     .instagram-btn {
-      flex: 1;
+      width: 100%;
       background: #e1306c;
       border: none;
       color: #ffffff;
-      padding: 10px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
+      padding: 12px 14px;
+      border-radius: 18px;
+      font-size: 0.9rem;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -214,7 +228,7 @@
       gap: 8px;
       cursor: pointer;
       text-decoration: none;
-      box-shadow: 0 4px 15px rgba(225, 48, 108, 0.4);
+      box-shadow: 0 4px 15px rgba(225, 48, 108, 0.35);
       transition: transform 0.2s, background-color 0.2s;
     }
 
@@ -222,29 +236,14 @@
       background: #d6245f;
       transform: translateY(-2px);
     }
-
-    /* قائمة اختيار الإذاعات */
-    .playlist-select {
-      margin-top: 15px;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 8px 12px;
-      border-radius: 12px;
-      outline: none;
-      font-size: 0.85rem;
-    }
   </style>
 </head>
 <body>
 
-  <div class="player-card">
-    <!-- صورة الغلاف -->
-    <div class="album-art">
-      <img id="cover-img" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80" alt="الحمد لله">
-    </div>
+  <!-- حاوية الثلج -->
+  <div id="snow-container"></div>
 
+  <div class="player-card">
     <!-- اسم السورة والشيخ -->
     <div class="track-info">
       <div class="track-title" id="title">متوقف</div>
@@ -262,7 +261,7 @@
       </div>
     </div>
 
-    <!-- أزرار المشغل -->
+    <!-- أزرار التحكم -->
     <div class="controls">
       <button class="control-btn" id="prev"><i class="fa-solid fa-backward-step"></i></button>
       <button class="control-btn play-btn" id="play"><i class="fa-solid fa-play" id="play-icon"></i></button>
@@ -276,18 +275,11 @@
       <i class="fa-solid fa-volume-high volume-icon"></i>
     </div>
 
-    <!-- الأزرار السفلية -->
-    <div class="action-buttons">
-      <button class="airplay-btn" id="airplay">
-        <i class="fa-solid fa-tower-broadcast"></i>
-        <span>البث السريع</span>
-      </button>
-
-      <a href="https://instagram.com/4x15" target="_blank" rel="noopener noreferrer" class="instagram-btn">
-        <i class="fa-brands fa-instagram"></i>
-        <span>انستكرام</span>
-      </a>
-    </div>
+    <!-- زر البث السريع -->
+    <button class="airplay-btn" id="airplay">
+      <i class="fa-solid fa-tower-broadcast"></i>
+      <span>البث السريع</span>
+    </button>
 
     <!-- قائمة اختيار البث -->
     <select class="playlist-select" id="playlist">
@@ -296,11 +288,33 @@
       <option value="https://backup.qurango.net/radio/abdulbasit_abdulsamad_mojawwad">الشيخ عبدالباسط عبدالصمد</option>
       <option value="https://backup.qurango.net/radio/maher_al_muaiqly">الشيخ ماهر المعيقلي</option>
     </select>
+
+    <!-- زر انستغرام في أسفل الواجهة (جوه فدنوب) -->
+    <a href="https://instagram.com/4x15" target="_blank" rel="noopener noreferrer" class="instagram-btn">
+      <i class="fa-brands fa-instagram"></i>
+      <span>انستكرام @4x15</span>
+    </a>
   </div>
 
   <audio id="audio" src="https://backup.qurango.net/radio/tarawih"></audio>
 
   <script>
+    // إنشاء ندف الثلج
+    const snowContainer = document.getElementById('snow-container');
+    const flakeIcons = ['❄', '❅', '❆'];
+
+    for (let i = 0; i < 35; i++) {
+      const flake = document.createElement('div');
+      flake.classList.add('snowflake');
+      flake.innerText = flakeIcons[Math.floor(Math.random() * flakeIcons.length)];
+      flake.style.left = Math.random() * 100 + 'vw';
+      flake.style.animationDuration = Math.random() * 3 + 4 + 's';
+      flake.style.animationDelay = Math.random() * 5 + 's';
+      flake.style.fontSize = Math.random() * 10 + 12 + 'px';
+      snowContainer.appendChild(flake);
+    }
+
+    // منطق مشغل الصوت
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('play');
     const playIcon = document.getElementById('play-icon');

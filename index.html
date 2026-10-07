@@ -15,10 +15,8 @@
     }
 
     body {
-      /* خلفية الشتاء والثلج */
-      background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(2, 6, 23, 0.6)), 
-                  url('https://images.unsplash.com/photo-1517299321609-52687d1bc55a?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
-      background-size: cover;
+      /* خلفية سوداء فخمة */
+      background: #000000;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -29,13 +27,12 @@
       position: relative;
     }
 
-    /* تأثير تساقط الثلج المتحرك */
+    /* تأثير تساقط الثلج */
     .snowflake {
       position: absolute;
       top: -10px;
-      color: #fff;
+      color: rgba(255, 255, 255, 0.7);
       font-size: 1em;
-      opacity: 0.8;
       pointer-events: none;
       animation: fall linear infinite;
     }
@@ -43,78 +40,61 @@
     @keyframes fall {
       0% {
         transform: translateY(-10px) rotate(0deg);
-        opacity: 0.9;
+        opacity: 0.8;
       }
       100% {
         transform: translateY(105vh) rotate(360deg);
-        opacity: 0.2;
+        opacity: 0.1;
       }
     }
 
-    /* كارت الواجهة الزجاجي */
+    /* كارت الواجهة الزجاجي المعتم */
     .player-card {
       width: 100%;
       max-width: 360px;
-      background: rgba(25, 30, 45, 0.55);
+      background: rgba(20, 20, 20, 0.75);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-radius: 35px;
-      padding: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      padding: 28px 24px 20px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 10;
     }
 
-    /* مربع ألبوم الغلاف للصورة */
-    .album-art {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      margin-bottom: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
-
-    .album-art img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
     /* تفاصيل السورة والشيخ */
     .track-info {
       text-align: center;
       width: 100%;
-      margin-bottom: 15px;
+      margin-top: 10px;
+      margin-bottom: 25px;
     }
 
     .track-title {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 600;
       color: #ffffff;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .track-subtitle {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.55);
     }
 
     /* شريط التقدم */
     .progress-container {
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     .progress-bar-bg {
       width: 100%;
       height: 6px;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
       border-radius: 3px;
       cursor: pointer;
       position: relative;
@@ -123,7 +103,7 @@
     .progress-bar-fill {
       width: 0%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      background: #ffffff;
       border-radius: 3px;
     }
 
@@ -131,7 +111,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.4);
       margin-top: 6px;
     }
 
@@ -141,7 +121,7 @@
       align-items: center;
       justify-content: center;
       gap: 30px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       width: 100%;
     }
 
@@ -159,7 +139,7 @@
     }
 
     .play-btn {
-      font-size: 2.4rem;
+      font-size: 2.5rem;
       color: #fff;
     }
 
@@ -169,7 +149,7 @@
       align-items: center;
       gap: 12px;
       width: 100%;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       padding: 0 10px;
     }
 
@@ -199,7 +179,7 @@
     /* زر البث السريع */
     .airplay-btn {
       width: 100%;
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.08);
       border: none;
       color: rgba(255, 255, 255, 0.9);
       padding: 10px 14px;
@@ -216,23 +196,23 @@
     }
 
     .airplay-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    /* قائمة اختيار الإذاعات */
+    /* قائمة اختيار التلاوات والقراء */
     .playlist-select {
       width: 100%;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.6);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       padding: 10px 12px;
       border-radius: 16px;
       outline: none;
       font-size: 0.85rem;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
-    /* زر انستغرام أسفل الواجهة */
+    /* زر انستغرام أسفل الواجهة كلياً */
     .instagram-btn {
       width: 100%;
       background: #e1306c;
@@ -264,15 +244,10 @@
   <div id="snow-container"></div>
 
   <div class="player-card">
-    <!-- صورة الغلاف في منتصف المشغل -->
-    <div class="album-art">
-      <img id="cover-img" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80" alt="الحمد لله">
-    </div>
-
-    <!-- اسم السورة والشيخ -->
+    <!-- تفاصيل السورة والشيخ -->
     <div class="track-info">
       <div class="track-title" id="title">متوقف</div>
-      <div class="track-subtitle" id="subtitle">اختر إذاعة للبدء</div>
+      <div class="track-subtitle" id="subtitle">اختر تلاوة للبدء</div>
     </div>
 
     <!-- شريط التقدم -->
@@ -306,12 +281,15 @@
       <span>البث السريع</span>
     </button>
 
-    <!-- قائمة اختيار البث -->
+    <!-- قائمة القراء والآيات القرآنية -->
     <select class="playlist-select" id="playlist">
-      <option value="https://backup.qurango.net/radio/tarawih">إذاعة صلاة التراويح</option>
-      <option value="https://backup.qurango.net/radio/mishary_alafasi">الشيخ مشاري العفاسي</option>
-      <option value="https://backup.qurango.net/radio/abdulbasit_abdulsamad_mojawwad">الشيخ عبدالباسط عبدالصمد</option>
-      <option value="https://backup.qurango.net/radio/maher_al_muaiqly">الشيخ ماهر المعيقلي</option>
+      <option value="https://backup.qurango.net/radio/yasser_al_dosari">الشيخ ياسر الدوسري - إذاعة خاشعة</option>
+      <option value="https://server11.mp3quran.net/yasser/001.mp3">سورة الفاتحة - ياسر الدوسري</option>
+      <option value="https://server11.mp3quran.net/yasser/067.mp3">سورة الملك - ياسر الدوسري</option>
+      <option value="https://server11.mp3quran.net/yasser/055.mp3">سورة الرحمن - ياسر الدوسري</option>
+      <option value="https://server11.mp3quran.net/yasser/018.mp3">سورة الكهف - ياسر الدوسري</option>
+      <option value="https://backup.qurango.net/radio/mishary_alafasi">الشيخ عبدالرحمن مسعد - تلاوات خاشعة</option>
+      <option value="https://backup.qurango.net/radio/salma">آيات قرآنية خاشعة ومختارة</option>
     </select>
 
     <!-- زر انستغرام في قاع الواجهة -->
@@ -321,10 +299,10 @@
     </a>
   </div>
 
-  <audio id="audio" src="https://backup.qurango.net/radio/tarawih"></audio>
+  <audio id="audio" src="https://backup.qurango.net/radio/yasser_al_dosari"></audio>
 
   <script>
-    // إنشاء ندف الثلج
+    // إنشاء تساقط الثلج
     const snowContainer = document.getElementById('snow-container');
     const flakeIcons = ['❄', '❅', '❆'];
 
@@ -339,7 +317,7 @@
       snowContainer.appendChild(flake);
     }
 
-    // منطق مشغل الصوت
+    // منطق تشغيل الصوت
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('play');
     const playIcon = document.getElementById('play-icon');
@@ -366,7 +344,7 @@
       playIcon.classList.remove('fa-play');
       playIcon.classList.add('fa-pause');
       audio.play().catch(error => console.log("خطأ في تشغيل الصوت:", error));
-      title.innerText = "إذاعة القرآن الكريم";
+      title.innerText = "القرآن الكريم";
       subtitle.innerText = playlist.options[playlist.selectedIndex].text;
     }
 

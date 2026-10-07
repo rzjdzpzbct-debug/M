@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <title>صبر — القرآن الكريم</title>
+  <meta name="description" content="صبر — مصحف إلكتروني لقراءة القرآن الكريم والاستماع إلى التلاوة.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07111f;--card:#0d1a2b;--card2:#101f33;--text:#f5f1e8;--muted:#9aa8ba;--accent:#d7b56d;--line:#20324a;--shadow:0 18px 55px #0008}
+    body.light{--bg:#f5f0e6;--card:#fffdf8;--card2:#f8f2e6;--text:#172231;--muted:#697586;--accent:#9a6b22;--line:#e6ddcd;--shadow:0 16px 45px #17203318}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 0%,#16304d 0,transparent 35%),radial-gradient(circle at 90% 15%,#3b2a16 0,transparent 30%),var(--bg);color:var(--text);font-family:Cairo,system-ui,sans-serif;transition:.25s}
+    body.light{background:radial-gradient(circle at 10% 0%,#eee0c4 0,transparent 35%),radial-gradient(circle at 95% 10%,#e8d9bd 0,transparent 30%),var(--bg)}
+    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(18px);background:#07111fcc;border-bottom:1px solid var(--line)}
+    body.light header{background:#fffdf0dd}.bar{max-width:1100px;margin:auto;padding:13px 18px;display:flex;align-items:center;gap:12px}
+    .brand{font-weight:800;font-size:22px;margin-left:auto}.brand span{color:var(--accent)}
+    button,input,select{font:inherit}.icon{border:1px solid var(--line);background:linear-gradient(145deg,var(--card2),var(--card));color:var(--text);border-radius:14px;padding:10px 13px;cursor:pointer;transition:.2s;box-shadow:0 8px 25px #0002}
+    .icon:hover{transform:translateY(-1px);border-color:var(--accent)}
+    main{max-width:1100px;margin:auto;padding:28px 18px 100px;position:relative;z-index:2}
+    .hero{padding:42px 28px;border:1px solid #d7b56d55;border-radius:30px;background:linear-gradient(135deg,#0d263d 0%,#12304a 48%,#302513 100%);color:#fff;box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .hero:before{content:"ص";font-family:Amiri;font-size:250px;position:absolute;left:22px;top:-72px;color:#d7b56d;opacity:.08;line-height:1}
+    .hero h1{font-family:Amiri;font-size:48px;margin:0 0 7px;position:relative;z-index:1}.hero p{margin:0;opacity:.88;position:relative;z-index:1}
+    .tools{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap}.search{flex:1;min-width:220px;padding:13px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);outline:none}
+    .search:focus{border-color:var(--accent);box-shadow:0 0 0 3px #d7b56d18}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}.surah{display:flex;align-items:center;gap:13px;padding:15px;background:var(--card);border:1px solid var(--line);border-radius:18px;cursor:pointer;box-shadow:var(--shadow);text-align:right;color:var(--text);transition:.2s}
+    .surah:hover{transform:translateY(-2px);border-color:#d7b56d88}.num{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#d7b56d16;color:var(--accent);font-weight:800;border:1px solid #d7b56d33}
+    .surah .name{font-family:Amiri;font-size:23px;font-weight:700}.surah small{display:block;color:var(--muted);font-family:Cairo;font-size:12px}
+    .reader{display:none}.reader.active{display:block}.back{margin-bottom:15px}.title{text-align:center;font-family:Amiri;font-size:40px;margin:10px 0 4px}.meta{text-align:center;color:var(--muted);margin-bottom:22px}
+    .ayah{padding:22px 10px;border-bottom:1px solid var(--line);font-family:Amiri;font-size:29px;line-height:2.15}.ayahnum{color:var(--accent);font-family:Cairo;font-size:13px;margin-right:8px}.ayah button{float:left;font-size:13px}
+    .audio{width:100%;margin:18px 0;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:4px}.notice{color:var(--muted);text-align:center;padding:25px}
+    .audio-note{margin:10px 0;padding:12px 14px;border:1px solid #d7b56d44;border-radius:14px;background:#d7b56d0c;color:var(--muted);text-align:center}
+    #arabicRain{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1;opacity:.10}.rain-char{position:absolute;top:-70px;color:var(--accent);font-family:Amiri,serif;font-size:clamp(20px,3vw,38px);animation:fall linear infinite;user-select:none;text-shadow:0 0 12px #d7b56d55}
+    @keyframes fall{0%{transform:translateY(-80px) rotate(0deg);opacity:0}10%{opacity:.65}90%{opacity:.28}100%{transform:translateY(110vh) rotate(180deg);opacity:0}}
+    body.light #arabicRain{opacity:.07}.reciter-box{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#ffffff05}
+    .reciter-label{font-weight:700;color:var(--text)}.reciter-select{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);min-width:240px;outline:none}
+    .status{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:7px 11px;border-radius:999px;background:#d7b56d14;border:1px solid #d7b56d33;color:#f1ddb0;font-size:12px}
+    body.light .status{color:#7a551d}
+    @media(max-width:600px){.hero{padding:34px 21px}.hero h1{font-size:38px}.ayah{font-size:25px}.grid{grid-template-columns:1fr 1fr}.surah{padding:12px}.surah .name{font-size:20px}.reciter-select{min-width:0;flex:1}}
+  </style>
+</head>
+<body>
+<div id="arabicRain" aria-hidden="true"></div>
+<header><div class="bar"><div class="brand">صبر <span>• القرآن الكريم</span></div><button class="icon" id="theme">☀</button></div></header>
+<main>
+<section id="home">
+  <div class="hero"><h1>صبر</h1><p>مصحف هادئ لقراءة كلام الله والاستماع إلى التلاوة بخشوع.</p><div class="status">✦ السكينة تبدأ من هنا</div></div>
+  <div class="tools"><input id="search" class="search" placeholder="ابحث باسم السورة أو رقمها..."><button class="icon" id="random">آية عشوائية</button></div>
+  <div class="reciter-box">
+    <span class="reciter-label">القارئ:</span>
+    <select id="reciter" class="reciter-select">
+      <option value="massad">عبد الرحمن مسعد</option>
+      <option value="ar.alafasy">مشاري راشد العفاسي</option>
+    </select>
+  </div>
+  <div id="surahs" class="grid"><div class="notice">جاري تحميل السور...</div></div>
+</section>
+<section id="reader" class="reader">
+  <button class="icon back" id="back">← العودة للسور</button>
+  <h2 id="surahTitle" class="title"></h2><div id="surahMeta" class="meta"></div>
+  <audio id="player" class="audio" controls></audio>
+  <div id="ayahs"></div>
+</section>
+</main>
+<script>
+const API="https://api.alquran.cloud/v1";
+let selectedReciter="massad";
+const $=s=>document.querySelector(s);
+let allSurahs=[];
+// روابط تلاوات عبد الرحمن مسعد. استخدمنا archive.org الرئيسي بدل خادم ia الفرعي
+// لأن الخادم الفرعي قد يرفض التشغيل من بعض المتصفحات/الشبكات.
+const MASSAD_SURAH_URLS={
+  10:"https://archive.org/download/010_20221110/010.mp3",
+  19:"https://archive.org/download/010_20221110/019.mp3",
+  23:"https://archive.org/download/010_20221110/023.mp3",
+  29:"https://archive.org/download/010_20221110/029.mp3",
+  32:"https://archive.org/download/010_20221110/032.mp3",
+  49:"https://archive.org/download/010_20221110/049.mp3",
+  73:"https://archive.org/download/010_20221110/073.mp3",
+  78:"https://archive.org/download/010_20221110/078.mp3",
+  87:"https://archive.org/download/010_20221110/087.mp3",
+  88:"https://archive.org/download/010_20221110/088.mp3",
+  100:"https://archive.org/download/010_20221110/100.mp3",
+  107:"https://archive.org/download/010_20221110/107.mp3"
+};
+const MASSAD_BACKUP_URLS={
+  10:"https://ia904706.us.archive.org/13/items/010_20221110/010.mp3",
+  19:"https://ia904706.us.archive.org/13/items/010_20221110/019.mp3",
+  23:"https://ia904706.us.archive.org/13/items/010_20221110/023.mp3",
+  29:"https://ia904706.us.archive.org/13/items/010_20221110/029.mp3",
+  32:"https://ia904706.us.archive.org/13/items/010_20221110/032.mp3",
+  49:"https://ia904706.us.archive.org/13/items/010_20221110/049.mp3",
+  73:"https://ia904706.us.archive.org/13/items/010_20221110/073.mp3",
+  78:"https://ia904706.us.archive.org/13/items/010_20221110/078.mp3",
+  87:"https://ia904706.us.archive.org/13/items/010_20221110/087.mp3",
+  88:"https://ia904706.us.archive.org/13/items/010_20221110/088.mp3",
+  100:"https://ia904706.us.archive.org/13/items/010_20221110/100.mp3",
+  107:"https://ia904706.us.archive.org/13/items/010_20221110/107.mp3"
+};
+function playMassad(id){
+  const primary=MASSAD_SURAH_URLS[id];
+  if(!primary)return false;
+  const player=$("#player");
+  player.dataset.surahId=String(id);
+  player.dataset.fallbackTried="0";
+  player.src=primary;
+  player.load();
+  return true;
+}
+
+async function getJSON(url){const r=await fetch(url);if(!r.ok)throw Error("Network");return r.json();}
+async function loadSurahs(){
+  try{const j=await getJSON(API+"/surah");allSurahs=j.data;renderSurahs(allSurahs)}
+  catch(e){$("#surahs").innerHTML='<div class="notice">تعذر تحميل السور. تأكد من اتصال الإنترنت ثم أعد المحاولة.</div>'}
+}
+function renderSurahs(list){$("#surahs").innerHTML=list.map(s=>`
+<button class="surah" data-id="${s.number}">
+  <div class="num">${s.number}</div><div><div class="name">${s.name}</div><small>${s.englishName} • ${s.numberOfAyahs} آية • ${s.revelationType==="Meccan"?"مكية":"مدنية"}</small></div>
+</button>`).join("")||'<div class="notice">لا توجد نتائج.</div>';
+document.querySelectorAll(".surah").forEach(b=>b.onclick=()=>openSurah(+b.dataset.id))}
+async function openSurah(id){
+  window.currentSurahId=id;
+  $("#home").style.display="none";$("#reader").classList.add("active");window.scrollTo(0,0);
+  $("#ayahs").innerHTML='<div class="notice">جاري تحميل السورة...</div>';
+  $("#player").removeAttribute("src");$("#player").load();
+  try{
+    const text=await getJSON(`${API}/surah/${id}/quran-uthmani`);
+    const s=text.data;
+    $("#surahTitle").textContent=s.name;
+    $("#surahMeta").textContent=`${s.englishName} • ${s.numberOfAyahs} آية • ${s.revelationType==="Meccan"?"مكية":"مدنية"}`;
+
+    const note=$("#ayahs");
+    if(selectedReciter==="massad"){
+      const url=MASSAD_SURAH_URLS[id];
+      if(url){
+        playMassad(id);
+        note.innerHTML='<div class="audio-note">🎧 تلاوة عبد الرحمن مسعد</div>';
+      }else{
+        note.innerHTML='<div class="audio-note">تسجيل عبد الرحمن مسعد لهذه السورة غير موجود ضمن مصدر الصوت المضاف حالياً. يمكنك اختيار مشاري العفاسي للاستماع لهذه السورة.</div>';
+      }
+    }else{
+      $("#player").src=`https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${id}.mp3`;
+      $("#player").load();
+    }
+
+    note.insertAdjacentHTML("beforeend",
+      s.ayahs.map(a=>`<div class="ayah">${a.text} <span class="ayahnum">﴿${a.numberInSurah}﴾</span><button class="icon play" data-n="${a.number}" aria-label="تشغيل الآية">▶</button></div>`).join("")
+    );
+
+    document.querySelectorAll(".play").forEach(b=>b.onclick=()=>{
+      if(selectedReciter==="massad"){
+        const url=MASSAD_SURAH_URLS[id];
+        if(!url){alert("تسجيل عبد الرحمن مسعد لهذه السورة غير متاح حالياً.");return;}
+        playMassad(id);$("#player").play().catch(()=>{});
+      }else{
+        $("#player").src=`https://cdn.islamic.network/quran/audio/128/ar.alafasy/${b.dataset.n}.mp3`;
+        $("#player").play().catch(()=>{});
+      }
+    });
+
+    $("#player").onerror=()=>{
+      if(selectedReciter!=="massad")return;
+      const p=$("#player");
+      const sid=Number(p.dataset.surahId||window.currentSurahId||0);
+      if(p.dataset.fallbackTried!=="1" && MASSAD_BACKUP_URLS[sid]){
+        p.dataset.fallbackTried="1";
+        p.src=MASSAD_BACKUP_URLS[sid];
+        p.load();
+        return;
+      }
+      $("#ayahs").insertAdjacentHTML("afterbegin",'<div class="audio-note">تعذر تشغيل تلاوة عبد الرحمن مسعد من خادم الصوت. أعد تحميل الصفحة أو جرّب شبكة أخرى.</div>');
+    };
+  }catch(e){
+    $("#ayahs").innerHTML='<div class="notice">حدث خطأ أثناء تحميل السورة.</div>';
+  }
+}
+$("#back").onclick=()=>{$("#reader").classList.remove("active");$("#home").style.display="block";window.scrollTo(0,0)}
+$("#search").oninput=e=>{const q=e.target.value.trim().toLowerCase();renderSurahs(allSurahs.filter(s=>String(s.number)===q||s.name.includes(q)||s.englishName.toLowerCase().includes(q)))}
+$("#random").onclick=async()=>{try{const j=await getJSON(API+"/ayah/random/quran-uthmani");const a=j.data;alert(`${a.surah.name}\n\n${a.text}\n\nالآية ${a.numberInSurah}`)}catch(e){alert("تعذر جلب الآية الآن.")}}
+function setTheme(mode){
+  document.body.classList.toggle("light",mode==="light");
+  localStorage.theme=mode;
+  $("#theme").textContent=mode==="light"?"☾":"☀";
+}
+$("#theme").onclick=()=>setTheme(document.body.classList.contains("light")?"dark":"light");
+setTheme(localStorage.theme==="light"?"light":"dark");
+
+$("#reciter").onchange=e=>{
+  selectedReciter=e.target.value;
+  if(window.currentSurahId) openSurah(window.currentSurahId);
+};
+
+function makeArabicRain(){
+  const box=$("#arabicRain"), chars="ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
+  for(let i=0;i<34;i++){
+    const s=document.createElement("span");
+    s.className="rain-char";
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=(Math.random()*100)+"%";
+    s.style.animationDuration=(8+Math.random()*12)+"s";
+    s.style.animationDelay=(-Math.random()*18)+"s";
+    box.appendChild(s);
+  }
+}
+makeArabicRain();
+loadSurahs();
+</script>
+</body>
+</html>

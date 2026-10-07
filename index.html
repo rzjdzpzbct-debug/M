@@ -168,7 +168,7 @@
       cursor: pointer;
     }
 
-    /* منطقة الأزرار العلوية/السفلية */
+    /* منطقة الأزرار */
     .action-buttons {
       display: flex;
       gap: 10px;
@@ -176,7 +176,6 @@
       justify-content: center;
     }
 
-    /* زر البث السريع */
     .airplay-btn {
       flex: 1;
       background: rgba(255, 255, 255, 0.12);
@@ -241,9 +240,9 @@
 <body>
 
   <div class="player-card">
-    <!-- صورة الغلاف المضافة -->
+    <!-- صورة الغلاف -->
     <div class="album-art">
-      <img id="cover-img" src="https://i.ibb.co/6R2pC7D/alhamdulillah.jpg" alt="Alhamdulillah">
+      <img id="cover-img" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80" alt="الحمد لله">
     </div>
 
     <!-- اسم السورة والشيخ -->
@@ -277,14 +276,14 @@
       <i class="fa-solid fa-volume-high volume-icon"></i>
     </div>
 
-    <!-- الأزرار السفلية: البث السريع + زر انستغرام الأحمر -->
+    <!-- الأزرار السفلية -->
     <div class="action-buttons">
       <button class="airplay-btn" id="airplay">
         <i class="fa-solid fa-tower-broadcast"></i>
         <span>البث السريع</span>
       </button>
 
-      <a href="https://instagram.com/4x15" target="_blank" class="instagram-btn">
+      <a href="https://instagram.com/4x15" target="_blank" rel="noopener noreferrer" class="instagram-btn">
         <i class="fa-brands fa-instagram"></i>
         <span>انستكرام</span>
       </a>
@@ -327,7 +326,9 @@
       isPlaying = true;
       playIcon.classList.remove('fa-play');
       playIcon.classList.add('fa-pause');
-      audio.play();
+      audio.play().catch(error => {
+        console.log("خطأ في تشغيل الصوت:", error);
+      });
       title.innerText = "إذاعة القرآن الكريم";
       subtitle.innerText = playlist.options[playlist.selectedIndex].text;
     }

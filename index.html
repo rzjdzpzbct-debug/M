@@ -1,2 +1,336 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>صَبْر — بوابة القرآن</title><style>:root{--bg:#07100e;--p:#0d1916;--l:#28453b;--g:#d7b56d;--t:#eee9dc;--m:#9ea99f}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#17342b,#07100e 48%,#050908);color:var(--t);font-family:Georgia,"Noto Naskh Arabic",serif}.wrap{max-width:1050px;margin:auto;padding:28px 18px 50px}header{text-align:center;padding:25px 0 18px}.mark{font-size:16px;letter-spacing:8px;color:var(--g);margin-bottom:12px}.brand{font-size:54px;letter-spacing:12px}.sub{color:var(--m);margin-top:10px;font:13px Arial}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}.card{position:relative;border:1px solid var(--l);background:linear-gradient(145deg,#10201b,#0a1412);border-radius:16px;padding:22px;min-height:145px;cursor:pointer;transition:.2s}.card:hover{transform:translateY(-3px);border-color:#6f8f7e}.num{position:absolute;left:14px;top:12px;color:#50665b;font:12px Arial}.ar{font-size:25px;color:var(--g);margin-bottom:8px}.en{font:700 14px Arial}.desc{font:12px Arial;color:var(--m);margin-top:7px;line-height:1.5}.screen{display:none;margin-top:22px;border:1px solid var(--l);border-radius:18px;background:#091310;padding:22px}.screen.active{display:block}.topbar{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #1d332c;padding-bottom:15px;margin-bottom:18px}button,select{background:#0e1c18;color:var(--t);border:1px solid #35564a;border-radius:10px;padding:10px 13px;font:14px Arial}button{cursor:pointer}h2{margin:0;color:var(--g)}.muted{color:var(--m);font-family:Arial}.quran{font-size:25px;line-height:2.2}.ayah{padding:12px 0;border-bottom:1px solid #183028}.ayah small{color:#71857b;font:11px Arial}.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.tile{padding:16px;border:1px solid #244137;border-radius:12px;background:#0c1814}.tile b{color:var(--g);display:block;margin-bottom:5px}.names{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.name{padding:14px;border:1px solid #264238;border-radius:12px;text-align:center}.name strong{display:block;font-size:23px;color:var(--g)}.footer{text-align:center;color:#65756d;font:11px Arial;margin-top:28px;line-height:2}@media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.brand{font-size:39px}.names{grid-template-columns:repeat(2,1fr)}}@media(max-width:460px){.grid{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}}</style></head><body><div class="wrap"><header><div class="mark">صَبْر</div><div class="brand">S A B R</div><div class="sub">Choose Your Path of Illumination</div></header><main class="grid" id="gateway"></main><section class="screen" id="screen"></section><div class="footer">23+ Languages · ʿIlm al-Munāsabāt<br>v0.1.0 — Sabr Gateway</div></div><script>
-const modules=[["بصيرة","The Quranic Engine","Structural Revelation · 114 Surahs","quran"],["الأسماء الحسنى","The Divine Attributes","99 Names of Allah","names"],["المكتبة","The Scholar's Archive","Free Islamic Library","library"],["علم الرجال","The Isnad Blockchain","Cryptographic Verification","isnad"],["السيرة النبوية","The Seerah Engine","The Prophetic Journey","seerah"],["محور القبلة","The Qibla Axis","3D Directional Compass","qibla"],["الترتيل","Tartil Engine","Real-Time Recitation Training","tartil"],["التدرّج","The Sharia State Machine","Rulings Evaluated Across 23 Years","sharia"],["إعجاز القرآن","The Inimitable Qur'an","The Challenge · Never Answered","ijaz"]];const gateway=document.getElementById('gateway'),screen=document.getElementById('screen');modules.forEach((m,i)=>gateway.innerHTML+=`<article class="card" onclick="openModule('${m[3]}')"><span class="num">${i+1}</span><div class="ar">${m[0]}</div><div class="en">${m[1]}</div><div class="desc">${m[2]}</div></article>`);const names=["الرَّحْمَنُ","الرَّحِيمُ","الْمَلِكُ","الْقُدُّوسُ","السَّلَامُ","الْمُؤْمِنُ","الْمُهَيْمِنُ","الْعَزِيزُ","الْجَبَّارُ","الْمُتَكَبِّرُ","الْخَالِقُ","الْبَارِئُ","الْمُصَوِّرُ","الْغَفَّارُ","الْقَهَّارُ","الْوَهَّابُ","الرَّزَّاقُ","الْفَتَّاحُ","الْعَلِيمُ","الْحَكِيمُ","الْوَدُودُ","الْحَفِيظُ","الْكَرِيمُ","الْحَقُّ"];const surahs=[["الفاتحة",7],["البقرة",286],["آل عمران",200],["النساء",176],["المائدة",120],["الأنعام",165],["الأعراف",206],["الأنفال",75],["التوبة",129],["يونس",109],["هود",123],["يوسف",111],["الرعد",43],["إبراهيم",52],["الحجر",99],["النحل",128],["الإسراء",111],["الكهف",110],["مريم",98],["طه",135]];function base(t,c){screen.innerHTML=`<div class="topbar"><h2>${t}</h2><button onclick="closeModule()">← البوابة الرئيسية</button></div>${c}`;screen.classList.add('active');screen.scrollIntoView({behavior:'smooth'})}function closeModule(){screen.classList.remove('active');scrollTo({top:0,behavior:'smooth'})}function openModule(type){if(type==='quran')return quran();if(type==='names')return base('الأسماء الحسنى',`<p class="muted">The Divine Attributes · 99 Names of Allah</p><div class="names">${names.map((n,i)=>`<div class="name"><small>${i+1}</small><strong>${n}</strong><span class="muted">اسم من أسماء الله الحسنى</span></div>`).join('')}</div>`);const d={library:['المكتبة','واجهة أرشيف علمي قابلة للتوسعة للكتب والمراجع والدروس.'],isnad:['علم الرجال','سجل رواة وسلاسل إسناد مع واجهة تحقق ومخطط للعلاقات.'],seerah:['السيرة النبوية','محور زمني للرحلة النبوية والأحداث الرئيسية.'],qibla:['محور القبلة','بوصلة اتجاهية؛ اسمح للموقع باستخدام مستشعر الهاتف عند توفره.'],tartil:['الترتيل','واجهة تدريب على التلاوة: آية، تشغيل، متابعة، وتقييم لاحقًا.'],sharia:['التدرّج','خط زمني للأحكام عبر مراحل الوحي مع بطاقات تحليلية.'],ijaz:['إعجاز القرآن','واجهة موضوعية للتدبر في البنية والنظم والتحدي القرآني.']};if(d[type]){const[t,x]=d[type];base(t,`<p class="muted">${x}</p><div class="tiles">${['المحور الرئيسي','الخط الزمني','المراجع','الملاحظات'].map(x=>`<div class="tile"><b>${x}</b>واجهة جاهزة للإضافة والتوسعة داخل نفس الملف.</div>`).join('')}</div>`)}}function quran(){base('بصيرة — محرك القرآن',`<p class="muted">Structural Timeline · 114 Surahs</p><div class="topbar"><select id="s">${surahs.map((x,i)=>`<option value="${i+1}">${i+1} — ${x[0]} · ${x[1]} آية</option>`).join('')}</select><button onclick="loadSurah()">فتح السورة</button></div><div id="q"><div class="tile"><b>Structural Context</b>اختر سورة لعرض الآيات.</div></div>`)}async function loadSurah(){const id=document.getElementById('s').value,q=document.getElementById('q');q.innerHTML='<p class="muted">جارٍ تحميل الآيات…</p>';try{const r=await fetch(`https://api.alquran.cloud/v1/surah/${id}/quran-uthmani`),j=await r.json();q.innerHTML=`<div class="quran">${j.data.ayahs.map(a=>`<div class="ayah">${a.text} <small>﴿${a.numberInSurah}﴾</small></div>`).join('')}</div>`}catch(e){q.innerHTML='<div class="tile"><b>تعذر التحميل</b>تأكد من اتصال الإنترنت ثم أعد المحاولة.</div>'}}</script></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مشغل القرآن الكريم</title>
+  <!-- FontAwesome للأيقونات -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b, #020617);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      padding: 20px;
+    }
+
+    /* كارت الواجهة بنفس تصميم الصورة */
+    .player-card {
+      width: 100%;
+      max-width: 360px;
+      background: rgba(40, 40, 40, 0.55);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 35px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* مربع ألبوم الغلاف */
+    .album-art {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .album-art i {
+      font-size: 80px;
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* تفاصيل السورة والشيخ */
+    .track-info {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .track-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .track-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* شريط التقدم */
+    .progress-container {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 3px;
+    }
+
+    .time-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 6px;
+    }
+
+    /* أزرار التحكم */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    .control-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: transform 0.1s ease, color 0.2s;
+    }
+
+    .control-btn:active {
+      transform: scale(0.9);
+    }
+
+    .play-btn {
+      font-size: 2.4rem;
+      color: #fff;
+    }
+
+    /* شريط مستوى الصوت */
+    .volume-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 0 10px;
+    }
+
+    .volume-icon {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .volume-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    /* زر البث السريع */
+    .airplay-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: rgba(255, 255, 255, 0.9);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s;
+    }
+
+    .airplay-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* قائمة القراء / السور */
+    .playlist-select {
+      margin-top: 15px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      border-radius: 12px;
+      outline: none;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-card">
+    <!-- مربع الغلاف -->
+    <div class="album-art">
+      <i class="fa-solid fa-kaaba"></i>
+    </div>
+
+    <!-- اسم السورة والشيخ -->
+    <div class="track-info">
+      <div class="track-title" id="title">متوقف</div>
+      <div class="track-subtitle" id="subtitle">اختر إذاعة للبدء</div>
+    </div>
+
+    <!-- شريط التقدم -->
+    <div class="progress-container">
+      <div class="progress-bar-bg" id="progress-container">
+        <div class="progress-bar-fill" id="progress"></div>
+      </div>
+      <div class="time-info">
+        <span id="current-time">--:--</span>
+        <span id="duration">--:--</span>
+      </div>
+    </div>
+
+    <!-- أزرار المشغل -->
+    <div class="controls">
+      <button class="control-btn" id="prev"><i class="fa-solid fa-backward-step"></i></button>
+      <button class="control-btn play-btn" id="play"><i class="fa-solid fa-play" id="play-icon"></i></button>
+      <button class="control-btn" id="next"><i class="fa-solid fa-forward-step"></i></button>
+    </div>
+
+    <!-- مستوى الصوت -->
+    <div class="volume-container">
+      <i class="fa-solid fa-volume-low volume-icon"></i>
+      <input type="range" class="volume-slider" id="volume" min="0" max="1" step="0.01" value="0.8">
+      <i class="fa-solid fa-volume-high volume-icon"></i>
+    </div>
+
+    <!-- زر البث السريع -->
+    <button class="airplay-btn" id="airplay">
+      <i class="fa-solid fa-tower-broadcast"></i>
+      <span>البث السريع</span>
+    </button>
+
+    <!-- قائمة اختيار البث -->
+    <select class="playlist-select" id="playlist">
+      <option value="https://backup.qurango.net/radio/tarawih">إذاعة صلاة التراويح</option>
+      <option value="https://backup.qurango.net/radio/mishary_alafasi">الشيخ مشاري العفاسي</option>
+      <option value="https://backup.qurango.net/radio/abdulbasit_abdulsamad_mojawwad">الشيخ عبدالباسط عبدالصمد</option>
+      <option value="https://backup.qurango.net/radio/maher_al_muaiqly">الشيخ ماهر المعيقلي</option>
+    </select>
+  </div>
+
+  <audio id="audio" src="https://backup.qurango.net/radio/tarawih"></audio>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('play');
+    const playIcon = document.getElementById('play-icon');
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+    const playlist = document.getElementById('playlist');
+    const volume = document.getElementById('volume');
+    const progress = document.getElementById('progress');
+    const progressContainer = document.getElementById('progress-container');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+
+    let isPlaying = false;
+
+    function togglePlay() {
+      if (isPlaying) {
+        pauseAudio();
+      } else {
+        playAudio();
+      }
+    }
+
+    function playAudio() {
+      isPlaying = true;
+      playIcon.classList.remove('fa-play');
+      playIcon.classList.add('fa-pause');
+      audio.play();
+      title.innerText = "إذاعة القرآن الكريم";
+      subtitle.innerText = playlist.options[playlist.selectedIndex].text;
+    }
+
+    function pauseAudio() {
+      isPlaying = false;
+      playIcon.classList.remove('fa-pause');
+      playIcon.classList.add('fa-play');
+      audio.pause();
+      title.innerText = "متوقف";
+    }
+
+    playBtn.addEventListener('click', togglePlay);
+
+    // تغيير الإذاعة
+    playlist.addEventListener('change', (e) => {
+      audio.src = e.target.value;
+      if (isPlaying) {
+        playAudio();
+      } else {
+        subtitle.innerText = playlist.options[playlist.selectedIndex].text;
+      }
+    });
+
+    // التحكم بالصوت
+    volume.addEventListener('input', (e) => {
+      audio.volume = e.target.value;
+    });
+
+    // تحديث شريط الوقت (للملفات الصوتية أو البث)
+    audio.addEventListener('timeupdate', (e) => {
+      if (audio.duration) {
+        const { duration, currentTime } = e.target;
+        const progressPercent = (currentTime / duration) * 100;
+        progress.style.width = `${progressPercent}%`;
+
+        const formatTime = (time) => Math.floor(time / 60) + ':' + ('0' + Math.floor(time % 60)).slice(-2);
+        currentTimeEl.innerText = formatTime(currentTime);
+        durationEl.innerText = formatTime(duration);
+      } else {
+        currentTimeEl.innerText = "بث مباشر";
+        durationEl.innerText = "LIVE";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -15,7 +15,6 @@
     }
 
     body {
-      /* خلفية سوداء فخمة */
       background: #000000;
       min-height: 100vh;
       display: flex;
@@ -27,14 +26,33 @@
       position: relative;
     }
 
+    /* نص الآيات القرآنية المتحرك في الخلفية */
+    .bg-quran-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90vw;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+      z-index: 1;
+      line-height: 1.8;
+      transition: opacity 1s ease-in-out;
+      user-select: none;
+    }
+
     /* تأثير تساقط الثلج */
     .snowflake {
       position: absolute;
       top: -10px;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.6);
       font-size: 1em;
       pointer-events: none;
       animation: fall linear infinite;
+      z-index: 2;
     }
 
     @keyframes fall {
@@ -52,12 +70,12 @@
     .player-card {
       width: 100%;
       max-width: 360px;
-      background: rgba(20, 20, 20, 0.75);
+      background: rgba(18, 18, 18, 0.8);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-radius: 35px;
       padding: 28px 24px 20px 24px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
       display: flex;
       flex-direction: column;
@@ -85,10 +103,11 @@
       color: rgba(255, 255, 255, 0.55);
     }
 
-    /* شريط التقدم */
+    /* شريط التقدم المساعد للتحكم بالحركة */
     .progress-container {
       width: 100%;
       margin-bottom: 25px;
+      cursor: pointer;
     }
 
     .progress-bar-bg {
@@ -96,7 +115,6 @@
       height: 6px;
       background: rgba(255, 255, 255, 0.15);
       border-radius: 3px;
-      cursor: pointer;
       position: relative;
     }
 
@@ -105,6 +123,7 @@
       height: 100%;
       background: #ffffff;
       border-radius: 3px;
+      transition: width 0.1s linear;
     }
 
     .time-info {
@@ -135,7 +154,7 @@
     }
 
     .control-btn:active {
-      transform: scale(0.9);
+      transform: scale(0.85);
     }
 
     .play-btn {
@@ -199,7 +218,7 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* قائمة اختيار التلاوات والقراء */
+    /* قائمة اختيار القراء والآيات */
     .playlist-select {
       width: 100%;
       background: rgba(0, 0, 0, 0.6);
@@ -240,6 +259,11 @@
 </head>
 <body>
 
+  <!-- النص المكتوب الخاشع في الخلفية -->
+  <div class="bg-quran-text" id="bg-text">
+    أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
+  </div>
+
   <!-- تساقط الثلج -->
   <div id="snow-container"></div>
 
@@ -250,22 +274,24 @@
       <div class="track-subtitle" id="subtitle">اختر تلاوة للبدء</div>
     </div>
 
-    <!-- شريط التقدم -->
-    <div class="progress-container">
-      <div class="progress-bar-bg" id="progress-container">
+    <!-- شريط التقدم للتحكم والتقديم والترجيع -->
+    <div class="progress-container" id="progress-container">
+      <div class="progress-bar-bg">
         <div class="progress-bar-fill" id="progress"></div>
       </div>
       <div class="time-info">
-        <span id="current-time">--:--</span>
-        <span id="duration">--:--</span>
+        <span id="current-time">00:00</span>
+        <span id="duration">00:00</span>
       </div>
     </div>
 
     <!-- أزرار التحكم -->
     <div class="controls">
-      <button class="control-btn" id="prev"><i class="fa-solid fa-backward-step"></i></button>
+      <!-- زر ترجيع 10 ثوانٍ -->
+      <button class="control-btn" id="prev" title="ترجيع 10 ثوانٍ"><i class="fa-solid fa-rotate-left"></i></button>
       <button class="control-btn play-btn" id="play"><i class="fa-solid fa-play" id="play-icon"></i></button>
-      <button class="control-btn" id="next"><i class="fa-solid fa-forward-step"></i></button>
+      <!-- زر تقديم 10 ثوانٍ -->
+      <button class="control-btn" id="next" title="تقديم 10 ثوانٍ"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
 
     <!-- مستوى الصوت -->
@@ -281,15 +307,15 @@
       <span>البث السريع</span>
     </button>
 
-    <!-- قائمة القراء والآيات القرآنية -->
+    <!-- قائمة اختيار السور والقراء -->
     <select class="playlist-select" id="playlist">
-      <option value="https://backup.qurango.net/radio/yasser_al_dosari">الشيخ ياسر الدوسري - إذاعة خاشعة</option>
       <option value="https://server11.mp3quran.net/yasser/001.mp3">سورة الفاتحة - ياسر الدوسري</option>
       <option value="https://server11.mp3quran.net/yasser/067.mp3">سورة الملك - ياسر الدوسري</option>
       <option value="https://server11.mp3quran.net/yasser/055.mp3">سورة الرحمن - ياسر الدوسري</option>
       <option value="https://server11.mp3quran.net/yasser/018.mp3">سورة الكهف - ياسر الدوسري</option>
-      <option value="https://backup.qurango.net/radio/mishary_alafasi">الشيخ عبدالرحمن مسعد - تلاوات خاشعة</option>
-      <option value="https://backup.qurango.net/radio/salma">آيات قرآنية خاشعة ومختارة</option>
+      <option value="https://server16.mp3quran.net/moisa/055.mp3">سورة الرحمن - عبدالرحمن مسعد</option>
+      <option value="https://server16.mp3quran.net/moisa/050.mp3">سورة ق - عبدالرحمن مسعد</option>
+      <option value="https://backup.qurango.net/radio/yasser_al_dosari">إذاعة الشيخ ياسر الدوسري (بث)</option>
     </select>
 
     <!-- زر انستغرام في قاع الواجهة -->
@@ -299,9 +325,29 @@
     </a>
   </div>
 
-  <audio id="audio" src="https://backup.qurango.net/radio/yasser_al_dosari"></audio>
+  <audio id="audio" src="https://server11.mp3quran.net/yasser/001.mp3"></audio>
 
   <script>
+    // الآيات القرآنية التي تظهر وتتغير في الخلفية
+    const quranVerses = [
+      "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+      "إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ",
+      "وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ",
+      "اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ",
+      "وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا"
+    ];
+    let verseIndex = 0;
+    const bgText = document.getElementById('bg-text');
+
+    setInterval(() => {
+      bgText.style.opacity = '0';
+      setTimeout(() => {
+        verseIndex = (verseIndex + 1) % quranVerses.length;
+        bgText.innerText = quranVerses[verseIndex];
+        bgText.style.opacity = '1';
+      }, 1000);
+    }, 7000);
+
     // إنشاء تساقط الثلج
     const snowContainer = document.getElementById('snow-container');
     const flakeIcons = ['❄', '❅', '❆'];
@@ -317,15 +363,18 @@
       snowContainer.appendChild(flake);
     }
 
-    // منطق تشغيل الصوت
+    // عناصر التحكم بالصوت
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('play');
     const playIcon = document.getElementById('play-icon');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
     const title = document.getElementById('title');
     const subtitle = document.getElementById('subtitle');
     const playlist = document.getElementById('playlist');
     const volume = document.getElementById('volume');
     const progress = document.getElementById('progress');
+    const progressContainer = document.getElementById('progress-container');
     const currentTimeEl = document.getElementById('current-time');
     const durationEl = document.getElementById('duration');
 
@@ -343,7 +392,7 @@
       isPlaying = true;
       playIcon.classList.remove('fa-play');
       playIcon.classList.add('fa-pause');
-      audio.play().catch(error => console.log("خطأ في تشغيل الصوت:", error));
+      audio.play().catch(error => console.log("خطأ في التشغيل:", error));
       title.innerText = "القرآن الكريم";
       subtitle.innerText = playlist.options[playlist.selectedIndex].text;
     }
@@ -358,6 +407,20 @@
 
     playBtn.addEventListener('click', togglePlay);
 
+    // تقديم وترجيع 10 ثوانٍ
+    nextBtn.addEventListener('click', () => {
+      if (audio.duration) {
+        audio.currentTime = Math.min(audio.currentTime + 10, audio.duration);
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (audio.duration) {
+        audio.currentTime = Math.max(audio.currentTime - 10, 0);
+      }
+    });
+
+    // اختيار سورة أو قارئ مختلف
     playlist.addEventListener('change', (e) => {
       audio.src = e.target.value;
       if (isPlaying) {
@@ -367,13 +430,15 @@
       }
     });
 
+    // التحكم بالصوت
     volume.addEventListener('input', (e) => {
       audio.volume = e.target.value;
     });
 
+    // تحديث وقت التشغيل وشريط التقدم
     audio.addEventListener('timeupdate', (e) => {
-      if (audio.duration) {
-        const { duration, currentTime } = e.target;
+      const { duration, currentTime } = e.target;
+      if (duration) {
         const progressPercent = (currentTime / duration) * 100;
         progress.style.width = `${progressPercent}%`;
 
@@ -383,6 +448,16 @@
       } else {
         currentTimeEl.innerText = "بث مباشر";
         durationEl.innerText = "LIVE";
+      }
+    });
+
+    // إمكانية الضغط على شريط التقدم للتقديم والترجيع التفاعلي
+    progressContainer.addEventListener('click', (e) => {
+      const width = progressContainer.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audio.duration;
+      if (duration) {
+        audio.currentTime = (clickX / width) * duration;
       }
     });
   </script>

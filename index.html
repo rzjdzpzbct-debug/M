@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<meta name="description" content="وِرْد — مساحة هادئة لتلاوة القرآن الكريم والاستماع إلى القرّاء."><title>وِرْد — القرآن الكريم</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Changa:wght@300;400;500;600;700&family=Michroma&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{--bg:#050505;--panel:#0c0c0e;--line:#242428;--muted:#8d8d95;--white:#f3f1f4;--gold:#c6a875}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--white);font-family:'Changa',sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:radial-gradient(#777 0.55px,transparent .55px);background-size:6px 6px;mask-image:linear-gradient(to bottom,black,transparent 75%)}
+header{max-width:980px;margin:auto;padding:28px 22px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:4px;color:var(--white);direction:rtl}.brand-ar{font-family:'Changa',sans-serif;font-size:19px;font-weight:500;letter-spacing:.08em;line-height:1.15;color:#f3f1f4}.brand-en{font-family:'Michroma','IBM Plex Mono',monospace;letter-spacing:.22em;font-size:9px;color:var(--gold);direction:ltr;text-transform:uppercase}
+.top-note{font-size:11px;letter-spacing:.16em;color:var(--muted);font-family:'IBM Plex Mono',monospace;direction:ltr}
+main{max-width:820px;margin:auto;padding:48px 22px 100px;position:relative}
+.hero{text-align:center;padding:28px 0 48px}.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.28em;color:var(--gold);direction:ltr}
+h1{font-weight:400;font-size:clamp(38px,9vw,70px);letter-spacing:.08em;margin:14px 0 0;line-height:1.4}
+.subtitle{color:var(--muted);font-size:14px;margin-top:6px;font-weight:300}
+.rule{width:44px;height:1px;background:var(--gold);margin:22px auto 0}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 auto 18px;max-width:600px}
+.field{border:1px solid var(--line);background:#0a0a0b;padding:10px 14px;border-radius:3px}
+label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+select{background:transparent;color:var(--white);border:0;outline:0;width:100%;font:inherit;font-size:14px}select option{background:#111;color:#fff}
+.player{max-width:600px;margin:0 auto 24px;border:1px solid var(--line);padding:18px;background:linear-gradient(135deg,#101012,#080809);display:flex;align-items:center;gap:14px}
+.play{border:1px solid #514632;background:var(--gold);color:#080808;width:46px;height:46px;border-radius:50%;font-size:17px;cursor:pointer;flex-shrink:0}
+.player-info{flex:1;min-width:0}.player-title{font-size:15px}.player-sub{font-size:11px;color:var(--muted);margin-top:2px}
+audio{width:100%;height:30px;margin-top:12px;accent-color:var(--gold)}
+.actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:20px 0 34px}
+.btn{border:1px solid var(--line);background:#0a0a0b;color:#ddd;padding:9px 15px;font-family:inherit;font-size:12px;cursor:pointer;border-radius:2px}.btn:hover{border-color:var(--gold)}
+.status{text-align:center;color:var(--muted);font-size:12px;min-height:22px;margin:16px 0}
+.verses{display:grid;gap:12px}.verse{border:1px solid var(--line);background:rgba(12,12,14,.82);padding:22px 20px 15px;position:relative}
+.verse-text{font-size:clamp(22px,4.5vw,30px);font-weight:400;line-height:2.15;text-align:center;color:#f4f0e8}
+.verse-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #202024;margin-top:15px;padding-top:11px;color:var(--muted);font-size:11px}
+.verse-num{font-family:'IBM Plex Mono',monospace;direction:ltr;color:var(--gold)}
+.small-btn{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit}.small-btn:hover{color:var(--gold)}
+footer{border-top:1px solid var(--line);text-align:center;padding:24px;color:#666;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;direction:ltr}
+
+/* Refined selector + audio player */
+header{max-width:1000px}
+main{max-width:900px}
+.hero{padding-top:24px}
+.hero h1{font-size:clamp(44px,10vw,78px);letter-spacing:.12em;text-shadow:0 0 35px rgba(198,168,117,.10)}
+.controls{max-width:680px;gap:14px}
+.field{position:relative;border-radius:6px;padding:12px 15px;transition:border-color .2s,background .2s}
+.field:focus-within{border-color:var(--gold);background:#111012}
+select{cursor:pointer;appearance:none;padding-left:24px}
+.field:after{content:"⌄";position:absolute;left:14px;bottom:13px;color:var(--gold);pointer-events:none;font-size:14px}
+.player{max-width:680px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;border-radius:8px;padding:19px;border-color:#343035;background:radial-gradient(ellipse at top right,rgba(198,168,117,.09),transparent 55%),linear-gradient(135deg,#111012,#080809);box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.play{width:50px;height:50px;border:1px solid #e2c99f;box-shadow:0 0 24px rgba(198,168,117,.14);font-size:16px;transition:transform .2s}
+.play:active{transform:scale(.94)}
+.player-title{font-size:16px;font-weight:500}
+.player-sub{font-size:11px;letter-spacing:.02em}
+audio{display:block;width:100%;height:34px;margin-top:13px;filter:sepia(.15) saturate(.8)}
+.actions{max-width:680px;margin:18px auto 34px;gap:9px}
+.btn{border-radius:5px;padding:10px 16px;transition:background .2s,border-color .2s,transform .2s}
+.btn:active{transform:translateY(1px)}
+.btn:first-child{background:#c6a875;color:#080808;border-color:#c6a875}
+.btn:first-child:hover{background:#d7bd91}
+.verse{border-radius:7px;padding:24px 22px 16px;transition:border-color .2s,transform .2s}
+.verse:hover{border-color:#4b4030}
+.verse-text{font-size:clamp(23px,4.6vw,32px);line-height:2.2}
+.verse-foot{margin-top:17px;padding-top:13px}
+.verse-num{border:1px solid #514632;padding:3px 7px;border-radius:3px}
+.small-btn{padding:4px 8px;border:1px solid #29292e;border-radius:4px}
+.small-btn:hover{border-color:var(--gold)}
+.status{max-width:680px;margin:17px auto 20px}
+@media(max-width:520px){
+ header{padding:20px 17px}.top-note{font-size:8px}
+ main{padding:24px 14px 65px}.hero{padding-bottom:34px}
+ .controls{gap:8px}.field{padding:10px}.field:after{left:10px;bottom:12px}
+ .player{padding:13px;grid-template-columns:45px minmax(0,1fr);gap:10px}
+ .play{width:43px;height:43px}.player-title{font-size:14px}
+ .actions{gap:7px}.btn{padding:9px 11px;font-size:11px}
+ .verse{padding:18px 13px 13px}.verse-text{line-height:2.05}
+}
+
+
+/* Professional editorial polish */
+:root{--bg:#050505;--panel:#0b0b0d;--line:#26262b;--muted:#9998a1;--white:#f4f1eb;--gold:#c6a875;--gold-soft:rgba(198,168,117,.12)}
+body{background:radial-gradient(ellipse at 50% -15%,#191613 0%,#090909 35%,#050505 72%);background-attachment:fixed}
+body:before{opacity:.08;background-size:7px 7px}
+header{padding-top:24px;padding-bottom:22px}
+.brand-en{font-size:8px;letter-spacing:.2em}
+.top-note{display:flex;align-items:center;gap:8px}
+.top-note:before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px rgba(198,168,117,.5)}
+main{padding-top:36px}
+.hero{padding:28px 0 40px}
+.eyebrow{letter-spacing:.32em;font-size:9px}
+.hero h1{font-size:clamp(48px,10vw,82px);font-weight:400;letter-spacing:.13em}
+.subtitle{letter-spacing:.04em}
+.rule{width:54px;box-shadow:0 0 14px rgba(198,168,117,.25)}
+.controls{margin-bottom:14px}
+.field{background:rgba(13,13,15,.86);backdrop-filter:blur(12px);min-height:72px}
+label{letter-spacing:.03em}
+select{font-size:14px}
+.player{position:relative;overflow:hidden;grid-template-columns:54px minmax(0,1fr);border-color:#39332a;background:linear-gradient(120deg,rgba(198,168,117,.08),transparent 40%),rgba(12,12,14,.94);backdrop-filter:blur(14px);box-shadow:0 18px 55px rgba(0,0,0,.24)}
+.player:after{content:"LISTEN / تلاوة";position:absolute;left:15px;top:12px;font:8px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6d6559;direction:ltr}
+.play{background:linear-gradient(145deg,#dfc89d,#b4935d);border:0;width:49px;height:49px;box-shadow:0 5px 20px rgba(198,168,117,.16)}
+.player-title{padding-top:5px;letter-spacing:.01em}
+audio{margin-top:14px;opacity:.9}
+.actions{margin-top:16px}
+.btn{background:rgba(12,12,14,.8);backdrop-filter:blur(10px)}
+.btn:not(:first-child):hover{background:#171512}
+#status{font-size:11px;letter-spacing:.02em}
+.verses{gap:14px}
+.verse{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(18,18,20,.96),rgba(9,9,10,.96));border-color:#26262b;box-shadow:0 8px 24px rgba(0,0,0,.10)}
+.verse:before{content:"";position:absolute;top:0;right:0;width:2px;height:34px;background:linear-gradient(var(--gold),transparent);opacity:.65}
+.verse-text{font-family:'Changa',sans-serif;color:#f0ece4;text-shadow:0 1px 0 rgba(255,255,255,.02)}
+.verse-foot{border-color:#29292d}
+footer{margin-top:10px;color:#77716a;letter-spacing:.18em}
+button,select{ -webkit-tap-highlight-color:transparent}
+button:focus-visible,select:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+@media(min-width:760px){main{padding-top:48px}.hero{padding-bottom:48px}.verses{gap:16px}.verse{padding:28px 28px 18px}}
+@media(max-width:520px){main{padding-top:25px}.hero{padding-top:22px;padding-bottom:30px}.field{min-height:67px}.player:after{font-size:7px;left:10px;top:8px}.player{grid-template-columns:45px minmax(0,1fr)}.play{width:43px;height:43px}.verse:before{height:26px}}
+
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="brand-ar">وِرْد</div><div class="brand-en">W I R D  /  Q U R A N</div></div><div class="top-note">A MOMENT OF PEACE</div></header>
+<main>
+<section class="hero">
+<div class="eyebrow">THE HOLY QURAN</div>
+<h1>وِرْد</h1>
+<div class="subtitle">آيةٌ تُطمئن القلب</div><div class="rule"></div>
+</section>
+<section class="controls">
+<div class="field"><label for="surah">السورة</label><select id="surah" aria-label="اختيار السورة"><option value="1">الفاتحة</option></select></div>
+<div class="field"><label for="reciter">القارئ</label><select id="reciter" aria-label="اختيار القارئ"><option value="ar.alafasy">مشاري العفاسي</option><option value="ar.abdurrahmaansudais">عبدالرحمن السديس</option><option value="ar.husary">محمود خليل الحصري</option><option value="ar.minshawi">محمد صديق المنشاوي</option></select></div>
+</section>
+<section class="player">
+<button class="play" id="playBtn" aria-label="تشغيل">▶</button>
+<div class="player-info"><div class="player-title" id="playerTitle">سورة الفاتحة</div><div class="player-sub" id="playerSub">تلاوة مرتّلة · استمع بقلبك</div><audio id="audio" controls preload="none"></audio></div>
+</section>
+<div class="actions"><button class="btn" id="loadBtn">عرض السورة</button><button class="btn" id="copyBtn">نسخ رابط الموقع</button><button class="btn" id="topBtn">↑ إلى الأعلى</button></div>
+<div class="status" id="status">جارٍ تحميل السور...</div>
+<section class="verses" id="verses" aria-live="polite"></section>
+</main>
+<footer>WIRD — MADE FOR QUIET MOMENTS</footer>
+<script>
+const surahSelect=document.getElementById('surah'), reciterSelect=document.getElementById('reciter'), versesEl=document.getElementById('verses'), statusEl=document.getElementById('status'), audio=document.getElementById('audio');
+let surahs=[];
+const fallback=[{number:1,name:'الفاتحة',englishName:'Al-Fatihah',numberOfAyahs:7}];
+function say(s){statusEl.textContent=s}
+async function getJson(url){const r=await fetch(url);if(!r.ok)throw new Error('network');return r.json()}
+async function init(){
+ try{const d=await getJson('https://api.alquran.cloud/v1/surah');surahs=d.data;surahSelect.innerHTML='';surahs.forEach(s=>{const o=document.createElement('option');o.value=s.number;o.textContent=s.number+' — '+s.name;surahSelect.appendChild(o)});say('اختر سورة وابدأ رحلتك');}
+ catch(e){surahs=fallback;surahSelect.innerHTML='<option value="1">1 — الفاتحة</option>';say('تعذّر تحميل قائمة السور. تحقق من اتصال الإنترنت.')}
+ loadSurah();
+}
+async function loadSurah(){
+ const n=surahSelect.value||1, selected=surahs.find(s=>s.number==n)||fallback[0];
+ document.getElementById('loadBtn').textContent='جارٍ التحميل…';
+ document.getElementById('playerTitle').textContent='سورة '+selected.name;
+ document.getElementById('playerSub').textContent=(selected.numberOfAyahs||'')+' آيات · تلاوة مرتّلة';
+ audio.src='https://cdn.islamic.network/quran/audio-surah/128/'+reciterSelect.value+'/'+n+'.mp3';
+ versesEl.innerHTML='';say('جارٍ تحميل الآيات...');
+ try{
+  const d=await getJson('https://api.alquran.cloud/v1/surah/'+n);
+  d.data.ayahs.forEach(a=>{
+   const card=document.createElement('article');card.className='verse';
+   const text=document.createElement('div');text.className='verse-text';text.textContent=a.text;
+   const foot=document.createElement('div');foot.className='verse-foot';
+   const num=document.createElement('span');num.className='verse-num';num.textContent=String(a.numberInSurah).padStart(3,'0');
+   const copy=document.createElement('button');copy.className='small-btn';copy.textContent='نسخ الآية';
+   copy.onclick=async()=>{try{await navigator.clipboard.writeText(a.text);copy.textContent='تم النسخ ✓';setTimeout(()=>copy.textContent='نسخ الآية',1300)}catch(e){say('تعذّر النسخ على هذا المتصفح')}};
+   foot.append(num,copy);card.append(text,foot);versesEl.appendChild(card);
+  });
+  say('سورة '+d.data.name+' · '+d.data.ayahs.length+' آيات');
+  document.getElementById('loadBtn').textContent='تم تحميل السورة ✓';
+  setTimeout(()=>{document.getElementById('loadBtn').textContent='عرض السورة'},1600);
+ }catch(e){say('ما قدرنا نحمل الآيات. افتح الموقع مع اتصال بالإنترنت وحاول مجددًا.');document.getElementById('loadBtn').textContent='إعادة المحاولة'}
+}
+document.getElementById('loadBtn').onclick=loadSurah;
+surahSelect.onchange=loadSurah;
+reciterSelect.onchange=()=>{const wasPlaying=!audio.paused;loadSurah();if(wasPlaying)setTimeout(()=>audio.play().catch(()=>{}),500)};
+document.getElementById('playBtn').onclick=()=>{if(audio.paused){audio.play().catch(()=>say('اختَر القارئ وانتظر تحميل الصوت، ثم جرّب التشغيل مرة أخرى.'));}else audio.pause()};
+audio.onplay=()=>{document.getElementById('playBtn').textContent='Ⅱ';say('التلاوة تعمل الآن')};
+audio.onpause=()=>document.getElementById('playBtn').textContent='▶';
+audio.onerror=()=>say('تعذّر تحميل التلاوة حاليًا. جرّب قارئًا آخر أو تحقق من الإنترنت.');
+audio.onwaiting=()=>say('جارٍ تحميل التلاوة...');
+document.getElementById('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);say('تم نسخ رابط الموقع')}catch(e){say('انسخ رابط الموقع من شريط العنوان') }};
+document.getElementById('topBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+init();
+</script>
+</body>
+</html>

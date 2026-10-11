@@ -1,112 +1,196 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>واجهة مستوحاة من منصة بصيرة</title>
-    <!-- تضمين خط Tajawal و Amiri للمظهر القرآني والأنيق -->
-    <link href="https://googleapis.com" rel="stylesheet">
-    <!-- تضمين مكتبة Tailwind CSS للتنسيق السريع -->
-    <script src="https://tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #05070c; /* الخلفية الداكنة العميقة للمنصة */
-            color: #e2e8f0;
-        }
-        .quran-text {
-            font-family: 'Amiri', serif;
-        }
-        /* تأثير التوهج الخفيف المحيط بالبطاقات (Glow Effect) */
-        .basira-card {
-            background: rgba(13, 20, 35, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-        .basira-card:hover {
-            border-color: rgba(56, 189, 248, 0.4);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
-        }
-        /* النص المتدرج الملون مثل شعار بصيرة */
-        .gradient-text {
-            background: linear-gradient(45deg, #ff7b7b, #ffae76, #7ee7ff, #caa5ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070c">
+<title>Basira — Interactive Qur'an Structural Visualization</title>
+<!-- استدعاء الخطوط الرسمية والحديثة المستخدمة في المنصة -->
+<link href="https://googleapis.com" rel="stylesheet">
+<style>
+:root {
+  --bg: #05070c;               /* السواد العميق للمنصة */
+  --panel: #0d1321;            /* لوحات التحكم الجانبية */
+  --card-bg: rgba(13, 20, 35, 0.45); /* الشفافية الزجاجية للبطاقات */
+  --card-border: rgba(255, 255, 255, 0.05);
+  --line: rgba(255, 255, 255, 0.06);
+  --text: #e2e8f0;
+  --muted: #6b7c96;
+  --cyan: #38bdf8;             /* اللون السماوي للإشارات الهيكلية */
+  --gold: #fbbf24;
+  --purple: #a78bfa;
+  --shadow: 0 30px 60px rgba(0,0,0,0.85);
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family: 'Tajawal', sans-serif;font-size: 13px;min-height: 100vh;
+  background-image: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.06), transparent 50%);
+}
+button,select,input{font:inherit}button{cursor:pointer}
+
+/* الواجهة الرئيسية للموقع (المودل المظلم والشامل) */
+.home-screen{max-width:1150px;margin:0 auto;padding:70px 20px 100px;text-align:center;}
+.main-brand-title{
+  font-weight: 900;font-size:58px;letter-spacing:6px;
+  background: linear-gradient(45deg, #ff7b7b, #ffae76, #7ee7ff, #caa5ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:8px;
+}
+.main-brand-sub{
+  font-family: 'JetBrains+Mono', monospace;font-size:10px;
+  letter-spacing:5px;color: var(--muted);margin-bottom:50px;
+}
+
+.engines-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:16px;text-align:center;}
+.engine-card{
+  background:var(--card-bg);backdrop-filter: blur(16px);-webkit-backdrop-filter: blur(16px);
+  border:1px solid var(--card-border);border-radius:14px;padding:36px 20px;
+  box-shadow: var(--shadow);transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.engine-card:hover{
+  border-color: rgba(56, 189, 248, 0.3);transform: translateY(-4px);
+  background: rgba(19, 30, 54, 0.6);box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+}
+.engine-card h3{font-size:17px;color:#fff;margin:0 0 8px;font-weight:700;}
+.engine-card span{font-family: 'JetBrains+Mono', sans-serif;font-size:10px;color:var(--muted);letter-spacing:1px;}
+
+/* هيكلية الـ Dashboard الداخلي المقسم لجهتين */
+.app-container{display:none;grid-template-columns:300px minmax(0,1fr);min-height:100vh;}
+.app-container.active{display:grid;}
+
+/* القائمة الجانبية المتقدمة والذكية لتصفح السور والهياكل */
+.sidebar{border-left:1px solid var(--line);padding:24px 18px;height:100vh;overflow:auto;position:sticky;top:0;background:#05070e}
+.sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--line);font-size:15px;font-weight:700;letter-spacing:3px;color:#fff;}
+.back-home-btn{
+  margin:14px 0 20px;width:100%;text-align:right;background:rgba(255,255,255,0.02);
+  border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:12px;font-size:11px;transition:0.2s
+}
+.back-home-btn:hover{color:#fff;border-color:var(--cyan);background:rgba(56, 189, 248, 0.05);}
+
+main{min-width:0;padding:0 0 140px}
+.top-bar{
+  height:65px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;background:rgba(5, 7, 12, 0.8);backdrop-filter:blur(20px);position:sticky;top:0;z-index:9
+}
+
+/* بطاقة عرض المصحف والآيات التفاعلية بالتأثير الزجاجي الشفاف */
+.basira-card{
+  margin:32px auto;max-width:820px;border:1px solid var(--card-border);
+  border-radius:24px;background: var(--card-bg);backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);padding:40px 32px;box-shadow:var(--shadow);
+}
+.card-header-meta{display:flex;justify-content:space-between;color:var(--muted);font-family:'JetBrains Mono', monospace;font-size:10px;letter-spacing:1px;margin-bottom:24px;}
+.tags-row{display:flex;gap:8px;margin-bottom:24px;}
+.tag-badge{padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;}
+.tag-badge.gold{background:rgba(251,191,36,0.08);color:var(--gold);border:1px solid rgba(251,191,36,0.15);}
+.tag-badge.purple{background:rgba(167,139,250,0.08);color:var(--purple);border:1px solid rgba(167,139,250,0.15);}
+
+.ayah-display-text{
+  font-family: 'Amiri', serif;text-align:center;font-size:36px;line-height:2.3;
+  color:#ffffff;padding:15px 0;direction:rtl;text-shadow: 0 2px 20px rgba(255,255,255,0.05);
+}
+.ayah-display-en{font-size:14px;color:#8b97b6;direction:ltr;text-align:center;line-height:1.7;margin-bottom:24px;font-weight:300;}
+
+/* المشغل السفلي الأنيق العائم - المطابق لـ Player المنصة */
+.bottom-player{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  width:min(860px, calc(100% - 40px));min-height:76px;
+  border:1px solid rgba(255,255,255,0.08);border-radius:40px;
+  background:rgba(9, 14, 28, 0.9);box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 32px;z-index:100;backdrop-filter:blur(30px);
+}
+.player-select{
+  background:#090e1c;color:#cbd5e1;border:1px solid var(--line);
+  border-radius:24px;padding:10px 18px;font-size:12px;min-width:190px;outline:none;
+}
+.player-controls{display:flex;align-items:center;gap:18px;}
+.player-controls button{border:0;background:transparent;color:#94a3b8;font-size:18px;}
+.player-controls .play-btn{
+  border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:44px;height:44px;
+  background:rgba(255,255,255,0.05);color:#fff;display:flex;align-items:center;justify-content:center;
+}
+.player-controls .play-btn:hover{background:#fff;color:#000;}
+
+/* التخصيص الخاص بمحرك البحث والقوائم */
+.search-input{width:100%;margin-bottom:12px;background:#05070e;border:1px solid var(--line);color:#fff;border-radius:10px;padding:12px 14px;outline:none;}
+.surah-list{display:grid;gap:6px;max-height:calc(100vh - 200px);overflow:auto;}
+.surah-item{width:100%;display:flex;justify-content:space-between;background:rgba(255,255,255,0.01);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:#cbd5e1;cursor:pointer;text-align:right;}
+.surah-item:hover{background:rgba(56, 189, 248, 0.05);border-color:var(--cyan);color:#fff;}
+.surah-item .en-name{font-family: 'JetBrains Mono', monospace;font-size: 11px;color: var(--muted);}
+
+/* شريط تمرير ناعم ومخفي */
+::-webkit-scrollbar {width: 4px;}
+::-webkit-scrollbar-thumb {background: rgba(255, 255, 255, 0.1);border-radius: 10px;}
+</style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-6 selection:bg-sky-500/30">
+<body>
 
-    <!-- شريط التنقل العلوي -->
-    <header class="flex justify-between items-center max-w-6xl w-full mx-auto border-b border-white/5 pb-4 mb-8">
-        <div class="flex items-center gap-3">
-            <span class="text-2xl font-bold tracking-widest gradient-text">بصيرة</span>
-            <span class="text-xs text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20">V 0.2.0</span>
-        </div>
-        <nav class="hidden md:flex gap-6 text-sm text-gray-400">
-            <a href="#" class="hover:text-white transition-colors">المصحف</a>
-            <a href="#" class="hover:text-white transition-colors">السور</a>
-            <a href="#" class="hover:text-white transition-colors">التجويد</a>
-            <a href="#" class="hover:text-white transition-colors">المكتبة</a>
-        </nav>
-        <button class="text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg transition-all">
-            تسجيل الدخول
-        </button>
-    </header>
+<!-- الواجهة الشاملة للمنصة (Home Portal) -->
+<div id="homeScreen" class="home-screen">
+  <div class="main-brand-title">بصيرة</div>
+  <div class="main-brand-sub">B A S I R A — CHOOSE YOUR PATH OF ILLUMINATION</div>
+  
+  <div class="engines-grid">
+    <div class="engine-card" onclick="openEngine('بصيرة (المصحف والتدبر)')">
+      <h3>بصيرة</h3>
+      <span>THE QURANIC ENGINE • 114 SURAHS</span>
+    </div>
+    <div class="engine-card" onclick="openEngine('الأسماء الحسنى')">
+      <h3>الأسماء الحسنى</h3>
+      <span>THE DIVINE ATTRIBUTES • 99 NAMES</span>
+    </div>
+    <div class="engine-card" onclick="openEngine('المكتبة')">
+      <h3>المكتبة</h3>
+      <span>THE SCHOLAR'S ARCHIVE • FREE LIBRARY</span>
+    </div>
+    <div class="engine-card" onclick="openEngine('علم الرجال')">
+      <h3>علم الرجال</h3>
+      <span>THE ISNAD BLOCKCHAIN • CRYPTOGRAPHIC</span>
+    </div>
+    <div class="engine-card" onclick="openEngine('السيرة النبوية')">
+      <h3>السيرة النبوية</h3>
+      <span>THE SEERAH ENGINE • PROPHETIC JOURNEY</span>
+    </div>
+    <div class="engine-card" onclick="openEngine('التدرّج والتشريع')">
+      <h3>التدرّج</h3>
+      <span>THE SHARIA STATE MACHINE • RULINGS</span>
+    </div>
+  </div>
+</div>
 
-    <!-- المحتوى الرئيسي -->
-    <main class="max-w-4xl w-full mx-auto flex-1 flex flex-col justify-center items-center my-12">
-        
-        <!-- بطاقة الآية أو النص الرئيسي -->
-        <div class="w-full basira-card rounded-2xl p-8 md:p-12 text-center relative overflow-hidden mb-8">
-            <div class="absolute top-4 left-4 text-xs text-amber-400/70 flex items-center gap-1">
-                <span>✦ آية اليوم</span>
-            </div>
-            
-            <p class="quran-text text-3xl md:text-4xl text-white leading-loose mb-6 drop-shadow-[0_2px_8px_rgba(255,255,255,0.1)]">
-                "ثُمَّ أَوْرَثْنَا الْكِتَابَ الَّذِينَ اصْطَفَيْنَا مِنْ عِبَادِنَا ۖ فَمِنْهُمْ ظَالِمٌ لِّنَفْسِهِ وَمِنْهُم مُّقْتَصِدٌ وَمِنْهُمْ سَابِقٌ بِالْخَيْرَاتِ بِإِذْنِ اللَّهِ ۚ ذَٰلِكَ هُوَ الْفَضْلُ الْكَبِيرُ"
-            </p>
-            
-            <span class="text-sm text-gray-400 block border-t border-white/5 pt-4 w-fit mx-auto px-6">
-                سورة فاطر : آية 32
-            </span>
-        </div>
+<!-- لوحة التحكم التفاعلية الداخلية (Dashboard View) -->
+<div id="appContainer" class="app-container">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span>BASIRA</span>
+      <span style="color:var(--cyan); font-size: 18px;">✦</span>
+    </div>
+    <button class="back-home-btn" onclick="goHome()">← العودة للرئيسية</button>
+    
+    <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;font-weight:700;">STRUCTURAL TIMELINE</div>
+    <input type="text" id="surahSearch" class="search-input" placeholder="Jump to verse or surah..." oninput="filterSurahs()">
+    
+    <div id="surahList" class="surah-list">
+      <!-- عينة من السور بالبنية المزدوجة للموقع الأصلي -->
+      <div class="surah-item" onclick="selectSurah('سورة البقرة')"><span>1. الفاتحة</span><span class="en-name">Fatiha Gate</span></div>
+      <div class="surah-item" onclick="selectSurah('سورة البقرة')"><span>2. البقرة</span><span class="en-name">Metropolis</span></div>
+      <div class="surah-item" onclick="selectSurah('سورة آل عمران')"><span>3. آل عمران</span><span class="en-name">Imran Fort</span></div>
+      <div class="surah-item" onclick="selectSurah('سورة النساء')"><span>4. النساء</span><span class="en-name">Supreme Court</span></div>
+    </div>
+  </aside>
 
-        <!-- شبكة البطاقات الفرعية التفاعلية -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-            <div class="basira-card rounded-xl p-5 cursor-pointer">
-                <h3 class="text-sky-400 font-medium mb-2 text-sm flex items-center gap-2">
-                    <span>📘</span> التفسير والتدبر
-                </h3>
-                <p class="text-xs text-gray-400 leading-relaxed">تصفح شروحات الآيات والعمق الدلالي والبنيوي للسور والروابط البرمجية للقرآن.</p>
-            </div>
-            
-            <div class="basira-card rounded-xl p-5 cursor-pointer">
-                <h3 class="text-emerald-400 font-medium mb-2 text-sm flex items-center gap-2">
-                    <span>🟢</span> دليل التجويد الإلكتروني
-                </h3>
-                <p class="text-xs text-gray-400 leading-relaxed">أحكام المد، الغنة، الإخفاء، والإدغام ملوّنة وموضحة تفاعلياً لتسهيل الترتيل.</p>
-            </div>
+  <main>
+    <div class="top-bar">
+      <span style="font-size:10px;font-family:'JetBrains Mono';color:var(--muted);font-weight:600;">ACTIVE ZONE: METROPOLIS</span>
+      <span id="currentTitle" style="font-weight:700;color:#fff;font-size:14px;">سورة البقرة — 286 الآيات</span>
+      <button class="back-home-btn" style="margin:0; width:auto; padding:6px 14px;">V 0.2.0 Engine</button>
+    </div>
 
-            <div class="basira-card rounded-xl p-5 cursor-pointer">
-                <h3 class="text-purple-400 font-medium mb-2 text-sm flex items-center gap-2">
-                    <span>⛓️</span> علم الرجال وسلاسل الإسناد
-                </h3>
-                <p class="text-xs text-gray-400 leading-relaxed">تحقق رقمي وبنية مشفرة (Blockchain) لتتبع الأحاديث النبوية ورواتها بدقة.</p>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- شريط التحكم السفلي -->
-    <footer class="max-w-6xl w-full mx-auto border-t border-white/5 pt-4 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-        <p>© 2026 منصة بصيرة التفاعلية. جميع الحقوق محفوظة.</p>
-        <div class="flex gap-4">
-            <a href="#" class="hover:text-gray-400">واجهة الدعم</a>
-            <a href="#" class="hover:text-gray-400">شروط الاستخدام</a>
-        </div>
-    </footer>
-
-</body>
-</html>
+    <div class="basira-card">
+      <div class="card-header-meta">
+        <span>AL-BAQARAH &bull; البقرة 2:1</span>
+        <span style="color: var(--cyan);">MACRO-FRAME 1–20</span>
+      </div>
+      
+      <div class="tags-row">

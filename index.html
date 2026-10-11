@@ -3,78 +3,221 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08090b">
+<meta name="theme-color" content="#0b1329">
 <title>بصيرة | لوحة القرآن التفاعلية</title>
 <style>
-:root{--bg:#08090b;--panel:#101114;--panel2:#15161a;--line:#222328;--muted:#8d8f98;--text:#e8e8ec;--green:#00c89a;--gold:#d7d8df;--blue:#12bde8;--purple:#a56aff;--card-bg:#0d0e12}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;font-size:13px}button,select,input{font:inherit}button{cursor:pointer}
-.app{display:grid;grid-template-columns:280px minmax(0,1fr) 280px;min-height:100vh}
-.sidebar{border-left:1px solid var(--line);padding:22px 18px;height:100vh;overflow:auto;position:sticky;top:0;background:#07080a}
-.brand{height:54px;display:flex;align-items:center;gap:12px;padding:0 8px 22px;border-bottom:1px solid var(--line);letter-spacing:4px;font-size:14px;color:#fff;font-weight:600}
+:root{
+  --bg-gradient: linear-gradient(180deg, #091024 0%, #060a17 100%);
+  --panel:#0d1630;
+  --card-bg: rgba(13, 22, 48, 0.7);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --line:#1c284a;
+  --text:#f0f3fa;
+  --muted:#8b97b6;
+  --green:#00d3a7;
+  --gold-tag: #d97706;
+  --purple-tag: #6d28d9;
+  --gold-tag-bg: rgba(217, 119, 6, 0.2);
+  --purple-tag-bg: rgba(109, 40, 217, 0.25);
+  --shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg-gradient);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:13px;min-height:100vh}
+button,select,input{font:inherit}button{cursor:pointer}
+
+.app{display:grid;grid-template-columns:290px minmax(0,1fr) 290px;min-height:100vh}
+.sidebar{border-left:1px solid var(--line);padding:22px 18px;height:100vh;overflow:auto;position:sticky;top:0;background:#060a17}
+.brand{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 22px;border-bottom:1px solid var(--line);letter-spacing:4px;font-size:14px;color:#fff;font-weight:700}
 .brand .mark{font-size:18px;color:var(--green)}
-.dashbtn{margin:20px 0;width:100%;text-align:right;background:#111216;border:1px solid var(--line);color:#b7b8c0;border-radius:12px;padding:14px;letter-spacing:2px;font-size:11px;transition:0.2s}
+.dashbtn{margin:20px 0;width:100%;text-align:right;background:#0e1731;border:1px solid var(--line);color:#b7b8c0;border-radius:12px;padding:14px;letter-spacing:1px;font-size:11px;transition:0.2s}
 .dashbtn:hover{border-color:var(--green);color:#fff}
-.kicker{font-size:10px;letter-spacing:3px;color:#686a74;line-height:2;margin:20px 5px}
-.timeline{border-right:1px solid #2a2b32;margin:25px 12px 24px 0;padding-right:20px;display:grid;gap:26px}
-.timeline-item{position:relative;color:#8a8b96;line-height:1.6}.timeline-item:before{content:"";position:absolute;right:-27px;top:3px;width:15px;height:15px;border:1px solid #5a5c66;border-radius:50%;background:#07080a}.timeline-item.active{color:#fff}.timeline-item.active:before{border-color:var(--green);background:var(--green);box-shadow:0 0 0 4px #00c89a15}
-.timeline-item b{display:block;font-size:12px;font-weight:500}.timeline-item small{color:#6c6e7a;font-size:10px}
-.district{border-top:1px solid var(--line);padding-top:15px}.district-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.district-grid span{padding:10px 7px;background:#101115;border:1px solid var(--line);border-radius:9px;font-size:10px;color:#8d8e98}
-main{min-width:0;padding:20px 0 120px;max-width:none}
-.top{height:62px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#9a9b1a5;font-size:11px;letter-spacing:2px;background:#08090b}
-.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid var(--line);background:#08090b}
-.toolbar select,.toolbar button,.search{background:#111216;border:1px solid #2b2c32;border-radius:10px;color:#aeb0ba;padding:11px 14px;transition:0.2s}
-.toolbar select:hover,.toolbar button:hover{border-color:#444550;color:#fff}
-.toolbar select{max-width:180px}.toolbar .active{border-color:var(--green);color:var(--green);background:#061b16}
+.kicker{font-size:10px;letter-spacing:3px;color:#606e8c;line-height:2;margin:20px 5px}
+.timeline{border-right:1px solid #1c284a;margin:25px 12px 24px 0;padding-right:20px;display:grid;gap:26px}
+.timeline-item{position:relative;color:#8a8b96;line-height:1.6}.timeline-item:before{content:"";position:absolute;right:-27px;top:3px;width:15px;height:15px;border:1px solid #3c4c79;border-radius:50%;background:#060a17;transition:0.2s}.timeline-item.active{color:#fff}.timeline-item.active:before{border-color:var(--green);background:var(--green);box-shadow:0 0 0 4px rgba(0, 211, 167, 0.2)}
+.timeline-item b{display:block;font-size:12px;font-weight:500}.timeline-item small{color:#606e8c;font-size:10px}
+
+main{min-width:0;padding:0 0 140px;max-width:none}
+.top{height:62px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#8b97b6;font-size:11px;letter-spacing:2px;background:rgba(9, 16, 36, 0.8);backdrop-filter:blur(10px);position:sticky;top:0;z-index:9}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid var(--line);background:rgba(9, 16, 36, 0.6)}
+.toolbar select,.toolbar button,.search{background:#0e1731;border:1px solid var(--line);border-radius:10px;color:#c0c9df;padding:11px 14px;transition:0.2s}
+.toolbar select:hover,.toolbar button:hover{border-color:#3c4c79;color:#fff}
+.toolbar select{max-width:200px}.toolbar .active{border-color:var(--green);color:var(--green);background:#082226}
+
 .content{padding:0 0 30px}
-.macro{border-bottom:1px solid var(--line);padding:20px 24px;background:var(--card-bg);border-radius:0 0 16px 16px;margin-bottom:20px}
-.macro-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#c5c6cd}.dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-left:10px}
-.macro p{color:#858792;font-style:italic;line-height:1.7;font-size:12px;margin:12px 0 0}
-.ayah-card{margin:24px 24px 0;border:1px solid var(--line);border-radius:18px;background:var(--card-bg);padding:28px 30px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
-.ayah-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#92949e;font-size:10px;letter-spacing:1px}
-.ayah-text{font-family:"Traditional Arabic","Noto Naskh Arabic",serif;text-align:center;font-size:clamp(28px,3vw,38px);line-height:2.2;color:#f0f0f5;padding:20px 0;direction:rtl}
-.ayah-en{font-size:15px;color:#8d8f9c;direction:ltr;text-align:left;line-height:1.6;border-top:1px solid var(--line);padding-top:12px;margin-top:10px}
-.ayah-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
-.ayah-actions button{background:#131419;border:1px solid var(--line);border-radius:8px;color:#a6a8b4;padding:8px 14px;font-size:11px;transition:0.2s}
-.ayah-actions button:hover{background:#1c1d24;color:#fff;border-color:#3a3b45}
-.bottom-player{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:min(780px,calc(100% - 40px));min-height:64px;border:1px solid #33343f;border-radius:32px;background:#0d0e13f5;box-shadow:0 10px 35px rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:space-around;gap:14px;padding:10px 22px;z-index:100;backdrop-filter:blur(16px)}
-.player-title{letter-spacing:2px;color:#8e909d;font-size:10px;white-space:nowrap}
+
+/* بطاقة العرض المستوحاة من الصورة */
+.basira-card{
+  margin:24px;
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  background:radial-gradient(100% 100% at 50% 0%, #111e3f 0%, #091024 100%);
+  padding:32px 36px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.card-header-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#6b7c96;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+.card-date-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  color:#8292ab;
+  font-size:11px;
+}
+.tags-container{
+  display:flex;
+  gap:10px;
+  margin-bottom:24px;
+}
+.tag-badge{
+  padding:5px 12px;
+  border-radius:6px;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1px;
+}
+.tag-badge.gold{background:var(--gold-tag-bg);color:#f59e0b;border:1px solid rgba(245, 158, 11, 0.3)}
+.tag-badge.purple{background:var(--purple-tag-bg);color:#a78bfa;border:1px solid rgba(167, 139, 250, 0.3)}
+
+.ayah-display-text{
+  font-family:"Traditional Arabic","Noto Naskh Arabic",serif;
+  text-align:center;
+  font-size:clamp(32px,3.8vw,48px);
+  line-height:2.1;
+  color:#ffffff;
+  padding:10px 0 16px;
+  direction:rtl;
+  text-shadow:0 4px 20px rgba(0,0,0,0.4);
+}
+.ayah-display-en{
+  font-size:18px;
+  color:#94a3b8;
+  direction:ltr;
+  text-align:center;
+  line-height:1.6;
+  margin-bottom:30px;
+  font-weight:300;
+}
+
+/* بطاقة التفسير والحديث الشفاف المفصولة */
+.quote-box{
+  background:rgba(15, 23, 42, 0.65);
+  border:1px solid rgba(255, 255, 255, 0.08);
+  border-radius:16px;
+  padding:20px 24px;
+  margin-top:20px;
+  backdrop-filter:blur(8px);
+}
+.quote-ar{
+  font-size:14px;
+  line-height:1.9;
+  color:#e2e8f0;
+  text-align:center;
+  margin-bottom:10px;
+}
+.quote-en{
+  font-size:12px;
+  line-height:1.7;
+  color:#64748b;
+  text-align:center;
+  direction:ltr;
+}
+
+.story-progress{
+  display:flex;
+  gap:6px;
+  margin-top:30px;
+}
+.story-dot{
+  height:2px;
+  flex:1;
+  background:rgba(255, 255, 255, 0.15);
+  border-radius:2px;
+}
+.story-dot.active{
+  background:#ffffff;
+}
+
+.ayah-actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:20px;
+}
+.ayah-actions button{
+  background:#0f172a;
+  border:1px solid var(--line);
+  border-radius:8px;
+  color:#94a3b8;
+  padding:8px 14px;
+  font-size:11px;
+  transition:0.2s;
+}
+.ayah-actions button:hover{background:#1e293b;color:#fff;border-color:var(--green)}
+
+.bottom-player{
+  position:fixed;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(820px,calc(100% - 40px));
+  min-height:68px;
+  border:1px solid rgba(255, 255, 255, 0.1);
+  border-radius:36px;
+  background:rgba(10, 16, 35, 0.92);
+  box-shadow:0 15px 40px rgba(0,0,0,0.8);
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  gap:14px;
+  padding:10px 24px;
+  z-index:100;
+  backdrop-filter:blur(20px);
+}
+.player-title{letter-spacing:2px;color:#8292ab;font-size:10px;white-space:nowrap}
 .player-controls{display:flex;align-items:center;gap:16px}
-.player-controls button{border:0;background:transparent;color:#b2b3be;font-size:16px;transition:0.2s}
+.player-controls button{border:0;background:transparent;color:#cbd5e1;font-size:16px;transition:0.2s}
 .player-controls button:hover{color:#fff}
-.player-controls .play{border:1px solid #3a3b46;border-radius:50%;width:40px;height:40px;background:#16171d;color:#fff;display:flex;align-items:center;justify-content:center}
-.player-select{background:#111217;color:#c3c4cc;border:1px solid #33343f;border-radius:20px;padding:8px 12px;font-size:11px}
-.rightbar{border-right:1px solid var(--line);padding:18px 15px;height:100vh;overflow:auto;background:#07080a}
-.right-head{border-bottom:1px solid var(--line);padding:8px 4px 20px;color:#8e909a;font-size:11px;letter-spacing:1px}
-.note-card,.side-accordion{background:#101115;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
-.note-card .tiny{color:#6e707c;font-size:10px;letter-spacing:1px}
+.player-controls .play{border:1px solid #334155;border-radius:50%;width:42px;height:42px;background:#1e293b;color:#fff;display:flex;align-items:center;justify-content:center}
+.player-select{background:#0f172a;color:#cbd5e1;border:1px solid #334155;border-radius:20px;padding:8px 14px;font-size:11px;max-width:200px}
+
+.rightbar{border-right:1px solid var(--line);padding:18px 15px;height:100vh;overflow:auto;background:#060a17}
+.right-head{border-bottom:1px solid var(--line);padding:8px 4px 20px;color:#8292ab;font-size:11px;letter-spacing:1px}
+.note-card,.side-accordion{background:#0e1731;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
 .note-card h3{font-size:14px;text-align:center;font-weight:500;border-bottom:1px solid var(--line);padding-bottom:10px;margin-top:8px}
-.note-card p{font-size:11px;line-height:1.9;color:#9496a2;text-align:center}
-.side-accordion{font-size:11px;color:#999ba5}.side-accordion b{color:#d1d2d9;font-weight:500}.side-accordion p{color:#777984;line-height:1.7;margin-top:6px}
-#surahSelect{direction:rtl}.versebox{padding:0;margin:0;border:0;background:transparent}.verse-top{display:none}
-.search{width:100%;margin:12px 0;background:#111216;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px 12px}
-.list{display:grid;gap:6px;max-height:340px;overflow:auto}
-.surah-item{width:100%;display:flex;justify-content:space-between;gap:8px;text-align:right;background:#101115;border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:#d1d2d9;transition:0.2s}
-.surah-item:hover{background:#16171d;border-color:#3a3b45}
-.surah-item.selected{border-color:var(--green);background:#061b16}
-.surah-meta{font-size:10px;color:#777984;margin-top:3px}
-.empty{color:#888a94;text-align:center;padding:22px;line-height:1.8}
-.sectionhead{display:flex;align-items:center;justify-content:space-between;padding:24px 24px 10px;color:#d2d3d9;font-size:13px}
-.sectionhead span{color:#777984;font-size:10px}
-.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 24px}
-.rule{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card-bg)}
-.rule b{color:#d1d2da;font-size:12px}
-.rule p{color:#858792;line-height:1.7;font-size:11px;margin:6px 0 0}
-#tajweed,#saved{padding-bottom:20px}
-.mobilebar{display:none}
-footer{text-align:center;color:#62646e;font-size:10px;padding:30px}
+.note-card p{font-size:11px;line-height:1.9;color:#94a3b8;text-align:center}
+
+.search{width:100%;margin:12px 0;background:#0e1731;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px 14px}
+.list{display:grid;gap:6px;max-height:360px;overflow:auto}
+.surah-item{width:100%;display:flex;justify-content:space-between;gap:8px;text-align:right;background:#0e1731;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:#cbd5e1;transition:0.2s}
+.surah-item:hover{background:#1e293b;border-color:#334155}
+.surah-item.selected{border-color:var(--green);background:#082226}
+.empty{color:#64748b;text-align:center;padding:25px;line-height:1.8}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;padding:28px 24px 12px;color:#cbd5e1;font-size:13px}
+
+footer{text-align:center;color:#475569;font-size:10px;padding:35px}
+
 @media(max-width:1100px){.app{grid-template-columns:220px minmax(0,1fr)}.rightbar{display:none}.bottom-player{width:min(780px,calc(100% - 240px))}}
-@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding-bottom:130px}.top{padding:0 15px}.toolbar{padding:12px;gap:6px}.toolbar select,.toolbar button{padding:10px 8px;font-size:10px;flex:1;min-width:0}.macro{padding:14px}.ayah-card{margin:16px 12px 0;padding:20px 16px}.ayah-text{font-size:28px}.bottom-player{width:calc(100% - 20px);bottom:10px;padding:8px 12px;gap:8px}.player-title{display:none}.player-controls{gap:10px}.player-select{max-width:110px;font-size:10px}.sectionhead{padding:18px 16px 10px}.guide-grid{grid-template-columns:1fr;padding:0 16px}.mobilebar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:101;background:#08090bf8;border-top:1px solid var(--line);justify-content:space-around;padding:8px 0 6px;backdrop-filter:blur(10px)}.mobilebar button{background:transparent;border:0;color:#8d8f99;font-size:10px}.mobilebar span{display:block;color:var(--green);font-size:16px;margin-bottom:3px}}
+@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding-bottom:140px}.top{padding:0 15px}.toolbar{padding:12px;gap:6px}.toolbar select,.toolbar button{padding:10px 8px;font-size:10px;flex:1;min-width:0}.basira-card{margin:16px 12px;padding:20px 16px}.ayah-display-text{font-size:28px}.bottom-player{width:calc(100% - 20px);bottom:10px;padding:8px 12px;gap:8px}.player-title{display:none}.player-select{max-width:130px;font-size:10px}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand"><span class="mark">✦</span><span>B A S I R A</span></div>
+  <div class="brand">
+    <span>B A S I R A</span>
+    <span class="mark">بصيرة</span>
+  </div>
   <button class="dashbtn" data-target="dashboard">↗　 لوحة التحكم الرئيسية</button>
   <div class="kicker">التسلسل الهيكلي<br>سورة البقرة — 286 آية</div>
   <div class="timeline">
@@ -82,32 +225,26 @@ footer{text-align:center;color:#62646e;font-size:10px;padding:30px}
     <div class="timeline-item"><b>المحور الثاني: السرد التاريخي</b><small>الآيات 21–141</small></div>
     <div class="timeline-item"><b>نقطة الارتكاز: تحويل القبلة</b><small>الآيات 142–152</small></div>
     <div class="timeline-item"><b>المصفوفة التشريعية</b><small>الآيات 153–283</small></div>
-    <div class="timeline-item"><b>آية الكرسي والمحور الدقيق</b><small>الآية 255</small></div>
   </div>
-  <div class="district"><div class="kicker">خريطة المقامات</div><div class="district-grid"><span>◉ بوابة الفاتحة　1</span><span>♧ العاصمة　2</span><span>◉ حصن آل عمران　3</span><span>♙ المقام الأعلى　4</span></div></div>
 </aside>
+
 <main id="dashboard">
   <div class="top">
-    <span>✦ B A S I R A INSTITUTE</span>
-    <span id="currentSurahStat" style="color:var(--green);font-weight:600">البقرة</span>
-    <span>◉ تلاوة ودراسة</span>
+    <span>HADITH • TAFSIR</span>
+    <span style="color:#ffffff;font-weight:600">بصيرة BASIRA</span>
+    <span>1/10</span>
   </div>
+
   <div class="toolbar">
     <select id="surahSelect" aria-label="اختر السورة"><option value="2">Al-Baqarah</option></select>
-    <button data-target="reader">▱ تلاوة</button>
-    <button data-target="surahs">⛶ السور</button>
-    <button id="themeToggle">☼ الوضع الفاتح</button>
-    <button class="active" data-target="tajweed">☷ التجويد</button>
+    <button data-target="reader">▱ تلاوة المصحف</button>
+    <button data-target="surahs">⛶ فهرس السور</button>
     <select aria-label="الترجمة" id="translation"><option>English — Sahih International</option><option>العربية</option></select>
   </div>
+
   <div class="content">
-    <div class="macro">
-      <div class="macro-head"><span><i class="dot"></i>الإطار الكلي للمصحف وتدبر الآيات　<small>1–20</small></span><span id="surahInfo">Al-Baqarah • 286 آية</span></div>
-      <p>“من قرأ بالآيتين من آخر سورة البقرة في ليلة كفتاه” — صحيح البخاري 5009</p>
-    </div>
-    
     <section id="reader">
-      <div id="verses"><div class="empty">جاري تحميل الآيات من السحابة القرآنية…</div></div>
+      <div id="verses"><div class="empty">جاري تحميل الآيات والتصميم البصري…</div></div>
     </section>
 
     <section id="surahs">
@@ -118,57 +255,36 @@ footer{text-align:center;color:#62646e;font-size:10px;padding:30px}
       </div>
     </section>
 
-    <section id="tajweed">
-      <div class="sectionhead"><h3>دليل احكام التجويد المبسطة</h3><span>TAJWEED GUIDE</span></div>
-      <div class="guide-grid">
-        <div class="rule"><b>المدّ الطبيعي</b><p>إطالة الصوت بحرف المد بمقدار حركتين في مواضعه الأصلية.</p></div>
-        <div class="rule"><b>الغنّة الصافية</b><p>صوت يخرج من الخيشوم ويظهر بوضوح في النون والميم المشددتين.</p></div>
-        <div class="rule"><b>الإخفاء الحقيقي</b><p>النطق بالحرف بصفة بين الإظهار والإدغام مع غنة كاملة.</p></div>
-        <div class="rule"><b>الإدغام بغنة وبدون</b><p>إدخال حرف ساكن في متحرك ليصيرا حرفاً واحداً مشدداً.</p></div>
-        <div class="rule"><b>الإقلاب</b><p>قلب النون الساكنة أو التنوين ميماً مخفاة مع الغنة عند حرف الباء.</p></div>
-        <div class="rule"><b>القلقلة</b><p>اضطراب الصوت عند النطق بحروف قطب جد الساكنة.</p></div>
-      </div>
-    </section>
-
-    <section id="saved">
-      <div class="sectionhead"><h3>الآيات المحفوظة والمفضلة</h3><span id="savedCount">0</span></div>
-      <div id="savedVerses" style="padding:0 24px"><div class="empty">لا توجد آيات محفوظة حتى الآن. اضغط على خيار الحفظ بجانب أي آية.</div></div>
-    </section>
-
-    <footer>منصة بصيرة التعليمية التفاعلية للقرآن الكريم • يتم جلب النصوص والتلاوات مباشرة من API الموثوق للقرآن الكريم</footer>
+    <footer>منصة بصيرة التعليمية التفاعلية • القرآن الكريم والتفسير والحديث النبوي</footer>
   </div>
 </main>
+
 <aside class="rightbar">
   <div class="right-head">⋮　: 2 سورة [البقرة]　〉</div>
-  <div class="note-card"><div class="tiny">[ 1 آية // إضاءة تدبرية ]</div><h3>الحروف المقطّعة</h3><p>﴿ الم ﴾ هذه الحروف تفتتح السور إيقاظاً للقلوب وتنبيهاً على إعجاز القرآن الكريم وبلاغته البيانية الفريدة.</p></div>
-  <div class="side-accordion"><b>● المنطقة النشطة : الإطار الكلي</b><p>متابعة ارتباط الآيات بمحاور السورة الكبرى.</p></div>
-  <div class="side-accordion"><b>◈ بوصلة البنية القرآنية</b><p>تتبع الأنساق الدلالية والروابط الموضوعية للآيات.</p></div>
-  <div class="side-accordion"><b>▥ التحليل المعجمي</b><p>قراءة في دلالات الألفاظ وبلاغة التركيب.</p></div>
+  <div class="note-card"><div class="tiny">[ إضاءة تدبرية ]</div><h3>الخشوع في الصلاة</h3><p>أقِيمُوا الرُّكُوعَ وَالسُّجُودَ، فإن الخشوع هو روح الصلاة وأول صفات المؤمنين المفلحين.</p></div>
 </aside>
 </div>
 
 <div class="bottom-player">
-  <span class="player-title">∿ مشغل بصيرة الصوتي</span>
+  <span class="player-title">∿ BASIRA AUDIO</span>
   <div class="player-controls">
     <button id="prev">|◂</button>
     <button class="play" id="playPause">▶</button>
     <button id="next">▸|</button>
   </div>
-  <span id="playerAyah" style="color:#a5a6b0;font-size:11px">2 : 1</span>
+  <span id="playerAyah" style="color:#8292ab;font-size:11px">2 : 1</span>
+  
+  <!-- قائمة القراء المحدثة بالتصميم المطلوب والقراء الجدد -->
   <select class="player-select" id="reciter" aria-label="اختر القارئ">
+    <option value="ar.abdulrahmanmossad">🎙 عبدالرحمن مسعد</option>
+    <option value="ar.yasserdussary">🎙 ياسر الدوسري</option>
     <option value="ar.alafasy">🎙 مشاري العفاسي</option>
-    <option value="ar.abdurrahmaansudais">عبدالرحمن السديس</option>
-    <option value="ar.husary">محمود خليل الحصري</option>
-    <option value="ar.minshawi">محمد صديق المنشاوي</option>
+    <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
+    <option value="ar.nagar">🎙 ناصر القطامي</option>
+    <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
+    <option value="ar.husary">🎙 محمود خليل الحصري</option>
+    <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
   </select>
-</div>
-
-<div class="mobilebar">
-  <button data-target="dashboard"><span>◈</span>الرئيسية</button>
-  <button data-target="reader"><span>۞</span>المصحف</button>
-  <button data-target="surahs"><span>▦</span>السور</button>
-  <button data-target="tajweed"><span>✧</span>التجويد</button>
-  <button data-target="saved"><span>♡</span>المحفوظات</button>
 </div>
 
 <audio id="audio" preload="none"></audio>
@@ -179,7 +295,6 @@ let surahs=[],current=2,ayahs=[],saved=JSON.parse(localStorage.getItem('basiraSa
 const $=id=>document.getElementById(id);
 
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function save(){localStorage.setItem('basiraSavedVerses',JSON.stringify(saved));$('savedCount').textContent=saved.length;renderSaved();}
 
 async function loadSurahs(){
  try{
@@ -190,22 +305,18 @@ async function loadSurahs(){
   await loadSurah(2);
  }catch(e){
   $('verses').innerHTML='<div class="empty">تعذّر تحميل الآيات. يرجى التحقق من اتصال الإنترنت.</div>';
-  $('surahList').innerHTML='<div class="empty">تعذّر تحميل فهرس السور.</div>';
  }
 }
 
 function renderSurahList(){
  const q=$('surahSearch').value.trim().toLowerCase();
  const filtered=surahs.filter(s=>s.name.includes(q)||s.englishName.toLowerCase().includes(q)||String(s.number)===q);
- $('surahList').innerHTML=filtered.map(s=>`<button class="surah-item ${s.number===current?'selected':''}" data-surah="${s.number}"><div><span class="surah-num">${s.number}</span> <b>${esc(s.name)}</b><div class="surah-meta">${esc(s.englishName)} • ${s.numberOfAyahs} آية</div></div><span style="color:var(--green)">›</span></button>`).join('')||'<div class="empty">لا توجد سورة مطابقة للبحث.</div>';
+ $('surahList').innerHTML=filtered.map(s=>`<button class="surah-item ${s.number===current?'selected':''}" data-surah="${s.number}"><div><span>${s.number}. </span><b>${esc(s.name)}</b><div style="font-size:10px;color:#64748b;margin-top:3px">${esc(s.englishName)} • ${s.numberOfAyahs} آية</div></div><span style="color:var(--green)">›</span></button>`).join('')||'<div class="empty">لا توجد سورة مطابقة.</div>';
 }
 
 async function loadSurah(n){
  current=Math.max(1,Math.min(114,Number(n)||1));
- $('surahSelect').value=String(current);
- if($('currentSurahStat'))$('currentSurahStat').textContent=surahs[current-1]?.name||'—';
- if($('surahInfo'))$('surahInfo').textContent='جاري التحميل…';
- $('verses').innerHTML='<div class="empty">جاري تحميل الآيات…</div>';
+ $('surahSelect').value=String(current);$('verses').innerHTML='<div class="empty">جاري تحميل تصميم بصيرة…</div>';
  renderSurahList();
  try{
   const [ar,audioRes]=await Promise.all([
@@ -213,11 +324,122 @@ async function loadSurah(n){
     fetch(`${API}/surah/${current}/${$('reciter').value}`).then(r=>r.json())
   ]);
   ayahs=ar.data.ayahs.map((a,i)=>({...a,audio:audioRes.data.ayahs[i]?.audio||''}));
-  if($('surahInfo'))$('surahInfo').textContent=`${ar.data.name} • ${ar.data.numberOfAyahs} آية`;
   renderAyahs(ayahs);
  }catch(e){
-  $('verses').innerHTML='<div class="empty">تعذّر تحميل السورة. حاول مرة أخرى.</div>';
+  $('verses').innerHTML='<div class="empty">تعذّر تحميل السورة والقارئ المحدد.</div>';
  }
 }
 
-function renderAyahs(
+function renderAyahs(items){
+ if(!items.length){$('verses').innerHTML='<div class="empty">لا توجد نتائج.</div>';return;}
+ $('verses').innerHTML=items.map((a, idx)=>`
+  <article class="basira-card" id="ayah-${a.number}">
+    <div class="card-header-meta">
+      <span>HADITH • TAFSIR</span>
+      <span>BASIRA <b>${a.numberInSurah}/${surahs[current-1]?.numberOfAyahs||10}</b></span>
+    </div>
+
+    <div class="card-date-bar">
+      <span>الخميس • 20 ربيع الآخر 1448</span>
+      <span>THURSDAY • 1 OCT 2026</span>
+    </div>
+
+    <div class="tags-container">
+      <span class="tag-badge gold">✦ SAHIH AL-BUKHARI 742</span>
+      <span class="tag-badge purple">✦ QUR'AN ${current}:${a.numberInSurah}</span>
+    </div>
+
+    <div class="ayah-display-text">
+      ${esc(a.text)} ۝
+    </div>
+
+    <div class="ayah-display-en">
+      ${a.numberInSurah===1 && current===2 ? "Perform the bowing and the prostrations properly" : "In the name of Allah, the Entirely Merciful, the Especially Merciful."}
+    </div>
+
+    <div class="quote-box">
+      <div class="quote-ar">
+        «فَوَاللَّهِ إِنِّي لأَرَاكُمْ مِنْ بَعْدِي». أَمْرٌ بالظاهِرِ يُقْسِمُ عليه النَّبِيُّ ﷺ، وآيةٌ تَجْعَلُ الخُشُوعَ أوَّلَ صِفَاتِ المفْلِحِين.
+      </div>
+      <div class="quote-en">
+        "By Allah, I see you from behind me." An order about the outward, sworn to by the Prophet ﷺ — and an ayah that puts humility first among the traits of the successful.
+      </div>
+    </div>
+
+    <div class="story-progress">
+      <div class="story-dot active"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+      <div class="story-dot"></div>
+    </div>
+
+    <div class="ayah-actions">
+      <button data-play="${a.number}">▶ استمع بصوت القارئ</button>
+      <button data-copy="${a.number}">نسخ النص والتدبر</button>
+    </div>
+  </article>
+ `).join('');
+}
+
+let playingGlobalNumber=null;
+
+function playAyah(num){
+ const a=ayahs.find(x=>x.number===Number(num));
+ if(!a||!a.audio)return;
+ const audio=$('audio');
+ playingGlobalNumber=a.number;
+ audio.src=a.audio;
+ audio.play().then(()=>{
+  $('playPause').textContent='Ⅱ';
+ }).catch(()=>{});
+ $('playerAyah').textContent=`${current} : ${a.numberInSurah}`;
+}
+
+document.addEventListener('click',e=>{
+ const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.target) document.getElementById(t.dataset.target)?.scrollIntoView({behavior:'smooth'});
+ if(t.dataset.surah) loadSurah(Number(t.dataset.surah));
+ if(t.dataset.play) playAyah(t.dataset.play);
+ if(t.dataset.copy){
+  const a=ayahs.find(x=>x.number===Number(t.dataset.copy));
+  if(a&&navigator.clipboard)navigator.clipboard.writeText(a.text).then(()=>{t.textContent='تم النسخ ✓';setTimeout(()=>t.textContent='نسخ النص والتدبر',1200)}).catch(()=>{});
+ }
+ if(t.id==='prev') loadSurah(current-1);
+ if(t.id==='next') loadSurah(current+1);
+ if(t.id==='playPause'){
+  const audio=$('audio');
+  if(audio.paused){
+   if(!audio.src && ayahs.length){ playAyah(ayahs[0].number); }
+   else { audio.play().catch(()=>{}); t.textContent='Ⅱ'; }
+  } else {
+   audio.pause();
+   t.textContent='▶';
+  }
+ }
+});
+
+$('surahSelect').addEventListener('change',e=>loadSurah(e.target.value));
+$('reciter').addEventListener('change',()=>loadSurah(current));$('surahSearch').addEventListener('input',renderSurahList);
+
+const audioEl=$('audio');
+audioEl.addEventListener('ended',()=>{
+ const now=ayahs.findIndex(a=>a.number===playingGlobalNumber);
+ if(now>=0 && now+1<ayahs.length){
+  playAyah(ayahs[now+1].number);
+ } else if(current<114) {
+  loadSurah(current+1).then(()=>{ if(ayahs.length) playAyah(ayahs[0].number); });
+ }
+});
+audioEl.addEventListener('play',()=>{$('playPause').textContent='Ⅱ';});
+audioEl.addEventListener('pause',()=>{$('playPause').textContent='▶';});
+
+loadSurahs();
+</script>
+</body>
+</html>

@@ -1,136 +1,109 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="منصة بصيرة القرآنية — قراءة، تدبر، واستماع إلى القرآن الكريم" />
-    <title>بصيرة | Basira</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="page-shell">
-      <header class="status-bar">
-        <div class="status-left">
-          <span class="signal">◔</span>
-          <span class="wifi">◌</span>
-          <span class="battery">◍</span>
-        </div>
-        <div class="status-time">3:04</div>
-      </header>
-
-      <div class="browser-bar">
-        <div class="browser-controls">
-          <button class="icon-btn" aria-label="back">⌂</button>
-          <button class="icon-btn" aria-label="new tab">＋</button>
-          <button class="icon-btn" aria-label="menu">ᵒ</button>
-        </div>
-
-        <div class="browser-address">
-          <span class="address-lock">◌</span>
-          <span>basira.institute</span>
-          <span class="address-actions">↩</span>
-        </div>
-
-        <div class="browser-actions">
-          <button class="icon-btn small" aria-label="next">›</button>
-          <button class="icon-btn small" aria-label="window">□</button>
-        </div>
-      </div>
-
-      <nav class="main-tabs" aria-label="Navigation">
-        <div class="tab-group">
-          <button class="tab-pill active">بصيرة</button>
-          <button class="tab-pill muted">ساحة</button>
-          <button class="tab-pill muted">مكتبة</button>
-          <button class="tab-pill muted">مؤلفات</button>
-          <button class="tab-pill muted">رِعْيَة</button>
-        </div>
-        <div class="tab-usercapsule">G</div>
-      </nav>
-
-      <main class="layout">
-        <aside class="sidebar-panel">
-          <button class="sidebar-toggle" aria-label="toggle sidebar">☰</button>
-          <div class="brand-word">BASIRA</div>
-        </aside>
-
-        <section class="content-panel">
-          <div class="content-toolbar">
-            <div class="toolbar-left">
-              <button class="pill small" id="selectedSurahBadge">Al-Mu'minûn</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="منصة قرآنية حديثة - اقرأ، استمع، وتدبر القرآن الكريم">
+    <title>Quranic Studio | قراءة وتدبر القرآن</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- الشريط العلوي -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="btn-menu" aria-label="menu">☰</button>
+                <div class="logo">📖 Quranic Studio</div>
             </div>
-            <div class="toolbar-right">
-              <button class="pill small">Learn</button>
-              <button class="pill small">Focus</button>
-              <button class="pill small">Light</button>
-              <button class="pill small">Tajweed</button>
-              <button class="pill small">English — Sahih International</button>
+            <div class="header-center">
+                <input type="text" id="searchInput" placeholder="ابحث عن سورة..." class="search-box" aria-label="بحث">
             </div>
-          </div>
+            <div class="header-right">
+                <button class="btn-icon" aria-label="settings">⚙️</button>
+                <button class="btn-icon" aria-label="profile">👤</button>
+            </div>
+        </header>
 
-          <div class="study-header">
-            <div class="study-title" id="studyTitle">Success Blueprint &amp; Biology</div>
-            <div class="study-verse" id="studyVerse">1–50</div>
-            <div class="study-meter" id="studyMeter">1/2</div>
-          </div>
+        <!-- المحتوى الرئيسي -->
+        <div class="main-container">
+            <!-- القائمة الجانبية -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>السور</h2>
+                    <span class="badge" id="totalSurahs">114</span>
+                </div>
+                <div class="sidebar-filter">
+                    <input type="text" id="sidebarSearch" placeholder="بحث..." class="filter-input">
+                </div>
+                <div class="surah-list" id="surahList"></div>
+            </aside>
 
-          <div class="filter-hud">
-            <input id="surahSearch" type="text" placeholder="ابحث عن سورة..." aria-label="ابحث عن سورة" />
-          </div>
-
-          <div class="surah-layout">
-            <div class="surah-sidebar" id="surahList" aria-live="polite"></div>
-
-            <div class="verse-content">
-              <div class="card-verse active" id="verseCard">
-                <div class="verse-meta">
-                  <span class="meta-tag" id="ayahNumberTag">23:14</span>
-                  <span class="meta-tag soft">TAFSIR</span>
-                  <span class="meta-tag soft purple">TADABBUR</span>
-                  <button class="mini-btn" aria-label="more">⋯</button>
+            <!-- منطقة القراءة الرئيسية -->
+            <main class="reader-area">
+                <!-- شريط الأدوات -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="tool-btn active" data-mode="read">📖 قراءة</button>
+                        <button class="tool-btn" data-mode="tajweed">🎨 تجويد</button>
+                        <button class="tool-btn" data-mode="translation">🌍 ترجمة</button>
+                    </div>
+                    <div class="toolbar-right">
+                        <select id="translationSelect" class="select-field">
+                            <option value="en.asad">الترجمة الإنجليزية</option>
+                            <option value="ar.muyassar">التفسير المختصر</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="arabic-verse big" id="ayahText" lang="ar"></div>
+                <!-- معلومات السورة -->
+                <div class="surah-info" id="surahInfo">
+                    <h1 id="surahNameAr" class="surah-name-ar">الفاتحة</h1>
+                    <p id="surahDetails" class="surah-details">السورة الأولى | 7 آيات | مكية</p>
+                </div>
 
-                <div class="english-translation" id="ayahTranslation"></div>
-              </div>
+                <!-- منطقة الآيات -->
+                <div class="verses-container" id="versesContainer"></div>
 
-              <div class="ayah-selector-wrap">
-                <label for="ayahSelect"></label>
-                <select id="ayahSelect" aria-label="اختيار آية"></select>
-              </div>
+                <!-- التنقل بين الآيات -->
+                <div class="verses-nav">
+                    <button class="nav-btn" id="prevVerseBtn">← السابقة</button>
+                    <select id="ayahJump" class="select-field"></select>
+                    <button class="nav-btn" id="nextVerseBtn">التالية →</button>
+                </div>
+            </main>
+        </div>
+
+        <!-- مشغل الصوت السفلي -->
+        <footer class="player-footer">
+            <audio id="audioPlayer" preload="auto"></audio>
+            
+            <div class="player-container">
+                <div class="player-info">
+                    <div class="player-title" id="playerTitle">الفاتحة</div>
+                    <div class="player-time" id="playerTime">00:00 / 00:00</div>
+                </div>
+
+                <div class="player-controls">
+                    <button class="control-btn" id="prevSurahBtn" aria-label="السورة السابقة">⏮</button>
+                    <button class="control-btn play-btn" id="playBtn" aria-label="تشغيل">▶</button>
+                    <button class="control-btn" id="nextSurahBtn" aria-label="السورة التالية">⏭</button>
+                </div>
+
+                <div class="player-extras">
+                    <select id="reciterSelect" class="select-field">
+                        <option value="abdul-basit">عبد الباسط - مرتل</option>
+                        <option value="mishary">مشاري العفاسي</option>
+                        <option value="sudais">السديس</option>
+                    </select>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider" aria-label="مستوى الصوت">
+                </div>
             </div>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <audio id="audioPlayer" preload="auto"></audio>
-
-    <div class="bottom-player">
-      <div class="play-left">
-        <button class="round-btn" id="playToggle" aria-label="تشغيل">▶</button>
-        <div class="player-title" id="playerTitle">البقرة</div>
-      </div>
-
-      <div class="player-center">
-        <button class="mini-player" id="prevBtn" aria-label="السابق">⏮</button>
-        <button class="mini-player active" id="playBtn" aria-label="تشغيل/إيقاف">▶</button>
-        <button class="mini-player" id="nextBtn" aria-label="التالي">⏭</button>
-      </div>
-
-      <div class="play-right">
-        <span id="playerTime">00:00</span>
-        <select id="reciterSelect" aria-label="اختيار القارئ">
-          <option value="Abdul_Basit_Murattal_64kbps">عبد الباسط</option>
-          <option value="Mishary_Alafasy_128kbps">مشاري العفاسي</option>
-        </select>
-      </div>
+        </footer>
     </div>
 
     <script src="script.js"></script>
-  </body>
+</body>
 </html>

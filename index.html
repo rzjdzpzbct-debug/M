@@ -1,387 +1,112 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#060913">
-<title>بصيرة | لوحة القرآن والتفاعل البنيوي</title>
-<style>
-:root{
-  --bg: #060913;
-  --panel: #0b1120;
-  --card-bg: #0e162b;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --line: #1c2642;
-  --text: #f0f3fa;
-  --muted: #8b97b6;
-  --green: #00d3a7;
-  --gold: #f59e0b;
-  --purple: #a78bfa;
-  --shadow: 0 20px 50px rgba(0,0,0,0.8);
-}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:13px;min-height:100vh}
-button,select,input{font:inherit}button{cursor:pointer}
-
-/* شاشة الاختيار الرئيسية (مطابقة للفيديو والصورة الأولى) */
-.home-screen{max-width:1150px;margin:0 auto;padding:40px 20px 100px;text-align:center;}
-.main-brand-title{font-size:42px;font-weight:700;letter-spacing:6px;background:linear-gradient(135deg, #fff 30%, #00d3a7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
-.main-brand-sub{font-size:10px;letter-spacing:5px;color:var(--muted);text-transform:uppercase;margin-bottom:45px;}
-
-.engines-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:14px;text-align:right;}
-.engine-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:26px;cursor:pointer;transition:0.3s;box-shadow:var(--shadow);}
-.engine-card:hover{border-color:var(--green);transform:translateY(-3px);background:#131c36;}
-.engine-card h3{font-size:16px;color:#fff;margin:0 0 6px;font-weight:600;}
-.engine-card span{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
-
-/* واجهة التطبيق الداخلية (المصحف والتدبر) */
-.app-container{display:none;grid-template-columns:280px minmax(0,1fr);min-height:100vh;}
-.app-container.active{display:grid;}
-.sidebar{border-left:1px solid var(--line);padding:22px 18px;height:100vh;overflow:auto;position:sticky;top:0;background:#05070e}
-.sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--line);font-size:14px;font-weight:700;letter-spacing:3px;}
-.back-home-btn{margin:16px 0;width:100%;text-align:right;background:#0e162d;border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:12px;font-size:11px;transition:0.2s}
-.back-home-btn:hover{color:#fff;border-color:var(--green)}
-
-main{min-width:0;padding:0 0 130px}
-.top-bar{height:60px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(6, 9, 19, 0.9);backdrop-filter:blur(10px);position:sticky;top:0;z-index:9}
-
-/* بطاقات الآيات والتدبر المطابقة لتصميم التطبيق */
-.basira-card{
-  margin:24px auto;
-  max-width:780px;
-  border:1px solid var(--card-border);
-  border-radius:22px;
-  background:#0e162d;
-  padding:32px;
-  box-shadow:var(--shadow);
-  transition:0.3s;
-}
-.card-header-meta{display:flex;justify-content:space-between;color:#6b7c96;font-size:10px;letter-spacing:2px;margin-bottom:16px;text-transform:uppercase;}
-.tags-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
-.tag-badge{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;}
-.tag-badge.gold{background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.3);}
-.tag-badge.purple{background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.3);}
-
-.ayah-display-text{
-  font-family:"Traditional Arabic","Noto Naskh Arabic",serif;
-  text-align:center;
-  font-size:clamp(28px, 3.2vw, 42px);
-  line-height:2.2;
-  color:#ffffff;
-  padding:15px 0;
-  direction:rtl;
-}
-.ayah-display-en{font-size:15px;color:#8b97b6;direction:ltr;text-align:center;line-height:1.6;margin-bottom:20px;}
-
-.quote-box{
-  background:rgba(11, 17, 32, 0.85);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:14px;
-  padding:16px 20px;
-  margin-top:16px;
-}
-.quote-ar{font-size:13px;line-height:1.8;color:#e2e8f0;text-align:center;margin-bottom:6px;}
-.quote-en{font-size:11px;line-height:1.6;color:#64748b;text-align:center;direction:ltr;}
-
-.ayah-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
-.ayah-actions button{background:#0e162d;border:1px solid var(--line);border-radius:8px;color:var(--muted);padding:8px 14px;font-size:11px;transition:0.2s;}
-.ayah-actions button:hover{background:#1a2747;color:#fff;border-color:var(--green)}
-
-/* المشغل السفلي المتطور */
-.bottom-player{
-  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-  width:min(820px, calc(100% - 30px));min-height:68px;
-  border:1px solid rgba(255,255,255,0.1);border-radius:36px;
-  background:rgba(9, 14, 28, 0.96);box-shadow:0 15px 40px rgba(0,0,0,0.85);
-  display:flex;align-items:center;justify-content:space-around;gap:12px;padding:10px 22px;z-index:100;backdrop-filter:blur(20px);
-}
-.player-controls{display:flex;align-items:center;gap:14px;}
-.player-controls button{border:0;background:transparent;color:#cbd5e1;font-size:16px;cursor:pointer;}
-.player-controls .play-btn{border:1px solid #334155;border-radius:50%;width:40px;height:40px;background:#1e293b;color:#fff;display:flex;align-items:center;justify-content:center;}
-.player-select{background:#0e162d;color:#cbd5e1;border:1px solid #334155;border-radius:20px;padding:8px 14px;font-size:11px;max-width:210px;}
-
-.search-input{width:100%;margin:12px 0;background:#0b1120;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px 14px;}
-.surah-list{display:grid;gap:6px;max-height:400px;overflow:auto;}
-.surah-item{width:100%;display:flex;justify-content:space-between;background:#0b1120;border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:#cbd5e1;cursor:pointer;text-align:right;transition:0.2s;}
-.surah-item:hover{background:#15203d;border-color:var(--green);color:#fff;}
-
-@media(max-width:768px){.app-container{grid-template-columns:1fr;}.sidebar{display:none;}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واجهة مستوحاة من منصة بصيرة</title>
+    <!-- تضمين خط Tajawal و Amiri للمظهر القرآني والأنيق -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <!-- تضمين مكتبة Tailwind CSS للتنسيق السريع -->
+    <script src="https://tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #05070c; /* الخلفية الداكنة العميقة للمنصة */
+            color: #e2e8f0;
+        }
+        .quran-text {
+            font-family: 'Amiri', serif;
+        }
+        /* تأثير التوهج الخفيف المحيط بالبطاقات (Glow Effect) */
+        .basira-card {
+            background: rgba(13, 20, 35, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .basira-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+        /* النص المتدرج الملون مثل شعار بصيرة */
+        .gradient-text {
+            background: linear-gradient(45deg, #ff7b7b, #ffae76, #7ee7ff, #caa5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between p-6 selection:bg-sky-500/30">
 
-<!-- شاشة البداية الرئيسية -->
-<div id="homeScreen" class="home-screen">
-  <div class="main-brand-title">بصيرة</div>
-  <div class="main-brand-sub">B A S I R A — CHOOSE YOUR PATH OF ILLUMINATION</div>
-  
-  <div class="engines-grid">
-    <div class="engine-card" onclick="openEngine()">
-      <h3>بصيرة (المصحف والتدبر)</h3>
-      <span>The Quranic Engine • 114 Surahs</span>
-    </div>
-    <div class="engine-card" onclick="openEngine()">
-      <h3>الأسماء الحسنى</h3>
-      <span>The Divine Attributes • 99 Names</span>
-    </div>
-    <div class="engine-card" onclick="openEngine()">
-      <h3>المكتبة</h3>
-      <span>The Scholar's Archive • Free Library</span>
-    </div>
-    <div class="engine-card" onclick="openEngine()">
-      <h3>السيرة النبوية</h3>
-      <span>The Seerah Engine • Prophetic Journey</span>
-    </div>
-    <div class="engine-card" onclick="openEngine()">
-      <h3>الترتيل</h3>
-      <span>Tartil Engine • Recitation Practice</span>
-    </div>
-    <div class="engine-card" onclick="openEngine()">
-      <h3>التدرج والتشريع</h3>
-      <span>The Sharia State Machine • Rulings</span>
-    </div>
-  </div>
-</div>
+    <!-- شريط التنقل العلوي -->
+    <header class="flex justify-between items-center max-w-6xl w-full mx-auto border-b border-white/5 pb-4 mb-8">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl font-bold tracking-widest gradient-text">بصيرة</span>
+            <span class="text-xs text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20">V 0.2.0</span>
+        </div>
+        <nav class="hidden md:flex gap-6 text-sm text-gray-400">
+            <a href="#" class="hover:text-white transition-colors">المصحف</a>
+            <a href="#" class="hover:text-white transition-colors">السور</a>
+            <a href="#" class="hover:text-white transition-colors">التجويد</a>
+            <a href="#" class="hover:text-white transition-colors">المكتبة</a>
+        </nav>
+        <button class="text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg transition-all">
+            تسجيل الدخول
+        </button>
+    </header>
 
-<!-- واجهة التطبيق الداخلية -->
-<div id="appContainer" class="app-container">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <span>BASIRA</span>
-      <span style="color:var(--green)">✦</span>
-    </div>
-    <button class="back-home-btn" onclick="goHome()">← العودة للرئيسية</button>
-    
-    <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin:15px 0 10px">فهرس السور</div>
-    <input type="text" id="surahSearch" class="search-input" placeholder="ابحث عن السورة..." oninput="filterSurahs()">
-    <div id="surahList" class="surah-list"></div>
-  </aside>
+    <!-- المحتوى الرئيسي -->
+    <main class="max-w-4xl w-full mx-auto flex-1 flex flex-col justify-center items-center my-12">
+        
+        <!-- بطاقة الآية أو النص الرئيسي -->
+        <div class="w-full basira-card rounded-2xl p-8 md:p-12 text-center relative overflow-hidden mb-8">
+            <div class="absolute top-4 left-4 text-xs text-amber-400/70 flex items-center gap-1">
+                <span>✦ آية اليوم</span>
+            </div>
+            
+            <p class="quran-text text-3xl md:text-4xl text-white leading-loose mb-6 drop-shadow-[0_2px_8px_rgba(255,255,255,0.1)]">
+                "ثُمَّ أَوْرَثْنَا الْكِتَابَ الَّذِينَ اصْطَفَيْنَا مِنْ عِبَادِنَا ۖ فَمِنْهُمْ ظَالِمٌ لِّنَفْسِهِ وَمِنْهُم مُّقْتَصِدٌ وَمِنْهُمْ سَابِقٌ بِالْخَيْرَاتِ بِإِذْنِ اللَّهِ ۚ ذَٰلِكَ هُوَ الْفَضْلُ الْكَبِيرُ"
+            </p>
+            
+            <span class="text-sm text-gray-400 block border-t border-white/5 pt-4 w-fit mx-auto px-6">
+                سورة فاطر : آية 32
+            </span>
+        </div>
 
-  <main>
-    <div class="top-bar">
-      <span style="font-size:11px;letter-spacing:1px;color:var(--muted)">HADITH • TAFSIR & AUDIO</span>
-      <span id="currentTitle" style="font-weight:600;color:var(--green)">سورة البقرة</span>
-      <select id="surahSelectHeader" onchange="loadSurah(this.value)" style="background:#0e162d;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:11px;"></select>
-    </div>
+        <!-- شبكة البطاقات الفرعية التفاعلية -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <div class="basira-card rounded-xl p-5 cursor-pointer">
+                <h3 class="text-sky-400 font-medium mb-2 text-sm flex items-center gap-2">
+                    <span>📘</span> التفسير والتدبر
+                </h3>
+                <p class="text-xs text-gray-400 leading-relaxed">تصفح شروحات الآيات والعمق الدلالي والبنيوي للسور والروابط البرمجية للقرآن.</p>
+            </div>
+            
+            <div class="basira-card rounded-xl p-5 cursor-pointer">
+                <h3 class="text-emerald-400 font-medium mb-2 text-sm flex items-center gap-2">
+                    <span>🟢</span> دليل التجويد الإلكتروني
+                </h3>
+                <p class="text-xs text-gray-400 leading-relaxed">أحكام المد، الغنة، الإخفاء، والإدغام ملوّنة وموضحة تفاعلياً لتسهيل الترتيل.</p>
+            </div>
 
-    <div id="versesContainer">
-      <div style="text-align:center;padding:60px;color:var(--muted)">جاري تحميل الآيات والتلاوة النقية...</div>
-    </div>
-  </main>
-</div>
+            <div class="basira-card rounded-xl p-5 cursor-pointer">
+                <h3 class="text-purple-400 font-medium mb-2 text-sm flex items-center gap-2">
+                    <span>⛓️</span> علم الرجال وسلاسل الإسناد
+                </h3>
+                <p class="text-xs text-gray-400 leading-relaxed">تحقق رقمي وبنية مشفرة (Blockchain) لتتبع الأحاديث النبوية ورواتها بدقة.</p>
+            </div>
+        </div>
 
-<!-- مشغل الصوت السفلي المطور -->
-<div class="bottom-player" id="bottomPlayer" style="display:none;">
-  <span style="font-size:10px;color:var(--muted);letter-spacing:1px">∿ مشغل بصيرة الصوتي</span>
-  <div class="player-controls">
-    <button onclick="changeAyah(-1)">|◂</button>
-    <button class="play-btn" id="playPauseBtn" onclick="togglePlay()">▶</button>
-    <button onclick="changeAyah(1)">▸|</button>
-  </div>
-  <span id="playerInfo" style="font-size:11px;color:#cbd5e1">2 : 1</span>
-  
-  <!-- قائمة القراء التي تضم ياسر الدوسري وعبدالرحمن مسعد وبقية القراء -->
-  <select class="player-select" id="reciterSelect" onchange="updateReciter()">
-    <option value="ar.yasserdussary">🎙 ياسر الدوسري</option>
-    <option value="ar.abdulrahmanmossad">🎙 عبدالرحمن مسعد</option>
-    <option value="ar.alafasy">🎙 مشاري العفاسي</option>
-    <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
-    <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
-    <option value="ar.husary">🎙 محمود خليل الحصري</option>
-    <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
-  </select>
-</div>
+    </main>
 
-<audio id="audioElement" preload="auto"></audio>
+    <!-- شريط التحكم السفلي -->
+    <footer class="max-w-6xl w-full mx-auto border-t border-white/5 pt-4 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+        <p>© 2026 منصة بصيرة التفاعلية. جميع الحقوق محفوظة.</p>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-gray-400">واجهة الدعم</a>
+            <a href="#" class="hover:text-gray-400">شروط الاستخدام</a>
+        </div>
+    </footer>
 
-<script>
-const API = 'https://api.alquran.cloud/v1';
-let surahs = [], currentSurah = 2, ayahsData = [], currentIndex = 0;
-const audio = document.getElementById('audioElement');
-
-async function initApp() {
-  try {
-    const res = await fetch(`${API}/surah`);
-    const data = await res.json();
-    if(data.code === 200) {
-      surahs = data.data;
-      const optionsHTML = surahs.map(s => `<option value="${s.number}">${s.number}. ${s.name} (${s.englishName})</option>`).join('');
-      document.getElementById('surahSelectHeader').innerHTML = optionsHTML;
-      renderSurahList(surahs);
-    }
-  } catch(e) {
-    console.error("فشل في تحميل الفهرس", e);
-  }
-}
-
-function openEngine() {
-  document.getElementById('homeScreen').style.display = 'none';
-  document.getElementById('appContainer').classList.add('active');
-  document.getElementById('bottomPlayer').style.display = 'flex';
-  loadSurah(2);
-}
-
-function goHome() {
-  audio.pause();
-  document.getElementById('appContainer').classList.remove('active');
-  document.getElementById('bottomPlayer').style.display = 'none';
-  document.getElementById('homeScreen').style.display = 'block';
-}
-
-function renderSurahList(list) {
-  const container = document.getElementById('surahList');
-  container.innerHTML = list.map(s => `
-    <div class="surah-item" onclick="loadSurah(${s.number})">
-      <span>${s.number}. ${s.name}</span>
-      <span style="font-size:10px;color:var(--muted)">${s.numberOfAyahs} آية</span>
-    </div>
-  `).join('');
-}
-
-function filterSurahs() {
-  const q = document.getElementById('surahSearch').value.toLowerCase().trim();
-  const filtered = surahs.filter(s => s.name.toLowerCase().includes(q) || s.englishName.toLowerCase().includes(q) || String(s.number) === q);
-  renderSurahList(filtered);
-}
-
-async function loadSurah(num) {
-  currentSurah = Number(num);
-  document.getElementById('surahSelectHeader').value = currentSurah;
-  document.getElementById('versesContainer').innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted)">جاري جلب الآيات والصوتيات النقية...</div>';
-
-  try {
-    const reciter = document.getElementById('reciterSelect').value;
-    const [quranRes, audioRes] = await Promise.all([
-      fetch(`${API}/surah/${currentSurah}/quran-uthmani`).then(r => r.json()),
-      fetch(`${API}/surah/${currentSurah}/${reciter}`).then(r => r.json())
-    ]);
-
-    if(quranRes.code !== 200 || audioRes.code !== 200) throw new Error("API Error");
-
-    const arAyahs = quranRes.data.ayahs;
-    const auAyahs = audioRes.data.ayahs;
-
-    ayahsData = arAyahs.map((a, i) => ({
-      ...a,
-      audio: auAyahs[i]?.audio || ''
-    }));
-
-    document.getElementById('currentTitle').textContent = surahs[currentSurah - 1]?.name || '';
-    currentIndex = 0;
-    renderAyahs();
-    prepareAudioSource(false);
-  } catch(e) {
-    document.getElementById('versesContainer').innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444">تعذّر التحميل. يرجى التحقق من اتصال الإنترنت.</div>';
-  }
-}
-
-function renderAyahs() {
-  const container = document.getElementById('versesContainer');
-  container.innerHTML = ayahsData.map((a, idx) => `
-    <article class="basira-card" id="verse-card-${idx}">
-      <div class="card-header-meta">
-        <span>HADITH • TAFSIR & REFLECTION</span>
-        <span>BASIRA • ${idx + 1} / ${ayahsData.length}</span>
-      </div>
-      
-      <div class="tags-row">
-        <span class="tag-badge gold">✦ SAHIH AL-BUKHARI</span>
-        <span class="tag-badge purple">✦ QUR'AN ${currentSurah}:${a.numberInSurah}</span>
-      </div>
-
-      <div class="ayah-display-text">${a.text} ۝</div>
-      <div class="ayah-display-en">In the name of Allah, the Entirely Merciful, the Especially Merciful.</div>
-
-      <div class="quote-box">
-        <div class="quote-ar">«إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى». وقفة تدبرية حول إخلاص النية وعظيم أثرها في أعمال القلوب.</div>
-        <div class="quote-en">"Actions are according to intentions, and everyone will get what was intended." A profound reflection on sincerity.</div>
-      </div>
-
-      <div class="ayah-actions">
-        <button onclick="playSpecificAyah(${idx})">▶ استمع بصوت القارئ</button>
-        <button onclick="copyVerseText('${encodeURIComponent(a.text)}')">نسخ الآية</button>
-      </div>
-    </article>
-  `).join('');
-}
-
-function copyVerseText(encodedText) {
-  const text = decodeURIComponent(encodedText);
-  navigator.clipboard.writeText(text).then(() => {
-    alert('تم نسخ النص بنجاح ✓');
-  });
-}
-
-function playSpecificAyah(idx) {
-  currentIndex = idx;
-  prepareAudioSource(true);
-}
-
-function prepareAudioSource(autoPlay = true) {
-  if (!ayahsData.length) return;
-  const currentItem = ayahsData[currentIndex];
-  if (!currentItem.audio) return;
-
-  audio.src = currentItem.audio;
-  document.getElementById('playerInfo').textContent = `${currentSurah} : ${currentItem.numberInSurah}`;
-  
-  document.querySelectorAll('.basira-card').forEach((el, i) => {
-    el.style.borderColor = i === currentIndex ? 'var(--green)' : 'var(--card-border)';
-  });
-
-  if (autoPlay) {
-    audio.play().then(() => {
-      document.getElementById('playPauseBtn').textContent = 'Ⅱ';
-    }).catch(e => console.log("Autoplay blocked"));
-  } else {
-    document.getElementById('playPauseBtn').textContent = '▶';
-  }
-}
-
-function togglePlay() {
-  if (audio.paused) {
-    if (!audio.src && ayahsData.length) {
-      prepareAudioSource(true);
-    } else {
-      audio.play().then(() => {
-        document.getElementById('playPauseBtn').textContent = 'Ⅱ';
-      });
-    }
-  } else {
-    audio.pause();
-    document.getElementById('playPauseBtn').textContent = '▶';
-  }
-}
-
-function changeAyah(dir) {
-  const next = currentIndex + dir;
-  if (next >= 0 && next < ayahsData.length) {
-    playSpecificAyah(next);
-    const targetCard = document.getElementById(`verse-card-${currentIndex}`);
-    if(targetCard) targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } else if (dir > 0 && currentSurah < 114) {
-    loadSurah(currentSurah + 1);
-  }
-}
-
-function updateReciter() {
-  loadSurah(currentSurah);
-}
-
-audio.addEventListener('ended', () => {
-  if (currentIndex + 1 < ayahsData.length) {
-    changeAyah(1);
-  } else if (currentSurah < 114) {
-    loadSurah(currentSurah + 1);
-  } else {
-    document.getElementById('playPauseBtn').textContent = '▶';
-  }
-});
-
-audio.addEventListener('play', () => { document.getElementById('playPauseBtn').textContent = 'Ⅱ'; });
-audio.addEventListener('pause', () => { document.getElementById('playPauseBtn').textContent = '▶'; });
-
-initApp();
-</script>
 </body>
 </html>

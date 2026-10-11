@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Basira</title>
+    <meta name="description" content="منصة بصيرة القرآنية — قراءة، تدبر، واستماع إلى القرآن الكريم" />
+    <title>بصيرة | Basira</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -22,9 +23,9 @@
 
       <div class="browser-bar">
         <div class="browser-controls">
-          <button class="icon-btn">⌂</button>
-          <button class="icon-btn">＋</button>
-          <button class="icon-btn">ᵒ</button>
+          <button class="icon-btn" aria-label="back">⌂</button>
+          <button class="icon-btn" aria-label="new tab">＋</button>
+          <button class="icon-btn" aria-label="menu">ᵒ</button>
         </div>
 
         <div class="browser-address">
@@ -34,14 +35,14 @@
         </div>
 
         <div class="browser-actions">
-          <button class="icon-btn small">›</button>
-          <button class="icon-btn small">□</button>
+          <button class="icon-btn small" aria-label="next">›</button>
+          <button class="icon-btn small" aria-label="window">□</button>
         </div>
       </div>
 
-      <nav class="main-tabs">
+      <nav class="main-tabs" aria-label="Navigation">
         <div class="tab-group">
-          <button class="tab-pill">بصيرة</button>
+          <button class="tab-pill active">بصيرة</button>
           <button class="tab-pill muted">ساحة</button>
           <button class="tab-pill muted">مكتبة</button>
           <button class="tab-pill muted">مؤلفات</button>
@@ -52,302 +53,84 @@
 
       <main class="layout">
         <aside class="sidebar-panel">
-          <button class="sidebar-toggle">☰</button>
+          <button class="sidebar-toggle" aria-label="toggle sidebar">☰</button>
           <div class="brand-word">BASIRA</div>
         </aside>
 
         <section class="content-panel">
           <div class="content-toolbar">
             <div class="toolbar-left">
-              <button class="pill small">Al-Mu'minün</button>
+              <button class="pill small" id="selectedSurahBadge">Al-Mu'minûn</button>
             </div>
             <div class="toolbar-right">
               <button class="pill small">Learn</button>
               <button class="pill small">Focus</button>
               <button class="pill small">Light</button>
               <button class="pill small">Tajweed</button>
-              <button class="pill small">English - Sahih International</button>
+              <button class="pill small">English — Sahih International</button>
             </div>
           </div>
 
           <div class="study-header">
-            <div class="study-title">Success Blueprint &amp; Biology</div>
-            <div class="study-verse">1–50</div>
-            <div class="study-meter">1/2</div>
+            <div class="study-title" id="studyTitle">Success Blueprint &amp; Biology</div>
+            <div class="study-verse" id="studyVerse">1–50</div>
+            <div class="study-meter" id="studyMeter">1/2</div>
           </div>
 
-          <div class="card-verse active">
-            <div class="verse-meta">
-              <span class="meta-tag">23:14</span>
-              <span class="meta-tag soft">TAFSIR</span>
-              <span class="meta-tag soft purple">TADABBUR</span>
-              <button class="mini-btn">⋯</button>
-            </div>
-
-            <div class="arabic-verse big">
-              ثُمَّ خَلَقْنَا النُّطْفَةَ عَلَقَةً فَخَلَقْنَا الْعَلَقَةَ مُضْغَةً فَخَلَقْنَا الْمُضْغَةَ عِظَامًا
-            </div>
-
-            <div class="english-translation">
-              Then We made the sperm-drop into a clinging clot, and We made the clot into a lump [of flesh],
-              and We made [from] the lump, bones, and We covered the bones with flesh; then We developed him into
-              another creation. So blessed is Allah, the best of creators.
-            </div>
+          <div class="filter-hud">
+            <input id="surahSearch" type="text" placeholder="ابحث عن سورة..." aria-label="ابحث عن سورة" />
           </div>
 
-          <div class="card-verse secondary">
-            <div class="verse-meta">
-              <span class="meta-tag">23:15</span>
-              <span class="meta-tag soft">TAFSIR</span>
-              <span class="meta-tag soft purple">TADABBUR</span>
-              <button class="mini-btn">⋯</button>
-            </div>
+          <div class="surah-layout">
+            <div class="surah-sidebar" id="surahList" aria-live="polite"></div>
 
-            <div class="arabic-verse big">
-              هَذَا بِمَا لَا يُنْتَجُ السُّدُودَةُ وَيُخْرِجُهَا إِلَى نُورِهَا
-            </div>
+            <div class="verse-content">
+              <div class="card-verse active" id="verseCard">
+                <div class="verse-meta">
+                  <span class="meta-tag" id="ayahNumberTag">23:14</span>
+                  <span class="meta-tag soft">TAFSIR</span>
+                  <span class="meta-tag soft purple">TADABBUR</span>
+                  <button class="mini-btn" aria-label="more">⋯</button>
+                </div>
 
-            <div class="english-translation">
-              Then We made the sperm-drop into a clinging clot, and We made the clot into a lump [of flesh], and We made [from] the lump, bones...
-            </div>
-          </div>
+                <div class="arabic-verse big" id="ayahText" lang="ar"></div>
 
-          <div class="bottom-player">
-            <div class="play-left">
-              <button class="round-btn">◐</button>
-              <div class="player-title">Success Blueprint &amp; Biology</div>
-            </div>
-            <div class="player-center">
-              <button class="mini-player">⏮</button>
-              <button class="mini-player active">▶</button>
-              <button class="mini-player">⏭</button>
-            </div>
-            <div class="play-right">
-              <span>23:14</span>
-              <select>
-                <option>Yasser Al-Dossary</option>
-              </select>
+                <div class="english-translation" id="ayahTranslation"></div>
+              </div>
+
+              <div class="ayah-selector-wrap">
+                <label for="ayahSelect"></label>
+                <select id="ayahSelect" aria-label="اختيار آية"></select>
+              </div>
             </div>
           </div>
         </section>
       </main>
     </div>
 
+    <audio id="audioPlayer" preload="auto"></audio>
+
+    <div class="bottom-player">
+      <div class="play-left">
+        <button class="round-btn" id="playToggle" aria-label="تشغيل">▶</button>
+        <div class="player-title" id="playerTitle">البقرة</div>
+      </div>
+
+      <div class="player-center">
+        <button class="mini-player" id="prevBtn" aria-label="السابق">⏮</button>
+        <button class="mini-player active" id="playBtn" aria-label="تشغيل/إيقاف">▶</button>
+        <button class="mini-player" id="nextBtn" aria-label="التالي">⏭</button>
+      </div>
+
+      <div class="play-right">
+        <span id="playerTime">00:00</span>
+        <select id="reciterSelect" aria-label="اختيار القارئ">
+          <option value="Abdul_Basit_Murattal_64kbps">عبد الباسط</option>
+          <option value="Mishary_Alafasy_128kbps">مشاري العفاسي</option>
+        </select>
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

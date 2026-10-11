@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05070c">
 <title>Basira — Interactive Qur'an Structural Visualization</title>
-<!-- استدعاء الخطوط الرسمية والحديثة المستخدمة في المنصة من Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;600&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<!-- استدعاء الخطوط الرسمية والحديثة للتوافق البصري الكامل -->
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
 :root {
   --bg: #05070c;               /* السواد العميق للمنصة */
@@ -31,7 +29,7 @@ body{
 }
 button,select,input{font:inherit}button{cursor:pointer}
 
-/* الواجهة الرئيسية للموقع (المودل المظلم والشامل) */
+/* الواجهة الرئيسية للموقع Portal */
 .home-screen{max-width:1150px;margin:0 auto;padding:70px 20px 100px;text-align:center;}
 .main-brand-title{
   font-weight: 900;font-size:58px;letter-spacing:6px;
@@ -128,7 +126,7 @@ main{min-width:0;padding:0 0 140px}
 </head>
 <body>
 
-<!-- الواجهة الشاملة للمنصة (Home Portal) -->
+<!-- الواجهة الرئيسية للمنصة -->
 <div id="homeScreen" class="home-screen">
   <div class="main-brand-title">بصيرة</div>
   <div class="main-brand-sub">B A S I R A — CHOOSE YOUR PATH OF ILLUMINATION</div>
@@ -161,7 +159,7 @@ main{min-width:0;padding:0 0 140px}
   </div>
 </div>
 
-<!-- لوحة التحكم التفاعلية الداخلية (Dashboard View) -->
+<!-- لوحة التحكم الداشبرد الداخلية المكتملة والمصلحة تماماً -->
 <div id="appContainer" class="app-container">
   <aside class="sidebar">
     <div class="sidebar-brand">
@@ -183,73 +181,17 @@ main{min-width:0;padding:0 0 140px}
 
   <main>
     <div class="top-bar">
-      <span style="font-size:10px;font-family:'JetBrains Mono';color:var(--muted);font-weight:600;" id="activeZone">ACTIVE ZONE: METROPOLIS</span>
-      <span id="currentTitle" style="font-weight:700;color:#fff;font-size:14px;">سورة البقرة — 286 الآيات</span>
-      <button class="back-home-btn" style="margin:0; width:auto; padding:6px 14px;">V 0.2.0 Engine</button>
+      <span style="font-size:10px;font-family:'JetBrains Mono';color:var(--muted);font-weight:600;">ACTIVE ZONE: METROPOLIS</span>
+      <span id="currentTitle" style="font-weight:700;color:#fff;font-size:14px;">سورة البقرة</span>
+      <select id="surahSelectHeader" class="player-select" style="min-width:130px; padding:6px 12px;" onchange="handleHeaderChange(this)">
+        <option value="context">عرض السياق</option>
+        <option value="focus">وضع التركيز</option>
+      </select>
     </div>
 
     <div class="basira-card">
       <div class="card-header-meta">
-        <span id="cardMetaLeft">AL-BAQARAH &bull; البقرة 2:1</span>
+        <span>AL-BAQARAH &bull; البقرة 2:1</span>
         <span style="color: var(--cyan);">MACRO-FRAME 1–20</span>
       </div>
       
-      <div class="tags-row">
-        <span class="tag-badge gold">هيكل تعريفي</span>
-        <span class="tag-badge purple">محور الهداية</span>
-      </div>
-
-      <div class="ayah-display-text" id="ayahText">
-        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ الم ﹾ ذَلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِلْمُتَّقِينَ
-      </div>
-      <div class="ayah-display-en" id="ayahEn">
-        Alif, Lam, Meem. This is the Book about which there is no doubt, a guidance for those conscious of Allah.
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- المشغل السفلي العائم -->
-<div class="bottom-player" id="bottomPlayer" style="display:none;">
-  <select class="player-select">
-    <option>الشيخ عبد الرحمن السديس</option>
-    <option>الشيخ مشاري العفاسي</option>
-    <option>الشيخ محمود خليل الحصري</option>
-  </select>
-  <div class="player-controls">
-    <button>⏮</button>
-    <button class="play-btn">▶</button>
-    <button>⏭</button>
-  </div>
-</div>
-
-<script>
-  function openEngine(engineName) {
-    document.getElementById('homeScreen').style.display = 'none';
-    document.getElementById('appContainer').classList.add('active');
-    document.getElementById('bottomPlayer').style.display = 'flex';
-    document.getElementById('currentTitle').innerText = engineName + ' — تصفح هيكلي';
-  }
-
-  function goHome() {
-    document.getElementById('appContainer').classList.remove('active');
-    document.getElementById('bottomPlayer').style.display = 'none';
-    document.getElementById('homeScreen').style.display = 'block';
-  }
-
-  function selectSurah(surahName) {
-    document.getElementById('currentTitle').innerText = surahName + ' — الهيكل الرقمي';
-  }
-
-  function filterSurahs() {
-    let query = document.getElementById('surahSearch').value.toLowerCase();
-    let items = document.querySelectorAll('.surah-item');
-    items.forEach(item => {
-      let text = item.innerText.toLowerCase();
-      item.style.display = text.includes(query) ? 'flex' : 'none';
-    });
-  }
-</script>
-
-</body>
-</html>

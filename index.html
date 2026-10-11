@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05070c">
 <title>Basira — Interactive Qur'an Structural Visualization</title>
-<!-- استدعاء الخطوط الرسمية والحديثة المستخدمة في المنصة -->
-<link href="https://googleapis.com" rel="stylesheet">
+<!-- استدعاء الخطوط الرسمية والحديثة المستخدمة في المنصة من Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;600&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #05070c;               /* السواد العميق للمنصة */
@@ -38,7 +40,7 @@ button,select,input{font:inherit}button{cursor:pointer}
   margin-bottom:8px;
 }
 .main-brand-sub{
-  font-family: 'JetBrains+Mono', monospace;font-size:10px;
+  font-family: 'JetBrains Mono', monospace;font-size:10px;
   letter-spacing:5px;color: var(--muted);margin-bottom:50px;
 }
 
@@ -53,7 +55,7 @@ button,select,input{font:inherit}button{cursor:pointer}
   background: rgba(19, 30, 54, 0.6);box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
 }
 .engine-card h3{font-size:17px;color:#fff;margin:0 0 8px;font-weight:700;}
-.engine-card span{font-family: 'JetBrains+Mono', sans-serif;font-size:10px;color:var(--muted);letter-spacing:1px;}
+.engine-card span{font-family: 'JetBrains Mono', sans-serif;font-size:10px;color:var(--muted);letter-spacing:1px;}
 
 /* هيكلية الـ Dashboard الداخلي المقسم لجهتين */
 .app-container{display:none;grid-template-columns:300px minmax(0,1fr);min-height:100vh;}
@@ -92,7 +94,7 @@ main{min-width:0;padding:0 0 140px}
 }
 .ayah-display-en{font-size:14px;color:#8b97b6;direction:ltr;text-align:center;line-height:1.7;margin-bottom:24px;font-weight:300;}
 
-/* المشغل السفلي الأنيق العائم - المطابق لـ Player المنصة */
+/* المشغل السفلي الأنيق العائم */
 .bottom-player{
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
   width:min(860px, calc(100% - 40px));min-height:76px;
@@ -172,8 +174,7 @@ main{min-width:0;padding:0 0 140px}
     <input type="text" id="surahSearch" class="search-input" placeholder="Jump to verse or surah..." oninput="filterSurahs()">
     
     <div id="surahList" class="surah-list">
-      <!-- عينة من السور بالبنية المزدوجة للموقع الأصلي -->
-      <div class="surah-item" onclick="selectSurah('سورة البقرة')"><span>1. الفاتحة</span><span class="en-name">Fatiha Gate</span></div>
+      <div class="surah-item" onclick="selectSurah('سورة الفاتحة')"><span>1. الفاتحة</span><span class="en-name">Fatiha Gate</span></div>
       <div class="surah-item" onclick="selectSurah('سورة البقرة')"><span>2. البقرة</span><span class="en-name">Metropolis</span></div>
       <div class="surah-item" onclick="selectSurah('سورة آل عمران')"><span>3. آل عمران</span><span class="en-name">Imran Fort</span></div>
       <div class="surah-item" onclick="selectSurah('سورة النساء')"><span>4. النساء</span><span class="en-name">Supreme Court</span></div>
@@ -182,15 +183,73 @@ main{min-width:0;padding:0 0 140px}
 
   <main>
     <div class="top-bar">
-      <span style="font-size:10px;font-family:'JetBrains Mono';color:var(--muted);font-weight:600;">ACTIVE ZONE: METROPOLIS</span>
+      <span style="font-size:10px;font-family:'JetBrains Mono';color:var(--muted);font-weight:600;" id="activeZone">ACTIVE ZONE: METROPOLIS</span>
       <span id="currentTitle" style="font-weight:700;color:#fff;font-size:14px;">سورة البقرة — 286 الآيات</span>
       <button class="back-home-btn" style="margin:0; width:auto; padding:6px 14px;">V 0.2.0 Engine</button>
     </div>
 
     <div class="basira-card">
       <div class="card-header-meta">
-        <span>AL-BAQARAH &bull; البقرة 2:1</span>
+        <span id="cardMetaLeft">AL-BAQARAH &bull; البقرة 2:1</span>
         <span style="color: var(--cyan);">MACRO-FRAME 1–20</span>
       </div>
       
       <div class="tags-row">
+        <span class="tag-badge gold">هيكل تعريفي</span>
+        <span class="tag-badge purple">محور الهداية</span>
+      </div>
+
+      <div class="ayah-display-text" id="ayahText">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ الم ﹾ ذَلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِلْمُتَّقِينَ
+      </div>
+      <div class="ayah-display-en" id="ayahEn">
+        Alif, Lam, Meem. This is the Book about which there is no doubt, a guidance for those conscious of Allah.
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- المشغل السفلي العائم -->
+<div class="bottom-player" id="bottomPlayer" style="display:none;">
+  <select class="player-select">
+    <option>الشيخ عبد الرحمن السديس</option>
+    <option>الشيخ مشاري العفاسي</option>
+    <option>الشيخ محمود خليل الحصري</option>
+  </select>
+  <div class="player-controls">
+    <button>⏮</button>
+    <button class="play-btn">▶</button>
+    <button>⏭</button>
+  </div>
+</div>
+
+<script>
+  function openEngine(engineName) {
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('appContainer').classList.add('active');
+    document.getElementById('bottomPlayer').style.display = 'flex';
+    document.getElementById('currentTitle').innerText = engineName + ' — تصفح هيكلي';
+  }
+
+  function goHome() {
+    document.getElementById('appContainer').classList.remove('active');
+    document.getElementById('bottomPlayer').style.display = 'none';
+    document.getElementById('homeScreen').style.display = 'block';
+  }
+
+  function selectSurah(surahName) {
+    document.getElementById('currentTitle').innerText = surahName + ' — الهيكل الرقمي';
+  }
+
+  function filterSurahs() {
+    let query = document.getElementById('surahSearch').value.toLowerCase();
+    let items = document.querySelectorAll('.surah-item');
+    items.forEach(item => {
+      let text = item.innerText.toLowerCase();
+      item.style.display = text.includes(query) ? 'flex' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>

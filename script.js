@@ -1,220 +1,198 @@
-const reciterMap = {
-  "Abdul_Basit_Murattal_64kbps": "https://everyayah.com/data/Abdul_Basit_Murattal_64kbps",
-  "Mishary_Alafasy_128kbps": "https://everyayah.com/data/Mishary_Alafasy_128kbps",
-  "AbdulSamad_64kbps_Rawat": "https://everyayah.com/data/AbdulSamad_64kbps_Rawat"
-};
+// ====== إعدادات ======
+const DAILY_LIMIT = 5;
+const STORAGE_KEY = 'vc_usage';
 
-const quranApi = "https://api.alquran.cloud/v1";
+// ====== عناصر ======
+const panels = document.querySelectorAll('.panel');
+const steps = document.querySelectorAll('.step');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const urlInput = document.getElementById('url-input');
+const urlBtn = document.getElementById('url-btn');
+const progressWrap = document.getElementById('progress-wrap');
+const progressBar = document.getElementById('progress-bar');
+const progressText = document.getElementById('progress-text');
+const preview = document.getElementById('preview');
+const downloadLink = document.getElementById('download-link');
+const restartBtn = document.getElementById('restart');
+const usageText = document.getElementById('usage-text');
+const countdown = document.getElementById('countdown');
 
-let surahList = [];
-let currentSurahIndex = 0;
-let currentAyahIndex = 0;
-let isPlaying = false;
+let selectedFile = null;
+let compressedUrl = null;
 
-const DOM = {
-  surahList: document.getElementById('surahList'),
-  sidebarSearch: document.getElementById('sidebarSearch'),
-  studyName: document.getElementById('studyName'),
-  verseArabic: document.getElementById('verseArabic'),
-  verseEnglish: document.getElementById('verseEnglish'),
-  ayahBadge: document.getElementById('ayahBadge'),
-  playerTitle: document.getElementById('playerTitle'),
-  playerTime: document.getElementById('playerTime'),
-  ayahSelect: document.getElementById('ayahSelect'),
-  reciterSelect: document.getElementById('reciterSelect'),
-  audioPlayer: document.getElementById('audioPlayer'),
-  playBtn: document.getElementById('playBtn'),
-  prevAyahBtn: document.getElementById('prevAyahBtn'),
-  nextAyahBtn: document.getElementById('nextAyahBtn'),
-  prevSurahBtn: document.getElementById('prevSurahBtn'),
-  nextSurahBtn: document.getElementById('nextSurahBtn'),
-  volumeSlider: document.getElementById('volumeSlider')
-};
-
-function pad(value) {
-  return String(value).padStart(2, '0');
-}
-
-function formatTime(sec) {
-  if (!sec || Number.isNaN(sec)) return '00:00';
-  const minutes = Math.floor(sec / 60);
-  const seconds = Math.floor(sec % 60);
-  return `${pad(minutes)}:${pad(seconds)}`;
-}
-
-function renderSurahList(filter = '') {
-  const normalized = filter.trim().toLowerCase();
-  const list = surahList.filter((surah) => {
-    return !normalized || surah.name.toLowerCase().includes(normalized) || surah.englishName.toLowerCase().includes(normalized);
-  });
-
-  DOM.surahList.innerHTML = list.map((surah, idx) => {
-    const realIndex = surahList.findIndex((item) => item.number === surah.number);
-    const active = realIndex === currentSurahIndex ? 'active' : '';
-    return `
-      <button class="surah-item ${active}" data-index="${realIndex}" type="button">
-        <span class="surah-item-name">${surah.name}</span>
-        <span class="surah-item-count">${surah.number}</span>
-      </button>
-    `;
-  }).join('');
-
-  DOM.surahList.querySelectorAll('.surah-item').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const index = Number(btn.dataset.index);
-      loadSurah(index);
-    });
+// ====== التنقل بين الخطوات ======
+function goToStep(n) {
+  panels.forEach(p => p.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  steps.forEach((s, i) => {
+    s.classList.toggle('active', i === n - 1);
+    s.classList.toggle('done', i < n - 1);
   });
 }
 
-async function fetchSurahList() {
-  try {
-    const response = await fetch(`${quranApi}/surah`);
-    const result = await response.json();
-    surahList = result.data;
-    renderSurahList();
-    await loadSurah(0);
-  } catch (error) {
-    console.error('خطأ في جلب قائمة السور:', error);
+// ====== إدارة الاستخدام اليومي ======
+function getUsage() {
+  const today = new Date().toISOString().slice(0, 10);
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if (data.date !== today) {
+    return { date: today, used: 0 };
+  }
+  return data;
+}
+
+function saveUsage(used) {
+  const today = new Date().toISOString().slice(0, 10);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, used }));
+}
+
+function updateUsageUI() {
+  const { used } = getUsage();
+  const left = DAILY_LIMIT - used;
+  usageText.textContent = `FREE ACCESS · ${left} of ${DAILY_LIMIT} uses left today`;
+  if (left <= 0) {
+    usageText.style.color = '#ff5757';
   }
 }
 
-async function loadSurah(index) {
-  currentSurahIndex = index;
-  const surah = surahList[index];
-  if (!surah) return;
-
-  DOM.studyName.textContent = surah.name;
-  DOM.playerTitle.textContent = surah.name;
-  DOM.ayahBadge.textContent = `آية 1`;
-
-  try {
-    const [surahRes, transRes] = await Promise.all([
-      fetch(`${quranApi}/surah/${surah.number}`),
-      fetch(`${quranApi}/surah/${surah.number}/en.asad`)
-    ]);
-
-    const surahData = await surahRes.json();
-    const transData = await transRes.json();
-
-    const ayahs = surahData.data.ayahs;
-    const translations = transData.data.ayahs;
-    currentAyahIndex = 0;
-
-    populateAyahSelect(ayahs.length);
-    renderCurrentAyah(ayahs, translations);
-    updateAudioSource(surah.number, currentReciter);
-    renderSurahList();
-  } catch (error) {
-    console.error('خطأ في جلب محتوى السورة:', error);
-  }
+function canUse() {
+  return getUsage().used < DAILY_LIMIT;
 }
 
-function populateAyahSelect(count) {
-  DOM.ayahSelect.innerHTML = Array.from({ length: count }, (_, idx) => {
-    return `<option value="${idx}">آية ${idx + 1}</option>`;
-  }).join('');
-  DOM.ayahSelect.value = String(currentAyahIndex);
+// ====== المؤقت التنازلي (منتصف الليل UTC) ======
+function tickCountdown() {
+  const now = new Date();
+  const midnight = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1
+  ));
+  const diff = midnight - now;
+  const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+  const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+  const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+  countdown.textContent = `${h}:${m}:${s}`;
 }
+setInterval(tickCountdown, 1000);
+tickCountdown();
 
-function renderCurrentAyah(ayahs, translations) {
-  const ayah = ayahs[currentAyahIndex];
-  const translation = translations[currentAyahIndex];
-
-  if (!ayah || !translation) return;
-
-  DOM.verseArabic.textContent = ayah.text;
-  DOM.verseEnglish.textContent = translation.text;
-  DOM.ayahBadge.textContent = `آية ${ayah.numberInSurah}`;
-  DOM.ayahSelect.value = String(currentAyahIndex);
-}
-
-function updateAudioSource(surahNumber, reciterKey) {
-  const base = reciterMap[reciterKey];
-  const number = String(surahNumber).padStart(3, '0');
-  const audioUrl = `${base}/${number}.mp3`;
-  DOM.audioPlayer.src = audioUrl;
-  DOM.audioPlayer.load();
-  DOM.playerTime.textContent = '00:00 / 00:00';
-  if (isPlaying) {
-    DOM.audioPlayer.play();
-  }
-}
-
-function changeAyah(step) {
-  const surah = surahList[currentSurahIndex];
-  if (!surah) return;
-
-  const maxIndex = surah.numberOfAyahs - 1;
-  currentAyahIndex = Math.min(Math.max(currentAyahIndex + step, 0), maxIndex);
-  DOM.ayahSelect.value = String(currentAyahIndex);
-
-  // re-fetch current surah ayah data from API to reflect selection; lightweight but okay
-  loadSurah(currentSurahIndex);
-}
-
-DOM.sidebarSearch.addEventListener('input', (e) => renderSurahList(e.target.value));
-
-DOM.ayahSelect.addEventListener('change', (e) => {
-  currentAyahIndex = Number(e.target.value);
-  const surah = surahList[currentSurahIndex];
-  fetch(`${quranApi}/surah/${surah.number}`)
-    .then(res => res.json())
-    .then(data => {
-      const ayahs = data.data.ayahs;
-      fetch(`${quranApi}/surah/${surah.number}/en.asad`)
-        .then(res2 => res2.json())
-        .then(data2 => {
-          renderCurrentAyah(ayahs, data2.data.ayahs);
-        });
-    });
+// ====== اختيار الفيديو ======
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('hover');
 });
-
-DOM.prevAyahBtn.addEventListener('click', () => changeAyah(-1));
-DOM.nextAyahBtn.addEventListener('click', () => changeAyah(1));
-
-DOM.prevSurahBtn.addEventListener('click', () => {
-  if (currentSurahIndex > 0) loadSurah(currentSurahIndex - 1);
-});
-
-DOM.nextSurahBtn.addEventListener('click', () => {
-  if (currentSurahIndex < surahList.length - 1) loadSurah(currentSurahIndex + 1);
-});
-
-DOM.playBtn.addEventListener('click', () => {
-  if (DOM.audioPlayer.paused) {
-    DOM.audioPlayer.play();
-    isPlaying = true;
-    DOM.playBtn.textContent = '⏸';
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('hover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('hover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) {
+    handleFile(file);
   } else {
-    DOM.audioPlayer.pause();
-    isPlaying = false;
-    DOM.playBtn.textContent = '▶';
+    alert('من فضلك اختر ملف فيديو صالح');
   }
 });
 
-DOM.reciterSelect.addEventListener('change', (e) => {
-  const selected = e.target.value;
-  updateAudioSource(surahList[currentSurahIndex].number, selected);
-  if (isPlaying) DOM.audioPlayer.play();
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) handleFile(file);
 });
 
-DOM.volumeSlider.addEventListener('input', (e) => {
-  DOM.audioPlayer.volume = Number(e.target.value) / 100;
-});
+function handleFile(file) {
+  if (!canUse()) {
+    alert('⚠️ وصلت الحد اليومي (5 استخدامات). حاول غدًا.');
+    return;
+  }
+  selectedFile = file;
+  alert(`✅ تم اختيار: ${file.name}\nالحجم: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+  goToStep(2);
+}
 
-DOM.audioPlayer.addEventListener('timeupdate', () => {
-  const current = formatTime(DOM.audioPlayer.currentTime);
-  const total = formatTime(DOM.audioPlayer.duration || 0);
-  DOM.playerTime.textContent = `${current} / ${total}`;
-});
+// ====== رابط البث ======
+urlBtn.addEventListener('click', async () => {
+  const url = urlInput.value.trim();
+  if (!url) return alert('الرجاء لصق رابط أولاً');
+  if (!canUse()) return alert('⚠️ وصلت الحد اليومي.');
 
-DOM.audioPlayer.addEventListener('ended', () => {
-  const currentSurah = surahList[currentSurahIndex];
-  if (currentAyahIndex < currentSurah.numberOfAyhs - 1) {
-    currentAyahIndex += 1;
-    loadSurah(currentSurahIndex);
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    selectedFile = new File([blob], 'from-url.mp4', { type: blob.type });
+    alert('✅ تم تحميل الفيديو من الرابط');
+    goToStep(2);
+  } catch (err) {
+    alert('❌ فشل تحميل الرابط (قد يكون بسبب CORS)');
   }
 });
 
-fetchSurahList();
+// ====== الضغط بـ FFmpeg.wasm ======
+document.querySelectorAll('.option').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!selectedFile) return alert('لا يوجد فيديو محدد');
+    const crf = btn.dataset.crf;
+    await compressVideo(selectedFile, crf);
+  });
+});
+
+async function compressVideo(file, crf) {
+  progressWrap.classList.remove('hidden');
+  progressBar.style.width = '0%';
+  progressText.textContent = 'جاري التحميل...';
+
+  const { FFmpeg } = FFmpegWASM;
+  const { fetchFile } = FFmpegUtil;
+  const ffmpeg = new FFmpeg();
+
+  ffmpeg.on('progress', ({ progress }) => {
+    const pct = Math.round(progress * 100);
+    progressBar.style.width = pct + '%';
+    progressText.textContent = pct + '%';
+  });
+
+  try {
+    await ffmpeg.load({
+      coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
+      wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
+    });
+
+    await ffmpeg.writeFile('input.mp4', await fetchFile(file));
+    await ffmpeg.exec([
+      '-i', 'input.mp4',
+      '-vcodec', 'libx264',
+      '-crf', crf,
+      '-preset', 'fast',
+      'output.mp4'
+    ]);
+    const data = await ffmpeg.readFile('output.mp4');
+    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    compressedUrl = URL.createObjectURL(blob);
+
+    preview.src = compressedUrl;
+    downloadLink.href = compressedUrl;
+
+    // حدّث العداد
+    const { used } = getUsage();
+    saveUsage(used + 1);
+    updateUsageUI();
+
+    goToStep(3);
+  } catch (err) {
+    console.error(err);
+    alert('❌ حدث خطأ أثناء الضغط: ' + err.message);
+  }
+}
+
+// ====== إعادة البدء ======
+restartBtn.addEventListener('click', () => {
+  selectedFile = null;
+  if (compressedUrl) URL.revokeObjectURL(compressedUrl);
+  compressedUrl = null;
+  fileInput.value = '';
+  urlInput.value = '';
+  progressWrap.classList.add('hidden');
+  goToStep(1);
+});
+
+// ====== التهيئة ======
+updateUsageUI();
+goToStep(1);

@@ -3,83 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VideoCompress — اضغط فيديوهاتك</title>
+<title>Basira — بصيرة | Choose your path</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 </head>
 <body>
 
-<header>
-  <div class="logo">🎬 VideoCompress</div>
-  <div class="usage">
-    <span id="usage-text">FREE ACCESS · 5 of 5 uses left today</span>
-    <span id="countdown">--:--:--</span>
+<!-- نجوم الخلفية -->
+<canvas id="stars"></canvas>
+
+<!-- Skip intro -->
+<button class="skip-intro" id="skip-intro">تخطي المقدمة</button>
+
+<!-- شاشة البداية (Intro) -->
+<section class="intro" id="intro">
+  <div class="intro-content">
+    <h1 class="intro-logo">بصيرة</h1>
+    <p class="intro-sub">Basira — Interactive Qur'an Structural Visualization</p>
+    <div class="intro-line"></div>
   </div>
-</header>
+</section>
 
-<main>
-  <h1>Upload Method</h1>
-  <p class="subtitle">اختر فيديو، اختر الطريقة، وحمّل الملف المضغوط.</p>
+<!-- الصفحة الرئيسية -->
+<main class="home hidden" id="home">
 
-  <!-- Steps indicator -->
-  <div class="steps">
-    <div class="step active" data-step="1">1. اختر فيديو</div>
-    <div class="step" data-step="2">2. الطريقة</div>
-    <div class="step" data-step="3">3. تحميل</div>
-  </div>
+  <header class="home-header">
+    <div class="logo">بصيرة <span>Basira</span></div>
+    <nav>
+      <a href="#paths">المسارات</a>
+      <a href="#about">عن الموقع</a>
+    </nav>
+  </header>
 
-  <!-- Step 1: Choose video -->
-  <section id="step-1" class="panel active">
-    <h2>اختر الفيديو</h2>
-    <p class="hint">كل صيغ الفيديو الشائعة مدعومة.</p>
-
-    <div id="drop-zone" class="drop-zone">
-      <p>اسحب الفيديو هنا أو</p>
-      <label class="btn primary">
-        اختر ملف
-        <input type="file" id="file-input" accept="video/*" hidden>
-      </label>
-    </div>
-
-    <div class="divider">أو</div>
-
-    <div class="stream-box">
-      <p class="badge">أسرع حتى 100×</p>
-      <h3>استخدم رابط بث مباشر</h3>
-      <input type="text" id="url-input" placeholder="الصق رابط الفيديو هنا...">
-      <button class="btn ghost" id="url-btn">تحميل من الرابط</button>
-    </div>
-
-    <p class="note">⚡ المعالجة تصير على جهازك — الفيديو ما يُرفع لأي سيرفر.</p>
+  <section class="hero">
+    <h1>اختر مسارك</h1>
+    <p class="hero-sub">Choose your path</p>
+    <div class="hero-line"></div>
   </section>
 
-  <!-- Step 2: Method / Quality -->
-  <section id="step-2" class="panel">
-    <h2>اختر جودة الضغط</h2>
-    <div class="options">
-      <button class="option" data-crf="23">جودة عالية (حجم أكبر)</button>
-      <button class="option" data-crf="28">جودة متوسطة (موصى بها)</button>
-      <button class="option" data-crf="35">جودة منخفضة (أصغر حجم)</button>
-    </div>
-    <div id="progress-wrap" class="progress-wrap hidden">
-      <div id="progress-bar"></div>
-      <p id="progress-text">0%</p>
-    </div>
+  <section class="paths" id="paths">
+
+    <a href="#" class="path-card" data-path="quranic-engine">
+      <div class="card-icon">📖</div>
+      <h3>The Quranic Engine</h3>
+      <p>محرك قرآني تفاعلي</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card" data-path="divine-attributes">
+      <div class="card-icon">✨</div>
+      <h3>The Divine Attributes</h3>
+      <p>أسماء الله الحسنى</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card" data-path="scholars-archive">
+      <div class="card-icon">📜</div>
+      <h3>The Scholar's Archive</h3>
+      <p>أرشيف العلماء</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card" data-path="isnad-blockchain">
+      <div class="card-icon">🔗</div>
+      <h3>The Isnad Blockchain</h3>
+      <p>سلسلة الإسناد</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card" data-path="seerah-engine">
+      <div class="card-icon">🕌</div>
+      <h3>The Seerah Engine</h3>
+      <p>محرك السيرة النبوية</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card" data-path="qibla-axis">
+      <div class="card-icon">🧭</div>
+      <h3>The Qibla Axis</h3>
+      <p>اتجاه القبلة</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card" data-path="tartil-training">
+      <div class="card-icon">🎙️</div>
+      <h3>Tartil Recitation</h3>
+      <p>تدريب الترتيل</p>
+      <span class="arrow">←</span>
+    </a>
+
+    <a href="#" class="path-card highlight" data-path="iftar-gaza">
+      <div class="card-icon">🌙</div>
+      <h3>Iftar for Gaza</h3>
+      <p>إفطار غزة</p>
+      <span class="arrow">←</span>
+    </a>
+
   </section>
 
-  <!-- Step 3: Download -->
-  <section id="step-3" class="panel">
-    <h2>جاهز! 🎉</h2>
-    <video id="preview" controls></video>
-    <a id="download-link" class="btn primary" download="compressed.mp4">تحميل الفيديو المضغوط</a>
-    <button class="btn ghost" id="restart">ابدأ من جديد</button>
+  <section class="about" id="about">
+    <h2>عن بصيرة</h2>
+    <p>بصيرة منصة تفاعلية تهدف لتقريب المعرفة الإسلامية بأسلوب عصري وتقني. اختر مسارك وابدأ رحلتك.</p>
   </section>
+
+  <footer>
+    <p>© 2026 Basira — بصيرة</p>
+  </footer>
+
 </main>
-
-<footer>
-  <p>© 2026 VideoCompress — كل الحقوق محفوظة</p>
-</footer>
 
 <script src="script.js"></script>
 </body>

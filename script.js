@@ -7,8 +7,6 @@ const panels = document.querySelectorAll('.panel');
 const steps = document.querySelectorAll('.step');
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
-const urlInput = document.getElementById('url-input');
-const urlBtn = document.getElementById('url-btn');
 const progressWrap = document.getElementById('progress-wrap');
 const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
@@ -21,7 +19,7 @@ const countdown = document.getElementById('countdown');
 let selectedFile = null;
 let compressedUrl = null;
 
-// ====== التنقل بين الخطوات ======
+// ====== التنقل ======
 function goToStep(n) {
   panels.forEach(p => p.classList.remove('active'));
   document.getElementById('step-' + n).classList.add('active');
@@ -31,42 +29,29 @@ function goToStep(n) {
   });
 }
 
-// ====== إدارة الاستخدام اليومي ======
+// ====== الاستخدام اليومي ======
 function getUsage() {
   const today = new Date().toISOString().slice(0, 10);
   const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  if (data.date !== today) {
-    return { date: today, used: 0 };
-  }
+  if (data.date !== today) return { date: today, used: 0 };
   return data;
 }
-
 function saveUsage(used) {
   const today = new Date().toISOString().slice(0, 10);
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, used }));
 }
-
 function updateUsageUI() {
   const { used } = getUsage();
   const left = DAILY_LIMIT - used;
   usageText.textContent = `FREE ACCESS · ${left} of ${DAILY_LIMIT} uses left today`;
-  if (left <= 0) {
-    usageText.style.color = '#ff5757';
-  }
+  usageText.style.color = left <= 0 ? '#ff5757' : '#8b95a8';
 }
+function canUse() { return getUsage().used < DAILY_LIMIT; }
 
-function canUse() {
-  return getUsage().used < DAILY_LIMIT;
-}
-
-// ====== المؤقت التنازلي (منتصف الليل UTC) ======
+// ====== المؤقت ======
 function tickCountdown() {
   const now = new Date();
-  const midnight = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate() + 1
-  ));
+  const midnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
   const diff = midnight - now;
   const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
   const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
@@ -77,122 +62,109 @@ setInterval(tickCountdown, 1000);
 tickCountdown();
 
 // ====== اختيار الفيديو ======
-dropZone.addEventListener('dragover', e => {
-  e.preventDefault();
-  dropZone.classList.add('hover');
-});
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('hover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('hover'));
 dropZone.addEventListener('drop', e => {
   e.preventDefault();
   dropZone.classList.remove('hover');
   const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('video/')) {
-    handleFile(file);
-  } else {
-    alert('من فضلك اختر ملف فيديو صالح');
-  }
+  if (file && file.type.startsWith('video/')) handleFile(file);
+  else alert('من فضلك اختر ملف فيديو صالح');
 });
-
 fileInput.addEventListener('change', e => {
   const file = e.target.files[0];
   if (file) handleFile(file);
 });
-
 function handleFile(file) {
-  if (!canUse()) {
-    alert('⚠️ وصلت الحد اليومي (5 استخدامات). حاول غدًا.');
-    return;
-  }
+  if (!canUse()) { alert('⚠️ وصلت الحد اليومي (5 استخدامات).'); return; }
   selectedFile = file;
-  alert(`✅ تم اختيار: ${file.name}\nالحجم: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
   goToStep(2);
 }
 
-// ====== رابط البث ======
-urlBtn.addEventListener('click', async () => {
-  const url = urlInput.value.trim();
-  if (!url) return alert('الرجاء لصق رابط أولاً');
-  if (!canUse()) return alert('⚠️ وصلت الحد اليومي.');
-
-  try {
-    const res = await fetch(url);
-    const blob = await res.blob();
-    selectedFile = new File([blob], 'from-url.mp4', { type: blob.type });
-    alert('✅ تم تحميل الفيديو من الرابط');
-    goToStep(2);
-  } catch (err) {
-    alert('❌ فشل تحميل الرابط (قد يكون بسبب CORS)');
-  }
-});
-
-// ====== الضغط بـ FFmpeg.wasm ======
+// ====== الضغط بـ MediaRecorder ======
 document.querySelectorAll('.option').forEach(btn => {
   btn.addEventListener('click', async () => {
     if (!selectedFile) return alert('لا يوجد فيديو محدد');
-    const crf = btn.dataset.crf;
-    await compressVideo(selectedFile, crf);
+    const quality = btn.dataset.quality;
+    await compressVideo(selectedFile, quality);
   });
 });
 
-async function compressVideo(file, crf) {
+async function compressVideo(file, quality) {
   progressWrap.classList.remove('hidden');
   progressBar.style.width = '0%';
-  progressText.textContent = 'جاري التحميل...';
+  progressText.textContent = 'جاري المعالجة...';
 
-  const { FFmpeg } = FFmpegWASM;
-  const { fetchFile } = FFmpegUtil;
-  const ffmpeg = new FFmpeg();
-
-  ffmpeg.on('progress', ({ progress }) => {
-    const pct = Math.round(progress * 100);
-    progressBar.style.width = pct + '%';
-    progressText.textContent = pct + '%';
-  });
+  // إعدادات الجودة
+  const settings = {
+    high:   { videoBitsPerSecond: 2500000, scale: 1 },
+    medium: { videoBitsPerSecond: 1000000, scale: 0.75 },
+    low:    { videoBitsPerSecond: 500000,  scale: 0.5 }
+  };
+  const cfg = settings[quality] || settings.medium;
 
   try {
-    await ffmpeg.load({
-      coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
-      wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+    video.muted = true;
+    await new Promise(res => { video.onloadedmetadata = res; });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth * cfg.scale;
+    canvas.height = video.videoHeight * cfg.scale;
+    const ctx = canvas.getContext('2d');
+
+    const stream = canvas.captureStream(30);
+    const recorder = new MediaRecorder(stream, {
+      mimeType: 'video/webm;codecs=vp9',
+      videoBitsPerSecond: cfg.videoBitsPerSecond
     });
 
-    await ffmpeg.writeFile('input.mp4', await fetchFile(file));
-    await ffmpeg.exec([
-      '-i', 'input.mp4',
-      '-vcodec', 'libx264',
-      '-crf', crf,
-      '-preset', 'fast',
-      'output.mp4'
-    ]);
-    const data = await ffmpeg.readFile('output.mp4');
-    const blob = new Blob([data.buffer], { type: 'video/mp4' });
-    compressedUrl = URL.createObjectURL(blob);
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      compressedUrl = URL.createObjectURL(blob);
+      preview.src = compressedUrl;
+      downloadLink.href = compressedUrl;
 
-    preview.src = compressedUrl;
-    downloadLink.href = compressedUrl;
+      const { used } = getUsage();
+      saveUsage(used + 1);
+      updateUsageUI();
+      goToStep(3);
+    };
 
-    // حدّث العداد
-    const { used } = getUsage();
-    saveUsage(used + 1);
-    updateUsageUI();
+    recorder.start();
+    video.play();
 
-    goToStep(3);
+    const draw = () => {
+      if (video.paused || video.ended) return;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const pct = Math.round((video.currentTime / video.duration) * 100);
+      progressBar.style.width = pct + '%';
+      progressText.textContent = pct + '%';
+      requestAnimationFrame(draw);
+    };
+    draw();
+
+    video.onended = () => {
+      recorder.stop();
+    };
   } catch (err) {
     console.error(err);
-    alert('❌ حدث خطأ أثناء الضغط: ' + err.message);
+    alert('❌ خطأ: ' + err.message);
   }
 }
 
-// ====== إعادة البدء ======
+// ====== إعادة ======
 restartBtn.addEventListener('click', () => {
   selectedFile = null;
   if (compressedUrl) URL.revokeObjectURL(compressedUrl);
   compressedUrl = null;
   fileInput.value = '';
-  urlInput.value = '';
   progressWrap.classList.add('hidden');
   goToStep(1);
 });
 
-// ====== التهيئة ======
 updateUsageUI();
 goToStep(1);

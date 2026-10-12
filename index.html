@@ -1,137 +1,86 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="منصة قرآنية حديثة لتلاوة، تدبر، وترجمة القرآن" />
-    <title>بصيرة | Basira</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="page-shell">
-      <div class="browser-topbar">
-        <div class="window-actions">
-          <span class="window-dot close"></span>
-          <span class="window-dot min"></span>
-          <span class="window-dot max"></span>
-        </div>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VideoCompress — اضغط فيديوهاتك</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+</head>
+<body>
 
-        <div class="browser-tabs">
-          <div class="browser-tab active">basira.institute</div>
-        </div>
+<header>
+  <div class="logo">🎬 VideoCompress</div>
+  <div class="usage">
+    <span id="usage-text">FREE ACCESS · 5 of 5 uses left today</span>
+    <span id="countdown">--:--:--</span>
+  </div>
+</header>
 
-        <div class="browser-tools">
-          <button class="tool-icon">⤴</button>
-          <button class="tool-icon">⋯</button>
-          <button class="tool-icon">⚙</button>
-        </div>
-      </div>
+<main>
+  <h1>Upload Method</h1>
+  <p class="subtitle">اختر فيديو، اختر الطريقة، وحمّل الملف المضغوط.</p>
 
-      <div class="toolbar-row">
-        <div class="toolbar-left">
-          <button class="nav-pill">🡠</button>
-          <button class="nav-pill">🡢</button>
-          <button class="nav-pill">⟳</button>
-        </div>
-        <div class="toolbar-center">
-          <div class="site-pill">basira.institute</div>
-        </div>
-        <div class="toolbar-right">
-          <button class="nav-pill">＋</button>
-          <button class="nav-pill">☰</button>
-        </div>
-      </div>
+  <!-- Steps indicator -->
+  <div class="steps">
+    <div class="step active" data-step="1">1. اختر فيديو</div>
+    <div class="step" data-step="2">2. الطريقة</div>
+    <div class="step" data-step="3">3. تحميل</div>
+  </div>
 
-      <div class="sub-nav">
-        <div class="sub-nav-left">
-          <button class="sub-tab">بصيرة</button>
-          <button class="sub-tab">مكتبة</button>
-          <button class="sub-tab">تاريخ</button>
-          <button class="sub-tab">مؤلفات</button>
-        </div>
-        <div class="sub-nav-right">
-          <button class="mini-toggle active">Learn</button>
-          <button class="mini-toggle">Focus</button>
-          <button class="mini-toggle">Tajweed</button>
-        </div>
-      </div>
+  <!-- Step 1: Choose video -->
+  <section id="step-1" class="panel active">
+    <h2>اختر الفيديو</h2>
+    <p class="hint">كل صيغ الفيديو الشائعة مدعومة.</p>
 
-      <main class="workspace">
-        <aside class="left-panel">
-          <div class="panel-header">
-            <span class="brand">BASIRA</span>
-          </div>
-          <div class="side-search">
-            <input type="text" id="sidebarSearch" placeholder="ابحث عن سورة..." />
-          </div>
-          <div class="surah-list" id="surahList"></div>
-        </aside>
-
-        <section class="content-panel">
-          <div class="content-header">
-            <div class="top-actions">
-              <button class="mode-btn active" data-mode="read">قراءة</button>
-              <button class="mode-btn" data-mode="tajweed">تجويد</button>
-              <button class="mode-btn" data-mode="translation">ترجمة</button>
-            </div>
-            <div class="top-status">
-              <span id="surahCounter">1 / 114</span>
-            </div>
-          </div>
-
-          <div class="study-meta">
-            <div class="study-name" id="studyName">الفاتحة</div>
-            <div class="study-attrs">مكية • 7 آيات</div>
-          </div>
-
-          <div class="verse-wrap">
-            <div class="verse-card" id="verseCard">
-              <div class="meta-row">
-                <span class="meta-chip" id="ayahBadge">آية 1</span>
-                <span class="meta-chip soft">TAFSIR</span>
-                <span class="meta-chip soft purple">TADABBUR</span>
-              </div>
-
-              <div class="verse-arabic" id="verseArabic"></div>
-              <div class="verse-english" id="verseEnglish"></div>
-            </div>
-
-            <div class="nav-row">
-              <button id="prevAyahBtn" class="nav-action">السابق</button>
-              <select id="ayahSelect" class="ayah-select"></select>
-              <button id="nextAyahBtn" class="nav-action">التالي</button>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer class="audio-bar">
-        <div class="player-info">
-          <div class="player-title" id="playerTitle">الفاتحة</div>
-          <div class="player-time" id="playerTime">00:00 / 00:00</div>
-        </div>
-
-        <div class="audio-controls">
-          <button class="audio-btn" id="prevSurahBtn">⏮</button>
-          <button class="audio-btn primary" id="playBtn">▶</button>
-          <button class="audio-btn" id="nextSurahBtn">⏭</button>
-        </div>
-
-        <div class="player-selectors">
-          <select id="reciterSelect">
-            <option value="Abdul_Basit_Murattal_64kbps">عبد الباسط</option>
-            <option value="Mishary_Alafasy_128kbps">مشاري العفاسي</option>
-            <option value="AbdulSamad_64kbps_Rawat">عبد الصمد</option>
-          </select>
-          <input type="range" id="volumeSlider" min="0" max="100" value="70" />
-        </div>
-      </footer>
+    <div id="drop-zone" class="drop-zone">
+      <p>اسحب الفيديو هنا أو</p>
+      <label class="btn primary">
+        اختر ملف
+        <input type="file" id="file-input" accept="video/*" hidden>
+      </label>
     </div>
 
-    <audio id="audioPlayer" preload="auto"></audio>
-    <script src="script.js"></script>
-  </body>
+    <div class="divider">أو</div>
+
+    <div class="stream-box">
+      <p class="badge">أسرع حتى 100×</p>
+      <h3>استخدم رابط بث مباشر</h3>
+      <input type="text" id="url-input" placeholder="الصق رابط الفيديو هنا...">
+      <button class="btn ghost" id="url-btn">تحميل من الرابط</button>
+    </div>
+
+    <p class="note">⚡ المعالجة تصير على جهازك — الفيديو ما يُرفع لأي سيرفر.</p>
+  </section>
+
+  <!-- Step 2: Method / Quality -->
+  <section id="step-2" class="panel">
+    <h2>اختر جودة الضغط</h2>
+    <div class="options">
+      <button class="option" data-crf="23">جودة عالية (حجم أكبر)</button>
+      <button class="option" data-crf="28">جودة متوسطة (موصى بها)</button>
+      <button class="option" data-crf="35">جودة منخفضة (أصغر حجم)</button>
+    </div>
+    <div id="progress-wrap" class="progress-wrap hidden">
+      <div id="progress-bar"></div>
+      <p id="progress-text">0%</p>
+    </div>
+  </section>
+
+  <!-- Step 3: Download -->
+  <section id="step-3" class="panel">
+    <h2>جاهز! 🎉</h2>
+    <video id="preview" controls></video>
+    <a id="download-link" class="btn primary" download="compressed.mp4">تحميل الفيديو المضغوط</a>
+    <button class="btn ghost" id="restart">ابدأ من جديد</button>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 VideoCompress — كل الحقوق محفوظة</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
 </html>

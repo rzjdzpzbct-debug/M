@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجرة درب التبانة</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #02030b; }
+  body { font-family: system-ui, sans-serif; color: #fff; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  .label {
+    position: fixed; top: 22px; left: 0; right: 0; text-align: center;
+    pointer-events: none; text-shadow: 0 0 18px #8abaff;
+  }
+  .label h1 { margin: 0; font-size: clamp(20px, 4vw, 34px); font-weight: 500; letter-spacing: 2px; }
+  .label p { margin: 7px 0 0; color: #a9c8ff; font-size: 12px; letter-spacing: 3px; direction: ltr; }
+  .hint {
+    position: fixed; bottom: 18px; left: 0; right: 0; text-align: center;
+    color: #aab6d5; font-size: 12px; pointer-events: none; opacity: .8;
+  }
+</style>
+</head>
+<body>
+<canvas id="space"></canvas>
+<div class="label">
+  <h1>مجرة درب التبانة</h1>
+  <p>THE MILKY WAY</p>
+</div>
+<div class="hint">حرّك جهازك أو المس الشاشة لاستكشاف النجوم</div>
+<script>
+const canvas = document.getElementById('space');
+const ctx = canvas.getContext('2d');
+let w, h, cx, cy, scale, stars = [], dust = [], pointer = {x:0,y:0};
+const TAU = Math.PI * 2;
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  w = innerWidth; h = innerHeight; cx = w/2; cy = h/2;
+  canvas.width = w*dpr; canvas.height = h*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  scale = Math.min(w,h) * 0.43;
+  stars = []; dust = [];
+  for (let i=0;i<2200;i++) {
+    const arm = Math.floor(Math.random()*4);
+    const t = Math.random();
+    const radius = Math.pow(t,0.72) * scale;
+    const angle = arm*TAU/4 + radius/scale*3.5 + (Math.random()-.5)*0.55;
+    const spread = (Math.random()-.5) * (radius*.22 + 5);
+    stars.push({
+      a: angle, r: radius, spread,
+      size: Math.random()*1.6 + .25,
+      hue: [205,220,245,275,35][Math.floor(Math.random()*5)],
+      alpha: Math.random()*.75+.2,
+      speed: (Math.random()-.5)*.08
+    });
+  }
+  for(let i=0;i<1500;i++){
+    const a=Math.random()*TAU, r=Math.sqrt(Math.random())*scale;
+    dust.push({a,r,spread:(Math.random()-.5)*(r*.3+4),size:Math.random()*2.2+.3,alpha:Math.random()*.18});
+  }
+}
+function glow(x,y,r,color,alpha=1) {
+  const g=ctx.createRadialGradient(x,y,0,x,y,r);
+  g.addColorStop(0,`rgba(${color},${alpha})`);
+  g.addColorStop(1,`rgba(${color},0)`);
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,TAU); ctx.fill();
+}
+let last=0;
+function draw(time=0) {
+  const dt=Math.min((time-last)/1000||0, .04); last=time;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#02030b'; ctx.fillRect(0,0,w,h);
+  // Distant background stars
+  for(let i=0;i<180;i++){
+    const x=(i*173.3)%w, y=(i*97.7)%h;
+    const twinkle=.25+.35*(Math.sin(time*.001+i*4)+1)/2;
+    ctx.fillStyle=`rgba(190,211,255,${twinkle})`;
+    ctx.fillRect(x,y,1,1);
+  }
+  // Soft outer halo
+  glow(cx,cy,scale*1.12,'70,100,255',.12);
+  // Spiral dust lanes
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(time*.000025);
+  for(const p of dust){
+    const a=p.a + time*.000018;
+    const x=Math.cos(a)*p.r + Math.cos(a+Math.PI/2)*p.spread;
+    const y=Math.sin(a)*p.r*.62 + Math.sin(a+Math.PI/2)*p.spread*.62;
+    ctx.fillStyle=`rgba(95,145,255,${p.alpha})`;
+    ctx.beginPath(); ctx.arc(x,y,p.size,0,TAU); ctx.fill();
+  }
+  // Spiral-arm stars
+  for(const s of stars){
+    const a=s.a + time*.000025 + s.speed*time*.00008;
+    const x=Math.cos(a)*s.r + Math.cos(a+Math.PI/2)*s.spread;
+    const y=Math.sin(a)*s.r*.62 + Math.sin(a+Math.PI/2)*s.spread*.62;
+    const tw=.65+.35*Math.sin(time*.002+s.r*.07);
+    ctx.fillStyle=`hsla(${s.hue},95%,${70+tw*20}%,${s.alpha*tw})`;
+    ctx.beginPath(); ctx.arc(x,y,s.size,0,TAU); ctx.fill();
+  }
+  // Bright galactic core
+  glow(0,0,scale*.36,'255,150,85',.22);
+  glow(0,0,scale*.22,'255,205,145',.35);
+  glow(0,0,scale*.11,'255,239,218',.8);
+  ctx.restore();
+  // Gentle touch-following sparkle
+  if(pointer.x || pointer.y) glow(pointer.x,pointer.y,75,'90,160,255',.16);
+  requestAnimationFrame(draw);
+}
+addEventListener('resize',resize);
+addEventListener('pointermove',e=>{pointer.x=e.clientX;pointer.y=e.clientY;});
+resize(); requestAnimationFrame(draw);
+</script>
+</body>
+</html>

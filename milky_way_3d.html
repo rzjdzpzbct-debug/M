@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Milky Way 3D</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02030a;color:#fff;font-family:system-ui,-apple-system,sans-serif}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:22px 16px}
+h1{font-size:clamp(22px,5vw,38px);font-weight:500;letter-spacing:1px;margin:0;text-shadow:0 0 22px #72aaff}
+.sub{font:11px system-ui;letter-spacing:4px;color:#a9c9ff;margin-top:5px;direction:ltr}
+.panel{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);width:min(92%,390px);border:1px solid #8cbaff38;background:#071020b8;backdrop-filter:blur(12px);border-radius:18px;padding:12px 14px;pointer-events:auto;box-shadow:0 0 35px #214e9a20}
+.row{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+button{border:1px solid #789fff55;background:#122440;color:#e8f1ff;border-radius:12px;padding:9px 13px;font-size:13px}
+button:active{background:#294b80}.tip{text-align:center;color:#a7badb;font-size:11px;margin-top:9px}
+.status{position:fixed;top:96px;left:14px;color:#9ab7e9;font-size:10px;direction:ltr;letter-spacing:1px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud"><h1>مجرة درب التبانة</h1><div class="sub">MILKY WAY · 3D EXPLORER</div></div>
+<div class="status">GALACTIC VIEW / 3D</div>
+<div class="panel">
+ <div class="row">
+  <button id="spin">⏸ إيقاف الدوران</button>
+  <button id="zoomIn">＋ تقريب</button>
+  <button id="zoomOut">－ إبعاد</button>
+  <button id="reset">↻ إعادة العرض</button>
+ </div>
+ <div class="tip">اسحب بإصبعك لتدوير المجرة · استخدم زري التقريب والإبعاد</div>
+</div>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+let W,H,dpr,cx,cy,stars=[],dust=[],angle=0,tilt=.35,zoom=1,spinning=true,drag=false,lastX=0,lastY=0;
+const TAU=Math.PI*2;
+function rand(seed){let x=Math.sin(seed*127.1+311.7)*43758.5453;return x-Math.floor(x)}
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cx=W/2;cy=H*.49;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+stars=[];dust=[];let count=Math.min(4200,Math.floor(W*H/170));
+for(let i=0;i<count;i++){let arm=Math.floor(rand(i+4)*5),r=Math.pow(rand(i+88),.72),a=arm*TAU/5+r*7.5+(rand(i+200)-.5)*.48;stars.push({r,a,z:(rand(i+700)-.5)*.16,size:.35+rand(i+22)*1.5,h:[195,210,225,250,280,35][Math.floor(rand(i+9)*6)],alpha:.25+rand(i+33)*.72,seed:i})}
+for(let i=0;i<1600;i++){let r=Math.sqrt(rand(i+901))*1.02;dust.push({r,a:rand(i+902)*TAU,z:(rand(i+903)-.5)*.12,size:.4+rand(i+904)*1.4,al:.025+rand(i+905)*.13})}}
+function project(r,a,z){let x=Math.cos(a)*r,y=Math.sin(a)*r*.72,zz=z*r;let yy=y*Math.cos(tilt)-zz*Math.sin(tilt);let depth=y*Math.sin(tilt)+zz*Math.cos(tilt);return{x:cx+(x*Math.cos(angle)-depth*Math.sin(angle))*Math.min(W,H)*.39*zoom,y:cy+(x*Math.sin(angle)+depth*Math.cos(angle))*Math.min(W,H)*.39*zoom*.78}}
+function glow(x,y,r,col,alpha){let g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${col},${alpha})`);g.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill()}
+function draw(t){ctx.clearRect(0,0,W,H);ctx.fillStyle='#02030a';ctx.fillRect(0,0,W,H);
+for(let i=0;i<190;i++){let x=rand(i+2000)*W,y=rand(i+3000)*H,a=.15+.4*(.5+.5*Math.sin(t*.001+i));ctx.fillStyle=`rgba(190,210,255,${a})`;ctx.fillRect(x,y,1,1)}
+let base=Math.min(W,H)*.39*zoom;glow(cx,cy,base*1.35,'48,83,200',.09);
+ctx.save();ctx.globalCompositeOperation='screen';
+for(let p of dust){let q=project(p.r,p.a+t*.000035,p.z);glow(q.x,q.y,p.size*4+1,'72,125,255',p.al*.4);ctx.fillStyle=`rgba(112,158,255,${p.al})`;ctx.fillRect(q.x,q.y,p.size,p.size)}
+for(let s of stars){let q=project(s.r,s.a+t*.00004,s.z);let tw=.65+.35*Math.sin(t*.002+s.seed);ctx.fillStyle=`hsla(${s.h},90%,${70+tw*22}%,${s.alpha*tw})`;ctx.beginPath();ctx.arc(q.x,q.y,s.size*tw,0,TAU);ctx.fill()}
+glow(cx,cy,base*.45,'255,118,55',.17);glow(cx,cy,base*.24,'255,187,112',.24);glow(cx,cy,base*.105,'255,237,211',.75);glow(cx,cy,base*.035,'255,255,255',1);
+ctx.restore();
+if(spinning&&!drag)angle+=.0007;
+requestAnimationFrame(draw)}
+canvas.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;angle+=(e.clientX-lastX)*.006;tilt=Math.max(-1.05,Math.min(1.05,tilt+(e.clientY-lastY)*.004));lastX=e.clientX;lastY=e.clientY});
+canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
+canvas.addEventListener('wheel',e=>{zoom=Math.max(.55,Math.min(2.2,zoom+(e.deltaY<0?.08:-.08)))},{passive:true});
+document.getElementById('spin').onclick=()=>{spinning=!spinning;document.getElementById('spin').textContent=spinning?'⏸ إيقاف الدوران':'▶ تشغيل الدوران'};
+document.getElementById('zoomIn').onclick=()=>zoom=Math.min(2.2,zoom+.15);
+document.getElementById('zoomOut').onclick=()=>zoom=Math.max(.55,zoom-.15);
+document.getElementById('reset').onclick=()=>{angle=0;tilt=.35;zoom=1;spinning=true;document.getElementById('spin').textContent='⏸ إيقاف الدوران'};
+addEventListener('resize',resize);resize();requestAnimationFrame(draw);
+</script>
+</body></html>

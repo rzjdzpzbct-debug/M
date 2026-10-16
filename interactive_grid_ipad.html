@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#061a15">
+<title>شبكة — خلفية تفاعلية</title>
+<style>
+:root{--accent:#19e68c;--accent-rgb:25,230,140;--bg:#061a15;--fg:#e9fff5;--muted:#a5c8ba}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Tahoma,Arial,sans-serif}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.scene{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 15% 35%,rgba(var(--accent-rgb),.22),transparent 45%),linear-gradient(145deg,#0b2920 0%,var(--bg) 55%,#020807 100%)}
+.grid{position:absolute;inset:-35%;transform:perspective(850px) rotate(-29deg) scale(1.1);background-image:linear-gradient(rgba(var(--accent-rgb),.24) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),.24) 1px,transparent 1px);background-size:31px 31px;mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);opacity:.85}
+.grid:after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(225,255,243,.75) 1px,transparent 1.8px);background-size:31px 31px;opacity:.52}
+.diagonal{position:absolute;width:140%;height:1px;top:70%;left:-20%;transform:rotate(-42deg);background:linear-gradient(90deg,transparent,rgba(var(--accent-rgb),.1),rgba(226,255,244,.8),rgba(var(--accent-rgb),.1),transparent);box-shadow:0 0 18px rgba(var(--accent-rgb),.4)}
+.glow{position:absolute;width:45vw;height:45vw;max-width:420px;max-height:420px;border-radius:50%;background:var(--accent);filter:blur(110px);opacity:.15;left:-12%;bottom:8%}
+.content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,5vw,58px);padding-top:max(env(safe-area-inset-top),28px);padding-bottom:max(env(safe-area-inset-bottom),24px)}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:clamp(11px,1.7vw,15px);letter-spacing:.08em}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--fg);letter-spacing:.14em}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 15px var(--accent)}
+.hero{margin:auto 0;max-width:850px}
+.kicker{font-size:clamp(12px,1.8vw,17px);color:var(--accent);letter-spacing:.16em;margin-bottom:12px}
+.clock{font-size:clamp(70px,16vw,180px);font-weight:200;letter-spacing:-.065em;line-height:.95;font-variant-numeric:tabular-nums;text-shadow:0 0 38px rgba(var(--accent-rgb),.12);direction:ltr;text-align:right}
+.date{font-size:clamp(17px,3.2vw,30px);color:#d7f7e8;margin-top:22px}
+.quote{margin-top:clamp(28px,6vh,60px);padding-right:18px;border-right:2px solid var(--accent);font-size:clamp(18px,3vw,29px);line-height:1.65;max-width:610px;color:#eafff5;white-space:pre-wrap}
+.bottom{display:flex;justify-content:space-between;align-items:end;gap:18px;color:var(--muted);font-size:12px}
+.bottom strong{display:block;color:var(--fg);font-size:13px;margin-bottom:6px}
+.meter{width:min(26vw,220px);height:3px;background:rgba(255,255,255,.13);margin-top:10px;overflow:hidden}
+.meter span{display:block;width:67%;height:100%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.settings-btn{position:fixed;z-index:10;top:max(env(safe-area-inset-top),14px);left:14px;border:1px solid rgba(255,255,255,.18);background:rgba(5,15,12,.6);color:#fff;border-radius:999px;padding:10px 13px;font-size:13px;backdrop-filter:blur(12px)}
+.panel{position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(360px,92vw);padding:24px 20px calc(24px + env(safe-area-inset-bottom));background:rgba(5,17,13,.94);border-right:1px solid rgba(255,255,255,.12);backdrop-filter:blur(24px);overflow:auto;transform:translateX(-105%);transition:transform .28s ease}
+.panel.open{transform:translateX(0)}
+.panel h2{margin:14px 0 5px;font-size:22px}.sub{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.6}
+.field{margin:18px 0}.field label{display:block;font-size:13px;color:#cde7dc;margin-bottom:9px}
+input[type=color]{width:100%;height:46px;border:1px solid rgba(255,255,255,.18);background:#10231d;border-radius:12px;padding:4px}
+input[type=text],textarea,select{width:100%;border:1px solid rgba(255,255,255,.16);background:#0d211a;color:#effff7;border-radius:12px;padding:12px;font:inherit;font-size:14px;outline:none}
+textarea{min-height:92px;resize:vertical;line-height:1.6}
+.presets{display:flex;gap:10px;flex-wrap:wrap}.swatch{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.45);box-shadow:0 0 0 2px rgba(0,0,0,.3)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#d6eee4;font-size:14px}
+input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px}
+.actions{display:flex;gap:10px;margin-top:24px}
+button.action{flex:1;border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px;background:rgba(var(--accent-rgb),.15);color:#effff7;font:inherit;font-size:13px}
+button.action.primary{background:var(--accent);color:#03120c;border-color:transparent;font-weight:700}
+.hint{font-size:11px;color:#8ca99d;line-height:1.6;margin-top:20px}
+@media (orientation:portrait){.content{padding:26px;padding-top:max(env(safe-area-inset-top),58px);padding-bottom:max(env(safe-area-inset-bottom),25px)}.clock{font-size:clamp(76px,19vw,145px)}.grid{background-size:25px 25px}.grid:after{background-size:25px 25px}.bottom{align-items:flex-start;flex-direction:column}.meter{width:45vw}}
+@media (prefers-reduced-motion:no-preference){.glow{animation:breathe 9s ease-in-out infinite alternate}@keyframes breathe{from{opacity:.10;transform:translateY(0)}to{opacity:.22;transform:translateY(-20px)}}}
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="grid" id="grid"></div><div class="diagonal"></div><div class="glow"></div>
+  <main class="content">
+    <div class="topline"><div class="brand"><span class="dot"></span><span>GRID / 01</span></div><div id="smallDate">التاريخ المحلي</div></div>
+    <section class="hero">
+      <div class="kicker" id="kicker">مساحة هادئة • تركيز مستمر</div>
+      <div class="clock" id="clock">13:33</div>
+      <div class="date" id="date">الجمعة، ١٦ تشرين الأول</div>
+      <div class="quote" id="quote">وَقُل رَّبِّ زِدْنِي عِلْمًا</div>
+    </section>
+    <div class="bottom"><div><strong id="footerTitle">نظامك، على ذوقك.</strong><span id="footerSub">لون واحد يغيّر الجو كله.</span><div class="meter"><span></span></div></div><div>LIVE CLOCK&nbsp; · &nbsp;ARABIC UI</div></div>
+  </main>
+</div>
+<button class="settings-btn" id="openSettings">⚙ تخصيص</button>
+<aside class="panel" id="panel" aria-label="إعدادات الخلفية">
+  <h2>تخصيص الخلفية</h2><div class="sub">غيّر اللون والنص والتفاصيل مباشرة، بدون ما تعيد تحميل الصفحة.</div>
+  <div class="field"><label for="color">اختيار أي لون</label><input id="color" type="color" value="#19e68c"></div>
+  <div class="field"><label>ألوان جاهزة</label><div class="presets">
+    <button class="swatch" data-color="#19e68c" style="background:#19e68c" aria-label="أخضر"></button>
+    <button class="swatch" data-color="#35a7ff" style="background:#35a7ff" aria-label="أزرق"></button>
+    <button class="swatch" data-color="#b17cff" style="background:#b17cff" aria-label="بنفسجي"></button>
+    <button class="swatch" data-color="#ffb347" style="background:#ffb347" aria-label="برتقالي"></button>
+    <button class="swatch" data-color="#ff5f86" style="background:#ff5f86" aria-label="وردي"></button>
+    <button class="swatch" data-color="#f4f0df" style="background:#f4f0df" aria-label="عاجي"></button>
+  </div></div>
+  <div class="field"><label for="message">العبارة العربية</label><textarea id="message">وَقُل رَّبِّ زِدْنِي عِلْمًا</textarea></div>
+  <div class="field"><label for="kickerInput">النص الصغير فوق الساعة</label><input type="text" id="kickerInput" value="مساحة هادئة • تركيز مستمر"></div>
+  <div class="field"><label for="footerInput">النص أسفل التصميم</label><input type="text" id="footerInput" value="نظامك، على ذوقك."></div>
+  <div class="field"><label class="row" for="seconds">إظهار الثواني <input id="seconds" type="checkbox"></label></div>
+  <div class="field"><label class="row" for="gridToggle">إظهار الشبكة <input id="gridToggle" type="checkbox" checked></label></div>
+  <div class="field"><label class="row" for="glowToggle">إضاءة ناعمة <input id="glowToggle" type="checkbox" checked></label></div>
+  <div class="actions"><button class="action" id="closeSettings">إغلاق</button><button class="action primary" id="fullscreen">ملء الشاشة</button></div>
+  <div class="hint">ملاحظة: هذا تصميم تفاعلي يشتغل كصفحة أو كتطبيق ويب على الآيباد. ما يقدر يصير خلفية نظام iPadOS نفسها بعناصر تفاعلية؛ خلي الصفحة مفتوحة أو أضفها للشاشة الرئيسية كتطبيق ويب.</div>
+</aside>
+<script>
+const $=id=>document.getElementById(id);
+const panel=$('panel');
+function tick(){
+ const now=new Date();
+ const opts={weekday:'long',day:'numeric',month:'long'};
+ $('date').textContent=new Intl.DateTimeFormat('ar-IQ',opts).format(now);
+ $('smallDate').textContent=new Intl.DateTimeFormat('ar-IQ',{weekday:'short',day:'numeric',month:'short'}).format(now);
+ $('clock').textContent=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',...( $('seconds').checked?{second:'2-digit'}:{}) ,hour12:false}).format(now);
+}
+function hexToRgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)).join(',')}
+function setColor(c){document.documentElement.style.setProperty('--accent',c);document.documentElement.style.setProperty('--accent-rgb',hexToRgb(c));$('color').value=c}
+$('color').addEventListener('input',e=>setColor(e.target.value));
+document.querySelectorAll('[data-color]').forEach(b=>b.addEventListener('click',()=>setColor(b.dataset.color)));
+$('message').addEventListener('input',e=>$('quote').textContent=e.target.value);
+$('kickerInput').addEventListener('input',e=>$('kicker').textContent=e.target.value);
+$('footerInput').addEventListener('input',e=>$('footerTitle').textContent=e.target.value);
+$('seconds').addEventListener('change',tick);
+$('gridToggle').addEventListener('change',e=>$('grid').style.opacity=e.target.checked?'.85':'0');
+$('glowToggle').addEventListener('change',e=>document.querySelector('.glow').style.display=e.target.checked?'block':'none');
+$('openSettings').addEventListener('click',()=>panel.classList.add('open'));
+$('closeSettings').addEventListener('click',()=>panel.classList.remove('open'));
+$('fullscreen').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){alert('إذا ما اشتغل ملء الشاشة على Safari، أضف الصفحة إلى الشاشة الرئيسية وافتحها كتطبيق ويب.')}});
+tick();setInterval(tick,1000);
+</script>
+</body>
+</html>

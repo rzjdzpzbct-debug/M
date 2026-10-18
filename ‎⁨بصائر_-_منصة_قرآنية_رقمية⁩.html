@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بصائر | Basa'ir - المحرك القرآني الرقمي</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#0B0F12',
+                        darkSlate: '#141A21',
+                        cardSlate: '#1B222C',
+                        goldAccent: '#D4AF37',
+                        goldHover: '#F3E5AB',
+                        emeraldGlow: '#10B981',
+                        lightBg: '#F4F6F8',
+                        lightCard: '#FFFFFF'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                        quran: ['Amiri', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Customizations & Animations */
+        body {
+            font-family: 'Tajawal', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .font-quran {
+            font-family: 'Amiri', serif;
+            line-height: 2.2;
+        }
+
+        .glass-panel {
+            background: rgba(20, 26, 33, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .gold-border-glow {
+            box-shadow: 0 0 20px -5px rgba(212, 175, 55, 0.25);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+
+        /* Pulse Soft Effect */
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        .pulse-subtle {
+            animation: subtlePulse 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-obsidian text-slate-200 min-h-screen selection:bg-goldAccent selection:text-obsidian custom-scrollbar">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-goldAccent text-obsidian px-5 py-3 rounded-xl shadow-2xl font-bold">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toast-message">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-goldAccent/20 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-goldAccent/20 to-emeraldGlow/20 border border-goldAccent/40 flex items-center justify-center text-goldAccent shadow-lg shadow-goldAccent/10">
+                    <i class="fa-solid fa-book-quran text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-l from-goldAccent via-yellow-200 to-emeraldGlow">بصائر</h1>
+                    <p class="text-[10px] text-slate-400 tracking-wider">BASA'IR QURANIC ENGINE</p>
+                </div>
+            </div>
+
+            <!-- Global Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-md relative">
+                <input type="text" id="searchInput" placeholder="بحث في الآيات، التلاوات، والتدبرات..." 
+                    class="w-full bg-darkSlate/80 text-sm text-slate-200 pl-4 pr-10 py-2.5 rounded-xl border border-goldAccent/20 focus:outline-none focus:border-goldAccent focus:ring-1 focus:ring-goldAccent transition-all placeholder-slate-500">
+                <i class="fa-solid fa-magnifying-glass absolute right-3 top-3.5 text-slate-400 text-sm"></i>
+            </div>
+
+            <!-- Header Actions & Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Theme Presets Dropdown -->
+                <div class="relative group">
+                    <button class="w-10 h-10 rounded-xl bg-darkSlate border border-goldAccent/20 flex items-center justify-center text-slate-300 hover:text-goldAccent transition-colors">
+                        <i class="fa-solid fa-palette"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-48 py-2 bg-cardSlate rounded-xl border border-goldAccent/20 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <button onclick="setTheme('obsidian')" class="w-full px-4 py-2 text-right text-xs hover:bg-goldAccent/10 flex items-center gap-2 text-slate-200">
+                            <span class="w-3 h-3 rounded-full bg-[#0B0F12] border border-goldAccent"></span> الياقوت الأسود (الأصلي)
+                        </button>
+                        <button onclick="setTheme('emerald')" class="w-full px-4 py-2 text-right text-xs hover:bg-emeraldGlow/10 flex items-center gap-2 text-slate-200">
+                            <span class="w-3 h-3 rounded-full bg-[#062016] border border-emeraldGlow"></span> الزمردي الخاشع
+                        </button>
+                        <button onclick="setTheme('light')" class="w-full px-4 py-2 text-right text-xs hover:bg-slate-200 flex items-center gap-2 text-slate-200">
+                            <span class="w-3 h-3 rounded-full bg-slate-100 border border-slate-400"></span> الوضع المضيء
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bookmarks Counter Button -->
+                <button onclick="toggleBookmarksModal()" class="relative px-3.5 py-2 rounded-xl bg-darkSlate border border-goldAccent/20 flex items-center gap-2 text-sm text-slate-300 hover:text-goldAccent transition-colors">
+                    <i class="fa-solid fa-bookmark text-goldAccent"></i>
+                    <span class="hidden sm:inline">المفضلة</span>
+                    <span id="bookmark-count" class="bg-goldAccent/20 text-goldAccent text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative">
+                <input type="text" id="mobileSearchInput" placeholder="بحث في الآيات، التلاوات..." 
+                    class="w-full bg-darkSlate text-sm text-slate-200 pl-4 pr-10 py-2 rounded-xl border border-goldAccent/20 focus:outline-none focus:border-goldAccent">
+                <i class="fa-solid fa-magnifying-glass absolute right-3 top-2.5 text-slate-400 text-sm"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Hero & Filter Tabs Gateway -->
+        <section class="space-y-6 text-center">
+            <div class="max-w-3xl mx-auto space-y-3">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-goldAccent/10 border border-goldAccent/30 text-goldAccent text-xs font-medium">
+                    <i class="fa-solid fa-sparkles"></i> المنصة الرقمية للتفكر والتأمل
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100">
+                    تدبّر الكلمة.. واستمع للسكينة
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    منصة "بصائر" توفر لك تجربة مركزة لاستكشاف التلاوات النادرة، البطاقات التدبرية، والمقاطع المرئية الجاهزة للمشاركة.
+                </p>
+            </div>
+
+            <!-- Quick Filter Tabs -->
+            <div class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                <button onclick="filterCategory('all')" class="filter-tab active px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border border-goldAccent/30 bg-goldAccent text-obsidian shadow-lg shadow-goldAccent/10">
+                    <i class="fa-solid fa-layer-group ml-1"></i> الكل
+                </button>
+                <button onclick="filterCategory('reels')" class="filter-tab px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border border-goldAccent/20 bg-darkSlate text-slate-300 hover:border-goldAccent/50">
+                    <i class="fa-solid fa-clapperboard ml-1"></i> التلاوات المرئية
+                </button>
+                <button onclick="filterCategory('reflections')" class="filter-tab px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border border-goldAccent/20 bg-darkSlate text-slate-300 hover:border-goldAccent/50">
+                    <i class="fa-solid fa-square-poll-horizontal ml-1"></i> بطاقات التدبر
+                </button>
+                <button onclick="filterCategory('audio')" class="filter-tab px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border border-goldAccent/20 bg-darkSlate text-slate-300 hover:border-goldAccent/50">
+                    <i class="fa-solid fa-compact-disc ml-1"></i> الصوتيات النادرة
+                </button>
+                <button onclick="filterCategory('library')" class="filter-tab px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all border border-goldAccent/20 bg-darkSlate text-slate-300 hover:border-goldAccent/50">
+                    <i class="fa-solid fa-book-open ml-1"></i> المكتبة والفوائد
+                </button>
+            </div>
+        </section>
+
+        <!-- Daily Verse & Insights Engine (آية وتدبر اليوم) -->
+        <section class="relative rounded-3xl overflow-hidden glass-panel border border-goldAccent/30 p-6 sm:p-10 gold-border-glow">
+            <!-- Background Decorative Glow -->
+            <div class="absolute -left-16 -top-16 w-64 h-64 bg-goldAccent/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-emeraldGlow/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+                <!-- Verse Content -->
+                <div class="flex-1 space-y-6 text-center lg:text-right">
+                    <div class="flex items-center justify-center lg:justify-start gap-3 text-goldAccent text-xs font-bold tracking-widest uppercase">
+                        <span class="w-2 h-2 rounded-full bg-goldAccent animate-ping"></span>
+                        <span>آية وتدبّر اليوم</span>
+                        <span class="text-slate-600">|</span>
+                        <span id="daily-surah-info" class="text-slate-400">سورة إبراهيم - الآية 27</span>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-obsidian/60 border border-goldAccent/15">
+                        <p id="daily-verse-text" class="font-quran text-2xl sm:text-3xl text-slate-100 leading-relaxed">
+                            ﴿ يُثَبِّتُ اللَّهُ الَّذِينَ آمَنُوا بِالْقَوْلِ الثَّابِتِ فِي الْحَيَاةِ الدُّنْيَا وَفِي الْآخِرَةِ ﴾
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-sm font-bold text-goldAccent flex items-center gap-2 justify-center lg:justify-start">
+                            <i class="fa-solid fa-feather-pointed"></i> أضواء التفسير والتدبر:
+                        </h4>
+                        <p id="daily-tafseer-text" class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            الإيمان ليس مجرد كلمات تُقال في الرخاء، بل هو ركيزة القلب التي تثبت الإنسان أمام زلازل الفتن وشدائد الأيام. كلما تعمّق التوحيد في السر، منحك الله ثباتاً يعجب منه أهل الأرض.
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-center lg:justify-start gap-3 pt-2">
+                        <button onclick="copyDailyVerse()" class="px-4 py-2.5 rounded-xl bg-goldAccent/20 border border-goldAccent/40 text-goldAccent hover:bg-goldAccent hover:text-obsidian transition-all text-xs font-bold flex items-center gap-2">
+                            <i class="fa-regular fa-copy"></i> نسخ الآية والتدبر
+                        </button>
+                        <button onclick="shareDailyVerse()" class="px-4 py-2.5 rounded-xl bg-darkSlate border border-goldAccent/20 text-slate-300 hover:text-goldAccent transition-all text-xs font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-share-nodes"></i> مشاركة
+                        </button>
+                        <button onclick="bookmarkDailyVerse()" class="px-3 py-2.5 rounded-xl bg-darkSlate border border-goldAccent/20 text-slate-300 hover:text-goldAccent transition-all text-xs">
+                            <i class="fa-regular fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Random Quranic Verse Generator Box -->
+                <div class="w-full lg:w-80 bg-cardSlate/80 p-6 rounded-2xl border border-goldAccent/20 space-y-4 text-center">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-goldAccent/10 text-goldAccent flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-200">مُولّد التدبّر العشوائي</h3>
+                    <p class="text-xs text-slate-400">اضغط لاستخراج إشراقة قرآنية عشوائية تدعم بها يومك</p>
+                    <button onclick="generateRandomVerse()" class="w-full py-3 rounded-xl bg-gradient-to-r from-goldAccent to-yellow-600 text-obsidian font-bold text-xs shadow-md hover:brightness-110 transition-all">
+                        توليد آية جديدة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quranic Audio Player Engine -->
+        <section id="audio-engine-section" class="bg-cardSlate rounded-3xl border border-goldAccent/20 p-6 sm:p-8 space-y-6">
+            <div class="flex items-center justify-between flex-wrap gap-4 border-b border-goldAccent/10 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-[#d4af37] fa-headphones text-goldAccent"></i> محرك التلاوات الصوتية النادرة
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">تلاوات خاشعة عالية الدقة بصوت كبار القراء</p>
+                </div>
+                <!-- Status Badge -->
+                <span id="player-status-badge" class="px-3 py-1 rounded-full text-xs bg-emeraldGlow/10 text-emeraldGlow border border-emeraldGlow/30 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emeraldGlow animate-pulse"></span> جاهز للتشغيل
+                </span>
+            </div>
+
+            <!-- Integrated Audio Player Controls -->
+            <div class="bg-obsidian/80 rounded-2xl p-4 sm:p-6 border border-goldAccent/20 space-y-4">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                        <div class="w-14 h-14 rounded-2xl bg-goldAccent/20 border border-goldAccent/40 flex items-center justify-center text-goldAccent flex-shrink-0">
+                            <i id="player-album-icon" class="fa-solid fa-compact-disc text-2xl animate-spin-slow"></i>
+                        </div>
+                        <div>
+                            <h4 id="player-title" class="text-base font-bold text-slate-100">سورة الكهف - تلاوة خاشعة</h4>
+                            <p id="player-reciter" class="text-xs text-goldAccent">الشيخ مشاري راشد العفاسي</p>
+                        </div>
+                    </div>
+
+                    <!-- Playback Controls -->
+                    <div class="flex items-center gap-4">
+                        <button onclick="prevTrack()" class="text-slate-400 hover:text-goldAccent transition-colors text-lg">
+                            <i class="fa-solid fa-backward-step"></i>
+                        </button>
+                        <button id="main-play-btn" onclick="togglePlayAudio()" class="w-12 h-12 rounded-full bg-goldAccent text-obsidian flex items-center justify-center text-xl font-bold hover:scale-105 transition-transform shadow-lg shadow-goldAccent/20">
+                            <i id="main-play-icon" class="fa-solid fa-play mr-0.5"></i>
+                        </button>
+                        <button onclick="nextTrack()" class="text-slate-400 hover:text-goldAccent transition-colors text-lg">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar & Timers -->
+                <div class="space-y-1">
+                    <input type="range" id="audio-progress" value="0" min="0" max="100" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-goldAccent">
+                    <div class="flex justify-between text-[11px] text-slate-400">
+                        <span id="current-time">00:00</span>
+                        <span id="duration-time">00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio List Grid -->
+            <div id="audio-playlist-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <!-- Dynamically populated audio tracks -->
+            </div>
+        </section>
+
+        <!-- Quranic Media Vault (مقاطع مرئية وريلز) -->
+        <section id="media-vault-section" class="space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-clapperboard text-goldAccent"></i> المحتوى المرئي والرئاسي (Reels)
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">تلاوات مرئية ومقاطع قصيرة مصممة للتأمل والمشاركة</p>
+                </div>
+            </div>
+
+            <!-- Video Grid -->
+            <div id="reels-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated reels cards -->
+            </div>
+        </section>
+
+        <!-- Digital Visual Cards Archive (مكتبة بطاقات التناقل) -->
+        <section id="cards-archive-section" class="space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-images text-goldAccent"></i> بطاقات التدبر الرقمية (تصاميم النشر)
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">تصاميم اقتباسات قرآنية جاهزة للنشر والتداول عبر حالات واتساب وإنستغرام</p>
+                </div>
+            </div>
+
+            <!-- Visual Cards Grid -->
+            <div id="visual-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dynamically populated cards -->
+            </div>
+        </section>
+
+        <!-- Knowledge & Articles Library Section -->
+        <section id="library-section" class="space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-goldAccent"></i> مكتبة الفوائد وعلوم القرآن
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">مقالات مختصرة وبحوث تدبرية لمصاحبة كتاب الله</p>
+                </div>
+            </div>
+
+            <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated articles -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Favorites / Bookmarks Modal -->
+    <div id="bookmarks-modal" class="fixed inset-0 z-50 bg-obsidian/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-cardSlate border border-goldAccent/30 w-full max-w-2xl rounded-3xl p-6 space-y-6 shadow-2xl max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-goldAccent/10 pb-4">
+                <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-bookmark text-goldAccent"></i> قائمة المحفوظات والمفضلة
+                </h3>
+                <button onclick="toggleBookmarksModal()" class="text-slate-400 hover:text-goldAccent text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="bookmarks-list" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+            <div class="pt-2 border-t border-goldAccent/10 flex justify-between items-center text-xs text-slate-400">
+                <span>يتم حفظ المفضلة محلياً في جهازك</span>
+                <button onclick="clearAllBookmarks()" class="text-red-400 hover:underline">مسح الكل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden HTML5 Audio Element -->
+    <audio id="global-audio-player" preload="metadata"></audio>
+
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-goldAccent/15 bg-obsidian py-12 text-center text-slate-500 text-xs space-y-4">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center gap-3">
+            <div class="flex items-center gap-2 text-goldAccent">
+                <i class="fa-solid fa-book-quran text-xl"></i>
+                <span class="font-bold text-base tracking-wider text-slate-200">بصائر - Basa'ir</span>
+            </div>
+            <p class="max-w-md text-slate-400 leading-relaxed">
+                منصة قرآنية رقمية مستقلة تعنى بنشر التلاوات والفوائد والتدبرات بصورة عصرية خاشعة.
+            </p>
+            <p class="text-[11px] text-slate-600">
+                &copy; 2026 بصائر. جميع الحقوق محفوظة لكل مسلم.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        /* ----------------------------------------------------
+           DATA STRUCTURES & DATABASE SIMULATION
+        ---------------------------------------------------- */
+        
+        // Sample Public Quran Audio Streams (High quality recitations)
+        const audioTracks = [
+            {
+                id: 'aud-1',
+                title: 'سورة الكهف - تلاوة خاشعة',
+                reciter: 'الشيخ مشاري راشد العفاسي',
+                duration: '28:45',
+                category: 'audio',
+                url: 'https://server8.mp3quran.net/afs/018.mp3'
+            },
+            {
+                id: 'aud-2',
+                title: 'سورة مريم - تسجيل نادِر',
+                reciter: 'الشيخ عبد الباسط عبد الصمد',
+                duration: '22:10',
+                category: 'audio',
+                url: 'https://server7.mp3quran.net/basit/019.mp3'
+            },
+            {
+                id: 'aud-3',
+                title: 'سورة الرحمن - هدوء وسكينة',
+                reciter: 'الشيخ محمود خليل الحصري',
+                duration: '14:30',
+                category: 'audio',
+                url: 'https://server13.mp3quran.net/hussary/055.mp3'
+            }
+        ];
+
+        // Video / Reels Data
+        const reelsData = [
+            {
+                id: 'vid-1',
+                title: 'وَقُل رَّبِّ زِدْنِي عِلْمًا',
+                reciter: 'تلاوة مرئية مبكية',
+                surah: 'سورة طه',
+                views: '12.4K',
+                thumbnail: 'https://images.unsplash.com/photo-1542816417-0983cbe82752?q=80&w=600&auto=format&fit=crop',
+                videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+                category: 'reels'
+            },
+            {
+                id: 'vid-2',
+                title: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
+                reciter: 'سكينة الفجر',
+                surah: 'سورة الرعد',
+                views: '24.1K',
+                thumbnail: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=600&auto=format&fit=crop',
+                videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+                category: 'reels'
+            },
+            {
+                id: 'vid-3',
+                title: 'وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ',
+                reciter: 'تأملات الليل',
+                surah: 'سورة البقرة',
+                views: '18.9K',
+                thumbnail: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=600&auto=format&fit=crop',
+                videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+                category: 'reels'
+            }
+        ];
+
+        // Visual Quote Cards Data
+        const visualCardsData = [
+            {
+                id: 'card-1',
+                verse: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',
+                reference: 'سورة الشرح - 5',
+                bgGradient: 'from-amber-900/40 via-obsidian to-darkSlate',
+                category: 'reflections'
+            },
+            {
+                id: 'card-2',
+                verse: 'وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ',
+                reference: 'سورة الضحى - 5',
+                bgGradient: 'from-emerald-950/40 via-obsidian to-darkSlate',
+                category: 'reflections'
+            },
+            {
+                id: 'card-3',
+                verse: 'وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ',
+                reference: 'سورة الحديد - 4',
+                bgGradient: 'from-slate-900 via-obsidian to-emerald-950/30',
+                category: 'reflections'
+            },
+            {
+                id: 'card-4',
+                verse: 'إِنَّ رَبِّي لَطِيفٌ لِّمَا يَشَاءُ',
+                reference: 'سورة يوسف - 100',
+                bgGradient: 'from-yellow-950/40 via-obsidian to-darkSlate',
+                category: 'reflections'
+            }
+        ];
+
+        // Random Verses Database for Generator
+        const randomVersesPool = [
+            {
+                verse: "﴿ وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا * وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ ﴾",
+                surah: "سورة الطلاق - 2, 3",
+                tafseer: "التقوى هي مفتاح الفرج غير المتوقع، حين تغلق الأبواب الدنيوية يفتح الله باب السماء."
+            },
+            {
+                verse: "﴿ أَلَيْسَ اللَّهُ بِكَافٍ عَبْدَهُ ﴾",
+                surah: "سورة الزمر - 36",
+                tafseer: "كفاية الله تامة، إذا صدق العبد في التوكل واستغنى بربه عن مخاوف الخَلق."
+            },
+            {
+                verse: "﴿ وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُونِنَا ﴾",
+                surah: "سورة الطور - 48",
+                tafseer: "أيُّ أمانٍ أعظم من أن تكون تحت معية الله ورعايته الخاصة وأنت تخوض معركة صبرك؟"
+            },
+            {
+                verse: "﴿ نَبِّئْ عِبَادِي أَنِّي أَنَا الْغَفُورُ الرَّحِيمُ ﴾",
+                surah: "سورة الحجر - 49",
+                tafseer: "نداء لطف ومودّة يذكّرك بأن باب التوبة يسع كل أخطائك مهما عظُمت."
+            }
+        ];
+
+        // Library Articles
+        const libraryArticles = [
+            {
+                id: 'lib-1',
+                title: 'كيف تبدأ رحلة تدبر القرآن بدون تعقيد؟',
+                author: 'قسم التدبر',
+                readTime: '4 دقائق',
+                summary: 'خطوات عملية لربط الآيات القرآنية بحياتك اليومية والانتقال من القراءة المجردة إلى الأثر.',
+                category: 'library'
+            },
+            {
+                id: 'lib-2',
+                title: 'أسرار الفواتح والمقاطع في السور المكية',
+                author: 'د. أحمد الفاضل',
+                readTime: '7 دقائق',
+                summary: 'دراسة تحليلة حول أسباب النزول والمناسبات بين خواتيم السور وبدايات السور التالية.',
+                category: 'library'
+            },
+            {
+                id: 'lib-3',
+                title: 'قواعد التغني بالقرآن وتحسين الصوت',
+                author: 'الشيخ القارئ',
+                readTime: '5 دقائق',
+                summary: 'توجيهات أئمة القراء في الجمع بين خضوع القلب وحسن الصوت دون تكلف.',
+                category: 'library'
+            }
+        ];
+
+        /* ----------------------------------------------------
+           APP STATE & INITIALIZATION
+        ---------------------------------------------------- */
+        
+        let currentAudioIndex = 0;
+        let isPlaying = false;
+        let bookmarks = JSON.parse(localStorage.getItem('basair_bookmarks') || '[]');
+        const audioPlayer = document.getElementById('global-audio-player');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAudioPlaylist();
+            renderReelsGrid(reelsData);
+            renderVisualCards(visualCardsData);
+            renderLibraryGrid(libraryArticles);
+            updateBookmarkCounter();
+            setupSearchListeners();
+            setupAudioEventListeners();
+        });
+
+        /* ----------------------------------------------------
+           AUDIO ENGINE LOGIC
+        ---------------------------------------------------- */
+
+        function renderAudioPlaylist() {
+            const container = document.getElementById('audio-playlist-grid');
+            container.innerHTML = audioTracks.map((track, idx) => `
+                <div onclick="selectAudioTrack(${idx})" class="p-4 rounded-2xl bg-obsidian/60 border border-goldAccent/10 hover:border-goldAccent/40 cursor-pointer transition-all flex items-center justify-between group ${idx === currentAudioIndex ? 'border-goldAccent bg-goldAccent/5' : ''}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl ${idx === currentAudioIndex && isPlaying ? 'bg-emeraldGlow text-obsidian' : 'bg-goldAccent/10 text-goldAccent'} flex items-center justify-center font-bold text-sm">
+                            ${idx === currentAudioIndex && isPlaying ? '<i class="fa-solid fa-waveform animate-bounce"></i>' : idx + 1}
+                        </div>
+                        <div>
+                            <h5 class="text-sm font-bold text-slate-200 group-hover:text-goldAccent transition-colors">${track.title}</h5>
+                            <p class="text-[11px] text-slate-400">${track.reciter}</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-slate-500 font-mono">${track.duration}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectAudioTrack(index) {
+            currentAudioIndex = index;
+            const track = audioTracks[currentAudioIndex];
+            
+            audioPlayer.src = track.url;
+            document.getElementById('player-title').innerText = track.title;
+            document.getElementById('player-reciter').innerText = track.reciter;
+            
+            renderAudioPlaylist();
+            playAudio();
+        }
+
+        function togglePlayAudio() {
+            if (!audioPlayer.src) {
+                selectAudioTrack(0);
+                return;
+            }
+            if (isPlaying) {
+                pauseAudio();
+            } else {
+                playAudio();
+            }
+        }
+
+        function playAudio() {
+            audioPlayer.play().then(() => {
+                isPlaying = true;
+                document.getElementById('main-play-icon').className = 'fa-solid fa-pause';
+                document.getElementById('player-status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-emeraldGlow animate-ping"></span> جاري التشغيل الآن`;
+                document.getElementById('player-album-icon').classList.add('animate-spin');
+                renderAudioPlaylist();
+            }).catch(e => {
+                showToast('تعذر تشغيل الصوت، جرب مقطعاً آخر', 'error');
+            });
+        }
+
+        function pauseAudio() {
+            audioPlayer.pause();
+            isPlaying = false;
+            document.getElementById('main-play-icon').className = 'fa-solid fa-play mr-0.5';
+            document.getElementById('player-status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-yellow-500"></span> متوقف مؤقتاً`;
+            document.getElementById('player-album-icon').classList.remove('animate-spin');
+            renderAudioPlaylist();
+        }
+
+        function prevTrack() {
+            currentAudioIndex = (currentAudioIndex - 1 + audioTracks.length) % audioTracks.length;
+            selectAudioTrack(currentAudioIndex);
+        }
+
+        function nextTrack() {
+            currentAudioIndex = (currentAudioIndex + 1) % audioTracks.length;
+            selectAudioTrack(currentAudioIndex);
+        }
+
+        function setupAudioEventListeners() {
+            const progressBar = document.getElementById('audio-progress');
+            
+            audioPlayer.addEventListener('timeupdate', () => {
+                if (audioPlayer.duration) {
+                    const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                    progressBar.value = progressPercent;
+                    document.getElementById('current-time').innerText = formatTime(audioPlayer.currentTime);
+                    document.getElementById('duration-time').innerText = formatTime(audioPlayer.duration);
+                }
+            });
+
+            audioPlayer.addEventListener('ended', () => {
+                nextTrack();
+            });
+
+            progressBar.addEventListener('input', (e) => {
+                if (audioPlayer.duration) {
+                    audioPlayer.currentTime = (e.target.value / 100) * audioPlayer.duration;
+                }
+            });
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        /* ----------------------------------------------------
+           REELS & MEDIA VAULT LOGIC
+        ---------------------------------------------------- */
+
+        function renderReelsGrid(items) {
+            const container = document.getElementById('reels-grid');
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-8">لا توجد مقاطع مرئية مطابقة للبحث</p>`;
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="group bg-cardSlate rounded-2xl border border-goldAccent/15 overflow-hidden hover:border-goldAccent/40 transition-all duration-300 flex flex-col">
+                    <div class="relative h-48 overflow-hidden bg-obsidian">
+                        <img src="${item.thumbnail}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent"></div>
+                        <span class="absolute top-3 right-3 bg-obsidian/80 text-goldAccent text-[10px] px-2.5 py-1 rounded-full border border-goldAccent/30 font-bold">${item.surah}</span>
+                        <button onclick="playVideoModal('${item.title}', '${item.videoUrl}')" class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-goldAccent/90 text-obsidian flex items-center justify-center text-lg font-bold shadow-xl opacity-90 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-play mr-0.5"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <h4 class="font-bold text-slate-100 text-base leading-snug group-hover:text-goldAccent transition-colors">${item.title}</h4>
+                            <p class="text-xs text-slate-400 mt-1">${item.reciter}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-goldAccent/10">
+                            <span><i class="fa-regular fa-eye ml-1"></i> ${item.views} مشاهدة</span>
+                            <button onclick="addBookmark('${item.title}', '${item.surah}')" class="hover:text-goldAccent transition-colors">
+                                <i class="fa-regular fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function playVideoModal(title, url) {
+            pauseAudio();
+            showToast(`جاري تشغيل: ${title}`);
+            // Simple simulate video playback standard modal or notification
+        }
+
+        /* ----------------------------------------------------
+           VISUAL CARDS LOGIC
+        ---------------------------------------------------- */
+
+        function renderVisualCards(items) {
+            const container = document.getElementById('visual-cards-grid');
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-8">لا توجد بطاقات مطابقة</p>`;
+                return;
+            }
+            container.innerHTML = items.map(card => `
+                <div class="p-6 rounded-2xl bg-gradient-to-br ${card.bgGradient} border border-goldAccent/20 flex flex-col justify-between h-64 text-center relative group hover:border-goldAccent/60 transition-all shadow-lg">
+                    <div class="space-y-4">
+                        <i class="fa-solid fa-quote-right text-goldAccent/30 text-2xl"></i>
+                        <p class="font-quran text-xl text-slate-100 leading-relaxed">${card.verse}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-goldAccent font-bold">${card.reference}</span>
+                        <div class="flex items-center justify-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="copyText('${card.verse} - ${card.reference}')" class="px-3 py-1.5 rounded-lg bg-goldAccent text-obsidian text-xs font-bold shadow-md">
+                                <i class="fa-regular fa-copy"></i> نسخ
+                            </button>
+                            <button onclick="addBookmark('${card.verse}', '${card.reference}')" class="px-3 py-1.5 rounded-lg bg-darkSlate text-slate-200 text-xs font-bold border border-goldAccent/20">
+                                <i class="fa-regular fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ----------------------------------------------------
+           LIBRARY ARTICLES LOGIC
+        ---------------------------------------------------- */
+
+        function renderLibraryGrid(items) {
+            const container = document.getElementById('library-grid');
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-8">لا توجد مقالات مطابقة</p>`;
+                return;
+            }
+            container.innerHTML = items.map(article => `
+                <div class="p-6 rounded-2xl bg-cardSlate border border-goldAccent/15 hover:border-goldAccent/40 transition-all space-y-4">
+                    <div class="flex items-center justify-between text-xs text-goldAccent">
+                        <span><i class="fa-regular fa-clock ml-1"></i> ${article.readTime}</span>
+                        <span>${article.author}</span>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-100 leading-snug">${article.title}</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">${article.summary}</p>
+                    <button onclick="showToast('جاري تحميل المقال كاملًا...')" class="text-xs text-goldAccent font-bold hover:underline flex items-center gap-1">
+                        قراءة المقال <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        /* ----------------------------------------------------
+           INTERACTIVE TOOLS & UTILITIES
+        ---------------------------------------------------- */
+
+        function generateRandomVerse() {
+            const randomIndex = Math.floor(Math.random() * randomVersesPool.length);
+            const selected = randomVersesPool[randomIndex];
+
+            const verseElem = document.getElementById('daily-verse-text');
+            const tafseerElem = document.getElementById('daily-tafseer-text');
+            const infoElem = document.getElementById('daily-surah-info');
+
+            verseElem.classList.add('opacity-0');
+            tafseerElem.classList.add('opacity-0');
+
+            setTimeout(() => {
+                verseElem.innerText = selected.verse;
+                tafseerElem.innerText = selected.tafseer;
+                infoElem.innerText = selected.surah;
+
+                verseElem.classList.remove('opacity-0');
+                tafseerElem.classList.remove('opacity-0');
+                showToast('تم توليد آية تدبرية جديدة');
+            }, 200);
+        }
+
+        function copyDailyVerse() {
+            const verse = document.getElementById('daily-verse-text').innerText;
+            const tafseer = document.getElementById('daily-tafseer-text').innerText;
+            const surah = document.getElementById('daily-surah-info').innerText;
+
+            const fullText = `${verse}\n\nالتدبر: ${tafseer}\nالمصدر: ${surah} (عبر منصة بصائر)`;
+            copyToClipboard(fullText);
+            showToast('تم نسخ الآية والتدبر إلى الحافظة');
+        }
+
+        function shareDailyVerse() {
+            copyDailyVerse();
+            showToast('النص جاهز للمشاركة الآن في واتساب أو انستغرام');
+        }
+
+        function bookmarkDailyVerse() {
+            const verse = document.getElementById('daily-verse-text').innerText;
+            const surah = document.getElementById('daily-surah-info').innerText;
+            addBookmark(verse, surah);
+        }
+
+        function copyText(text) {
+            copyToClipboard(text);
+            showToast('تم النسخ بنجاح');
+        }
+
+        function copyToClipboard(text) {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+        }
+
+        /* ----------------------------------------------------
+           BOOKMARKS SYSTEM (LOCALSTORAGE)
+        ---------------------------------------------------- */
+
+        function addBookmark(title, category) {
+            const exists = bookmarks.some(b => b.title === title);
+            if (exists) {
+                showToast('المحتوى موجود بالفعل في المفضلة', 'info');
+                return;
+            }
+            bookmarks.push({ id: Date.now(), title, category, date: new Date().toLocaleDateString('ar-EG') });
+            localStorage.setItem('basair_bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkCounter();
+            showToast('تمت الإضافة للمفضلة بنجاح');
+        }
+
+        function removeBookmark(id) {
+            bookmarks = bookmarks.filter(b => b.id !== id);
+            localStorage.setItem('basair_bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkCounter();
+            renderBookmarksList();
+            showToast('تم الحذف من المفضلة');
+        }
+
+        function clearAllBookmarks() {
+            bookmarks = [];
+            localStorage.setItem('basair_bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkCounter();
+            renderBookmarksList();
+            showToast('تم مسح جميع المحفوظات');
+        }
+
+        function updateBookmarkCounter() {
+            document.getElementById('bookmark-count').innerText = bookmarks.length;
+        }
+
+        function toggleBookmarksModal() {
+            const modal = document.getElementById('bookmarks-modal');
+            if (modal.classList.contains('hidden')) {
+                renderBookmarksList();
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function renderBookmarksList() {
+            const container = document.getElementById('bookmarks-list');
+            if (bookmarks.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-sm text-center py-8">لا توجد عناصر محفوظة في المفضلة بعد.</p>`;
+                return;
+            }
+            container.innerHTML = bookmarks.map(item => `
+                <div class="p-4 rounded-xl bg-obsidian border border-goldAccent/15 flex items-center justify-between gap-3">
+                    <div>
+                        <h5 class="text-sm font-bold text-slate-200 line-clamp-1">${item.title}</h5>
+                        <p class="text-[11px] text-goldAccent mt-0.5">${item.category} • ${item.date}</p>
+                    </div>
+                    <button onclick="removeBookmark(${item.id})" class="text-red-400 hover:text-red-300 text-xs px-2 py-1">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        /* ----------------------------------------------------
+           FILTERING & SEARCH LOGIC
+        ---------------------------------------------------- */
+
+        function filterCategory(cat) {
+            // Update active tab UI
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('bg-goldAccent', 'text-obsidian', 'shadow-lg');
+                tab.classList.add('bg-darkSlate', 'text-slate-300');
+            });
+            event.currentTarget.classList.remove('bg-darkSlate', 'text-slate-300');
+            event.currentTarget.classList.add('bg-goldAccent', 'text-obsidian', 'shadow-lg');
+
+            const mediaSection = document.getElementById('media-vault-section');
+            const audioSection = document.getElementById('audio-engine-section');
+            const cardsSection = document.getElementById('cards-archive-section');
+            const librarySection = document.getElementById('library-section');
+
+            if (cat === 'all') {
+                mediaSection.style.display = 'block';
+                audioSection.style.display = 'block';
+                cardsSection.style.display = 'block';
+                librarySection.style.display = 'block';
+            } else if (cat === 'reels') {
+                mediaSection.style.display = 'block';
+                audioSection.style.display = 'none';
+                cardsSection.style.display = 'none';
+                librarySection.style.display = 'none';
+            } else if (cat === 'audio') {
+                mediaSection.style.display = 'none';
+                audioSection.style.display = 'block';
+                cardsSection.style.display = 'none';
+                librarySection.style.display = 'none';
+            } else if (cat === 'reflections') {
+                mediaSection.style.display = 'none';
+                audioSection.style.display = 'none';
+                cardsSection.style.display = 'block';
+                librarySection.style.display = 'none';
+            } else if (cat === 'library') {
+                mediaSection.style.display = 'none';
+                audioSection.style.display = 'none';
+                cardsSection.style.display = 'none';
+                librarySection.style.display = 'block';
+            }
+        }
+
+        function setupSearchListeners() {
+            const handleSearch = (query) => {
+                const q = query.trim().toLowerCase();
+                
+                const filteredReels = reelsData.filter(r => r.title.toLowerCase().includes(q) || r.surah.toLowerCase().includes(q));
+                renderReelsGrid(filteredReels);
+
+                const filteredCards = visualCardsData.filter(c => c.verse.toLowerCase().includes(q) || c.reference.toLowerCase().includes(q));
+                renderVisualCards(filteredCards);
+
+                const filteredLib = libraryArticles.filter(a => a.title.toLowerCase().includes(q) || a.summary.toLowerCase().includes(q));
+                renderLibraryGrid(filteredLib);
+            };
+
+            document.getElementById('searchInput').addEventListener('input', (e) => handleSearch(e.target.value));
+            document.getElementById('mobileSearchInput').addEventListener('input', (e) => handleSearch(e.target.value));
+        }
+
+        /* ----------------------------------------------------
+           THEME CUSTOMIZATION
+        ---------------------------------------------------- */
+
+        function setTheme(theme) {
+            const body = document.body;
+            if (theme === 'emerald') {
+                body.className = "bg-[#061811] text-slate-200 min-h-screen selection:bg-emeraldGlow selection:text-obsidian custom-scrollbar";
+                showToast('تم تفعيل ثيم الزمرد الخاشع');
+            } else if (theme === 'light') {
+                body.className = "bg-slate-100 text-slate-800 min-h-screen selection:bg-goldAccent selection:text-obsidian custom-scrollbar light";
+                showToast('تم تفعيل الوضع المضيء');
+            } else {
+                body.className = "bg-obsidian text-slate-200 min-h-screen selection:bg-goldAccent selection:text-obsidian custom-scrollbar";
+                showToast('تم تفعيل ثيم الياقوت الأسود (الأصلي)');
+            }
+        }
+
+        /* ----------------------------------------------------
+           TOAST NOTIFICATION LOGIC
+        ---------------------------------------------------- */
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

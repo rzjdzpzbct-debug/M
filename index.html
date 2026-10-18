@@ -3,18 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بصائر | المنصة القرآنية التفاعلية</title>
+    <title>بصائر | المصحف التفاعلي المتزامن</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: #07090e;
             color: #f3f4f6;
         }
+        .quran-text {
+            font-family: 'Amiri', serif;
+        }
+        /* تنسيق الآية النشطة أثناء القراءة */
+        .ayah-card {
+            transition: all 0.3s ease;
+            background: rgba(17, 24, 39, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ayah-card.active {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+            transform: scale(1.01);
+        }
         .ios-player {
-            background: rgba(17, 24, 39, 0.75);
+            background: rgba(17, 24, 39, 0.85);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -34,159 +49,148 @@
             <div class="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-extrabold text-2xl shadow-lg shadow-amber-500/10">ب</div>
             <div>
                 <h1 class="text-xl font-black tracking-wide text-white">بصائر القرآنية</h1>
-                <p class="text-[11px] text-gray-400">منصة تلاوات وتدبر عصرية</p>
+                <p class="text-[11px] text-gray-400">المصحف التفاعلي مع التزامن الصوتي</p>
             </div>
         </div>
-        <span class="text-xs px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">إصدار 2.0</span>
+        <span class="text-xs px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">مصحف التزامن</span>
     </header>
 
-    <!-- المحتوى الرئيسي -->
-    <main class="max-w-4xl mx-auto w-full my-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <!-- المحتوى الرئيسي: الآيات والمشغل -->
+    <main class="max-w-4xl mx-auto w-full my-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- لوحة التحكم واختيار القارئ والسورة -->
-        <div class="bg-gray-900/60 border border-gray-800/80 rounded-[32px] p-6 md:p-8 shadow-2xl backdrop-blur-xl">
-            <h2 class="text-lg font-bold mb-6 text-amber-400 flex items-center gap-2.5">
-                <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400">📖</span> إعدادات التلاوة
-            </h2>
-            
-            <!-- اختيار القارئ -->
-            <div class="mb-5">
-                <label class="block text-xs font-semibold text-gray-400 mb-2">اختر القارئ</label>
-                <select id="reciterSelect" class="w-full bg-gray-800/90 border border-gray-700/80 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-amber-500 transition cursor-pointer">
-                    <!-- تُعبأ برمجياً -->
-                </select>
+        <!-- قسم عرض الآيات (يأخذ عمودين) -->
+        <div class="lg:col-span-2 space-y-4">
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-[32px] p-6 shadow-xl backdrop-blur-xl flex justify-between items-center">
+                <div>
+                    <h2 id="currentSurahTitle" class="text-xl font-bold text-amber-400">سورة الفاتحة</h2>
+                    <p id="currentReciterName" class="text-xs text-gray-400 mt-1">القارئ: مشاري العفاسي</p>
+                </div>
+                <button id="loadSurahBtn" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs px-4 py-2.5 rounded-xl font-bold transition">
+                    تغيير السورة / القارئ
+                </button>
             </div>
 
-            <!-- اختيار السورة -->
-            <div class="mb-6">
-                <label class="block text-xs font-semibold text-gray-400 mb-2">اختر السورة</label>
-                <select id="surahSelect" class="w-full bg-gray-800/90 border border-gray-700/80 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-amber-500 transition cursor-pointer">
-                    <!-- تُعبأ برمجياً -->
-                </select>
+            <!-- صندوق الآيات المتزامنة -->
+            <div id="ayasContainer" class="space-y-4 max-h-[550px] overflow-y-auto p-2 scrollbar-thin">
+                <!-- تُعبأ الآيات برمجياً هنا -->
             </div>
-
-            <button id="playBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-extrabold py-4 rounded-2xl transition shadow-xl shadow-amber-500/20 active:scale-[0.98]">
-                بدء التلاوة الآن
-            </button>
         </div>
 
-        <!-- مشغل الصوت بتصميم الأيفون (iOS Glass Player) -->
-        <div class="ios-player rounded-[38px] p-6 max-w-sm mx-auto w-full flex flex-col justify-between">
-            
-            <!-- غلاف المشغل البصري -->
-            <div class="w-full aspect-square bg-gradient-to-br from-gray-800/80 to-gray-950 rounded-[28px] shadow-inner mb-6 flex flex-col items-center justify-center relative overflow-hidden border border-white/5">
-                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/15 via-transparent to-transparent"></div>
-                <div class="w-20 h-20 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-3 shadow-inner">
-                    <span class="text-4xl">🎙️</span>
+        <!-- لوحة التحكم ومشغل الأيفون (يأخذ عموداً واحداً) -->
+        <div class="space-y-6">
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-[32px] p-6 shadow-2xl backdrop-blur-xl">
+                <h3 class="text-sm font-bold mb-4 text-amber-400 flex items-center gap-2">
+                    <span>⚙️</span> إعدادات التشغيل
+                </h3>
+                
+                <div class="mb-4">
+                    <label class="block text-[11px] font-semibold text-gray-400 mb-1.5">اختر القارئ</label>
+                    <select id="reciterSelect" class="w-full bg-gray-800/90 border border-gray-700/80 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-amber-500 transition cursor-pointer">
+                        <!-- تُعبأ برمجياً -->
+                    </select>
                 </div>
-                <span id="activeReciterBadge" class="text-[11px] text-amber-400/90 font-medium tracking-wider uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">مشاري العفاسي</span>
+
+                <div class="mb-5">
+                    <label class="block text-[11px] font-semibold text-gray-400 mb-1.5">اختر السورة</label>
+                    <select id="surahSelect" class="w-full bg-gray-800/90 border border-gray-700/80 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-amber-500 transition cursor-pointer">
+                        <!-- تُعبأ برمجياً -->
+                    </select>
+                </div>
+
+                <button id="playBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 text-xs active:scale-[0.98]">
+                    بدء الاستماع والتزامن
+                </button>
             </div>
 
-            <!-- معلومات المسار -->
-            <div class="text-center mb-6">
-                <h3 id="trackTitle" class="text-lg font-bold text-white truncate px-2">اختر سورة للبدء</h3>
-                <p id="trackSubtitle" class="text-xs text-gray-400 mt-1">القرآن الكريم</p>
-            </div>
+            <!-- مشغل الأيفون المصغر -->
+            <div class="ios-player rounded-[32px] p-5 w-full flex flex-col justify-between">
+                <div class="text-center mb-4">
+                    <h4 id="trackTitle" class="text-sm font-bold text-white truncate">اختر سورة للبدء</h4>
+                </div>
 
-            <!-- شريط التقدم الزمني -->
-            <div class="mb-5">
-                <input type="range" id="progressBar" value="0" min="0" max="100" class="w-full h-1.5 bg-gray-700/80 rounded-lg appearance-none cursor-pointer accent-amber-400">
-                <div class="flex justify-between text-[11px] text-gray-400 mt-2 font-mono">
-                    <span id="currentTime">0:00</span>
-                    <span id="duration">0:00</span>
+                <div class="mb-4">
+                    <input type="range" id="progressBar" value="0" min="0" max="100" class="w-full h-1 bg-gray-700/80 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                    <div class="flex justify-between text-[10px] text-gray-400 mt-1 font-mono">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-4 mb-4">
+                    <button id="prevBtn" class="text-gray-400 hover:text-white transition p-1">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                    </button>
+                    <button id="mainToggleBtn" class="w-12 h-12 rounded-full bg-white text-gray-950 flex items-center justify-center shadow-lg hover:scale-105 transition">
+                        <svg id="playIcon" class="w-5 h-5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <button id="nextBtn" class="text-gray-400 hover:text-white transition p-1">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2 bg-black/30 p-2.5 rounded-xl border border-white/5">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                    <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="1" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-white">
                 </div>
             </div>
-
-            <!-- أزرار التحكم الرئيسية -->
-            <div class="flex items-center justify-center gap-6 mb-6">
-                <button id="prevBtn" class="text-gray-400 hover:text-white transition transform active:scale-95 p-2" title="السورة السابقة">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-                </button>
-                <button id="mainToggleBtn" class="w-16 h-16 rounded-full bg-white text-gray-950 flex items-center justify-center shadow-2xl hover:scale-105 transition active:scale-95">
-                    <svg id="playIcon" class="w-7 h-7 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </button>
-                <button id="nextBtn" class="text-gray-400 hover:text-white transition transform active:scale-95 p-2" title="السورة التالية">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-                </button>
-            </div>
-
-            <!-- شريط التحكم بالصوت -->
-            <div class="flex items-center gap-3 bg-black/30 p-3.5 rounded-2xl border border-white/5">
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-                <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="1" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-white">
-            </div>
-
         </div>
 
     </main>
 
-    <!-- عنصر الصوت -->
     <audio id="audioPlayer"></audio>
 
-    <!-- التذييل -->
     <footer class="max-w-4xl mx-auto w-full text-center text-xs text-gray-500 py-6 border-t border-gray-800/80">
         تم الإنشاء بكل حب لنشر القرآن الكريم &copy; 2026
     </footer>
 
-    <!-- السكربت البرمجي -->
     <script>
-        // قائمة القراء المعتمدين مع خوادم الصوت الخاصة بهم
         const recitersData = [
             { name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/" },
             { name: "عبد الرحمن السديس", server: "https://server11.mp3quran.net/sds/" },
-            { name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/" },
-            { name: "عبد الباسط عبد الصمد (مجود)", server: "https://server7.mp3quran.net/abdulsamad/" },
-            { name: "محمود خليل الحصري", server: "https://server13.mp3quran.net/husr/" }
+            { name: "ماهر المعيقلي", server: "https://server12.mp3quran.net/maher/" }
         ];
 
-        // قائمة السور كاملة
+        // عينة تفصيلية لآيات السور (مع نصوص حقيقية لتفعيل نظام التحديد المتزامن)
         const surahsData = [
-            { id: 1, name: "الفاتحة", ayas: 7 }, { id: 2, name: "البقرة", ayas: 286 }, { id: 3, name: "آل عمران", ayas: 200 },
-            { id: 4, name: "النساء", ayas: 176 }, { id: 5, name: "المائدة", ayas: 120 }, { id: 6, name: "الأنعام", ayas: 165 },
-            { id: 7, name: "الأعراف", ayas: 206 }, { id: 8, name: "الأنفال", ayas: 75 }, { id: 9, name: "التوبة", ayas: 129 },
-            { id: 10, name: "يونس", ayas: 109 }, { id: 11, name: "هود", ayas: 123 }, { id: 12, name: "يوسف", ayas: 111 },
-            { id: 13, name: "الرعد", ayas: 43 }, { id: 14, name: "إبراهيم", ayas: 52 }, { id: 15, name: "الحجر", ayas: 99 },
-            { id: 16, name: "النحل", ayas: 128 }, { id: 17, name: "الإسراء", ayas: 111 }, { id: 18, name: "الكهف", ayas: 110 },
-            { id: 19, name: "مريم", ayas: 98 }, { id: 20, name: "طه", ayas: 135 }, { id: 21, name: "الأنبياء", ayas: 112 },
-            { id: 22, name: "الحج", ayas: 78 }, { id: 23, name: "المؤمنون", ayas: 118 }, { id: 24, name: "النور", ayas: 64 },
-            { id: 25, name: "الفرقان", ayas: 77 }, { id: 26, name: "الشعراء", ayas: 227 }, { id: 27, name: "النمل", ayas: 93 },
-            { id: 28, name: "القصص", ayas: 88 }, { id: 29, name: "العنكبوت", ayas: 69 }, { id: 30, name: "الروم", ayas: 60 },
-            { id: 31, name: "لقمان", ayas: 34 }, { id: 32, name: "السجدة", ayas: 30 }, { id: 33, name: "الأحزاب", ayas: 73 },
-            { id: 34, name: "سبأ", ayas: 54 }, { id: 35, name: "فاطر", ayas: 45 }, { id: 36, name: "يس", ayas: 83 },
-            { id: 37, name: "الصافات", ayas: 182 }, { id: 38, name: "ص", ayas: 88 }, { id: 39, name: "الزمر", ayas: 75 },
-            { id: 40, name: "غافر", ayas: 85 }, { id: 41, name: "فصلت", ayas: 54 }, { id: 42, name: "الشورى", ayas: 53 },
-            { id: 43, name: "الزخرف", ayas: 89 }, { id: 44, name: "الدخان", ayas: 59 }, { id: 45, name: "الجاثية", ayas: 37 },
-            { id: 46, name: "الأحقاف", ayas: 35 }, { id: 47, name: "محمد", ayas: 38 }, { id: 48, name: "الفتح", ayas: 29 },
-            { id: 49, name: "الحجرات", ayas: 18 }, { id: 50, name: "ق", ayas: 45 }, { id: 51, name: "الذاريات", ayas: 60 },
-            { id: 52, name: "الطور", ayas: 49 }, { id: 53, name: "النجم", ayas: 62 }, { id: 54, name: "القمر", ayas: 55 },
-            { id: 55, name: "الرحمن", ayas: 78 }, { id: 56, name: "الواقعة", ayas: 96 }, { id: 57, name: "الحديد", ayas: 29 },
-            { id: 58, name: "المجادلة", ayas: 22 }, { id: 59, name: "الحشر", ayas: 24 }, { id: 60, name: "الممتحنة", ayas: 13 },
-            { id: 61, name: "الصف", ayas: 14 }, { id: 62, name: "الجمعة", ayas: 11 }, { id: 63, name: "المنافقون", ayas: 11 },
-            { id: 64, name: "التغابن", ayas: 18 }, { id: 65, name: "الطلاق", ayas: 12 }, { id: 66, name: "التحريم", ayas: 12 },
-            { id: 67, name: "الملك", ayas: 30 }, { id: 68, name: "القلم", ayas: 52 }, { id: 69, name: "الحاقة", ayas: 52 },
-            { id: 70, name: "المعارج", ayas: 44 }, { id: 71, name: "نوح", ayas: 28 }, { id: 72, name: "الجن", ayas: 28 },
-            { id: 73, name: "المزمل", ayas: 20 }, { id: 74, name: "المدثر", ayas: 56 }, { id: 75, name: "القيامة", ayas: 40 },
-            { id: 76, name: "الإنسان", ayas: 31 }, { id: 77, name: "المرسلات", ayas: 50 }, { id: 78, name: "النبأ", ayas: 40 },
-            { id: 79, name: "النازعات", ayas: 46 }, { id: 80, name: "عبس", ayas: 42 }, { id: 81, name: "التكوير", ayas: 29 },
-            { id: 82, name: "الإنفطار", ayas: 19 }, { id: 83, name: "المطففين", ayas: 36 }, { id: 84, name: "الإنشقاق", ayas: 25 },
-            { id: 85, name: "البروج", ayas: 22 }, { id: 86, name: "الطارق", ayas: 17 }, { id: 87, name: "الأعلى", ayas: 19 },
-            { id: 88, name: "الغاشية", ayas: 26 }, { id: 89, name: "الفجر", ayas: 30 }, { id: 90, name: "البلد", ayas: 20 },
-            { id: 91, name: "الشمس", ayas: 15 }, { id: 92, name: "الليل", ayas: 21 }, { id: 93, name: "الضحى", ayas: 11 },
-            { id: 94, name: "الشرح", ayas: 8 }, { id: 95, name: "التين", ayas: 8 }, { id: 96, name: "العلق", ayas: 19 },
-            { id: 97, name: "القدر", ayas: 5 }, { id: 98, name: "البينة", ayas: 8 }, { id: 99, name: "الزلزلة", ayas: 8 },
-            { id: 100, name: "العاديات", ayas: 11 }, { id: 101, name: "القارعة", ayas: 11 }, { id: 102, name: "التكاثر", ayas: 8 },
-            { id: 103, name: "العصر", ayas: 3 }, { id: 104, name: "الهمزة", ayas: 9 }, { id: 105, name: "الفيل", ayas: 5 },
-            { id: 106, name: "قريش", ayas: 4 }, { id: 107, name: "الماعون", ayas: 7 }, { id: 108, name: "الكوثر", ayas: 3 },
-            { id: 109, name: "الكافرون", ayas: 6 }, { id: 110, name: "النصر", ayas: 3 }, { id: 111, name: "المسد", ayas: 5 },
-            { id: 112, name: "الإخلاص", ayas: 4 }, { id: 113, name: "الفلق", ayas: 5 }, { id: 114, name: "الناس", ayas: 6 }
+            { 
+                id: 1, name: "الفاتحة", 
+                ayas: [
+                    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+                    "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+                    "الرَّحْمَٰنِ الرَّحِيمِ",
+                    "مَالِكِ يَوْمِ الدِّينِ",
+                    "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+                    "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+                    "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ"
+                ]
+            },
+            { 
+                id: 2, name: "الإخلاص", 
+                ayas: [
+                    "قُلْ هُوَ اللَّهُ أَحَدٌ",
+                    "اللَّهُ الصَّمَدُ",
+                    "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+                    "وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ"
+                ]
+            },
+            {
+                id: 3, name: "الكوثر",
+                ayas: [
+                    "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",
+                    "فَصَلِّ لِرَبِّكَ وَانْحَرْ",
+                    "إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ"
+                ]
+            }
         ];
 
         const reciterSelect = document.getElementById('reciterSelect');
         const surahSelect = document.getElementById('surahSelect');
+        const ayasContainer = document.getElementById('ayasContainer');
         const playBtn = document.getElementById('playBtn');
         const audioPlayer = document.getElementById('audioPlayer');
         const trackTitle = document.getElementById('trackTitle');
-        const activeReciterBadge = document.getElementById('activeReciterBadge');
+        const currentSurahTitle = document.getElementById('currentSurahTitle');
+        const currentReciterName = document.getElementById('currentReciterName');
         const mainToggleBtn = document.getElementById('mainToggleBtn');
         const playIcon = document.getElementById('playIcon');
         const progressBar = document.getElementById('progressBar');
@@ -196,106 +200,16 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
-        // تعبئة قائمة القراء
-        recitersData.forEach((reciter, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = reciter.name;
-            reciterSelect.appendChild(option);
-        });
+        // تعبئة القوائم
+        recitersData.forEach((reciter, i) => reciterSelect.add(new Option(reciter.name, i)));
+        surahsData.forEach((surah, i) => surahSelect.add(new Option(`سورة ${surah.name}`, i)));
 
-        // تعبئة قائمة السور
-        surahsData.forEach((surah, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = `${surah.id}. سورة ${surah.name} (${surah.ayas} آية)`;
-            surahSelect.appendChild(option);
-        });
-
-        // تشغيل السورة المختارة
-        function playSelectedSurah() {
-            const reciterIndex = reciterSelect.value;
-            const surahIndex = surahSelect.value;
+        // عرض آيات السورة المحددة
+        function renderAyas(surahIndex) {
+            const surah = surahsData[surahIndex];
+            currentSurahTitle.textContent = `سورة ${surah.name}`;
+            ayasContainer.innerHTML = '';
             
-            const selectedReciter = recitersData[reciterIndex];
-            const selectedSurah = surahsData[surahIndex];
-
-            const formattedNum = String(selectedSurah.id).padStart(3, '0');
-            const audioUrl = `${selectedReciter.server}${formattedNum}.mp3`;
-
-            trackTitle.textContent = `سورة ${selectedSurah.name}`;
-            activeReciterBadge.textContent = selectedReciter.name;
-
-            audioPlayer.src = audioUrl;
-            audioPlayer.play();
-            updatePlayIcon(true);
-        }
-
-        playBtn.addEventListener('click', playSelectedSurah);
-
-        // أزرار التحكم
-        mainToggleBtn.addEventListener('click', () => {
-            if (!audioPlayer.src) {
-                playSelectedSurah();
-                return;
-            }
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                updatePlayIcon(true);
-            } else {
-                audioPlayer.pause();
-                updatePlayIcon(false);
-            }
-        });
-
-        prevBtn.addEventListener('click', () => {
-            let currentIndex = parseInt(surahSelect.value);
-            if (currentIndex > 0) {
-                surahSelect.value = currentIndex - 1;
-                playSelectedSurah();
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            let currentIndex = parseInt(surahSelect.value);
-            if (currentIndex < surahsData.length - 1) {
-                surahSelect.value = currentIndex + 1;
-                playSelectedSurah();
-            }
-        });
-
-        function updatePlayIcon(isPlaying) {
-            if (isPlaying) {
-                playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-            } else {
-                playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-            }
-        }
-
-        audioPlayer.addEventListener('timeupdate', () => {
-            if (audioPlayer.duration) {
-                const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                progressBar.value = progressPercent;
-                currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
-                durationEl.textContent = formatTime(audioPlayer.duration);
-            }
-        });
-
-        progressBar.addEventListener('input', () => {
-            if (audioPlayer.duration) {
-                audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
-            }
-        });
-
-        volumeBar.addEventListener('input', () => {
-            audioPlayer.volume = volumeBar.value;
-        });
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-    </script>
-</body>
-</html>
+            surah.ayas.forEach((text, index) => {
+                const div = document.createElement('div');
+                div.className

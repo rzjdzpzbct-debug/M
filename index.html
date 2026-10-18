@@ -37,16 +37,15 @@
     <!-- المحتوى الرئيسي: قائمة السور ومشغل الأيفون -->
     <main class="max-w-4xl mx-auto w-full my-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         
-        <!-- قائمة السور (تُجلب من المستودع) -->
+        <!-- قائمة السور -->
         <div class="bg-gray-900/60 border border-gray-800 rounded-3xl p-6 shadow-xl">
             <h2 class="text-lg font-semibold mb-4 text-amber-400 flex items-center gap-2">
                 <span>📖</span> اختر السورة للاستماع
             </h2>
-            <div id="loading" class="text-center py-8 text-gray-400">جاري تحميل قائمة السور...</div>
-            <select id="surahSelect" class="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-amber-500 transition cursor-pointer mb-4 hidden">
-                <!-- ستتم تعبئتها تلقائياً برمجياً -->
+            <select id="surahSelect" class="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-amber-500 transition cursor-pointer mb-4">
+                <!-- ستتم تعبئتها تلقائياً -->
             </select>
-            <button id="playBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-bold py-3.5 rounded-2xl transition shadow-lg shadow-amber-500/20 hidden">
+            <button id="playBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-bold py-3.5 rounded-2xl transition shadow-lg shadow-amber-500/20">
                 تشغيل التلاوة
             </button>
         </div>
@@ -54,7 +53,7 @@
         <!-- مشغل الصوت بتصميم الأيفون (iOS Player) -->
         <div class="ios-player rounded-[38px] p-6 max-w-sm mx-auto w-full flex flex-col justify-between">
             
-            <!-- صورة الألبوم أو الغلاف الوهمي بتصميم آبل -->
+            <!-- الغلاف الوهمي بتصميم آبل -->
             <div class="w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-[28px] shadow-inner mb-6 flex flex-col items-center justify-center relative overflow-hidden border border-white/5">
                 <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent"></div>
                 <span class="text-5xl mb-2">🎙️</span>
@@ -76,20 +75,23 @@
                 </div>
             </div>
 
-            <!-- أزرار التحكم الرئيسية (مطابقة لصورة الأيفون) -->
+            <!-- أزرار التحكم الرئيسية (مطابقة لصورة الأيفون بالاتجاه الصحيح) -->
             <div class="flex items-center justify-center gap-6 mb-6">
-                <button id="prevBtn" class="text-gray-400 hover:text-white transition transform active:scale-95">
+                <!-- زر التراجع (يمين في العربية) -->
+                <button id="prevBtn" class="text-gray-400 hover:text-white transition transform active:scale-95" title="السورة السابقة">
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                 </button>
+                <!-- زر التشغيل والإيقاف الكبير -->
                 <button id="mainToggleBtn" class="w-16 h-16 rounded-full bg-white text-gray-950 flex items-center justify-center shadow-lg hover:scale-105 transition active:scale-95">
                     <svg id="playIcon" class="w-7 h-7 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </button>
-                <button id="nextBtn" class="text-gray-400 hover:text-white transition transform active:scale-95">
+                <!-- زر التقديم (يسار في العربية) -->
+                <button id="nextBtn" class="text-gray-400 hover:text-white transition transform active:scale-95" title="السورة التالية">
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                 </button>
             </div>
 
-            <!-- شريط التحكم بالصوت والبث -->
+            <!-- شريط التحكم بالصوت -->
             <div class="flex items-center gap-3 bg-black/20 p-3 rounded-2xl border border-white/5">
                 <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
                 <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="1" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-white">
@@ -107,11 +109,52 @@
         تم الانشاء بكل حب لنشر القرآن الكريم &copy; 2026
     </footer>
 
-    <!-- سكربت الجافاسكريبت للربط وتشغيل الصوت -->
+    <!-- سكربت الجافاسكريبت -->
     <script>
+        // قائمة السور القرآنية كاملة لتجنب مشاكل الاتصال الخارجية
+        const surahsData = [
+            { id: 1, name: "الفاتحة", ayas: 7 }, { id: 2, name: "البقرة", ayas: 286 }, { id: 3, name: "آل عمران", ayas: 200 },
+            { id: 4, name: "النساء", ayas: 176 }, { id: 5, name: "المائدة", ayas: 120 }, { id: 6, name: "الأنعام", ayas: 165 },
+            { id: 7, name: "الأعراف", ayas: 206 }, { id: 8, name: "الأنفال", ayas: 75 }, { id: 9, name: "التوبة", ayas: 129 },
+            { id: 10, name: "يونس", ayas: 109 }, { id: 11, name: "هود", ayas: 123 }, { id: 12, name: "يوسف", ayas: 111 },
+            { id: 13, name: "الرعد", ayas: 43 }, { id: 14, name: "إبراهيم", ayas: 52 }, { id: 15, name: "الحجر", ayas: 99 },
+            { id: 16, name: "النحل", ayas: 128 }, { id: 17, name: "الإسراء", ayas: 111 }, { id: 18, name: "الكهف", ayas: 110 },
+            { id: 19, name: "مريم", ayas: 98 }, { id: 20, name: "طه", ayas: 135 }, { id: 21, name: "الأنبياء", ayas: 112 },
+            { id: 22, name: "الحج", ayas: 78 }, { id: 23, name: "المؤمنون", ayas: 118 }, { id: 24, name: "النور", ayas: 64 },
+            { id: 25, name: "الفرقان", ayas: 77 }, { id: 26, name: "الشعراء", ayas: 227 }, { id: 27, name: "النمل", ayas: 93 },
+            { id: 28, name: "القصص", ayas: 88 }, { id: 29, name: "العنكبوت", ayas: 69 }, { id: 30, name: "الروم", ayas: 60 },
+            { id: 31, name: "لقمان", ayas: 34 }, { id: 32, name: "السجدة", ayas: 30 }, { id: 33, name: "الأحزاب", ayas: 73 },
+            { id: 34, name: "سبأ", ayas: 54 }, { id: 35, name: "فاطر", ayas: 45 }, { id: 36, name: "يس", ayas: 83 },
+            { id: 37, name: "الصافات", ayas: 182 }, { id: 38, name: "ص", ayas: 88 }, { id: 39, name: "الزمر", ayas: 75 },
+            { id: 40, name: "غافر", ayas: 85 }, { id: 41, name: "فصلت", ayas: 54 }, { id: 42, name: "الشورى", ayas: 53 },
+            { id: 43, name: "الزخرف", ayas: 89 }, { id: 44, name: "الدخان", ayas: 59 }, { id: 45, name: "الجاثية", ayas: 37 },
+            { id: 46, name: "الأحقاف", ayas: 35 }, { id: 47, name: "محمد", ayas: 38 }, { id: 48, name: "الفتح", ayas: 29 },
+            { id: 49, name: "الحجرات", ayas: 18 }, { id: 50, name: "ق", ayas: 45 }, { id: 51, name: "الذاريات", ayas: 60 },
+            { id: 52, name: "الطور", ayas: 49 }, { id: 53, name: "النجم", ayas: 62 }, { id: 54, name: "القمر", ayas: 55 },
+            { id: 55, name: "الرحمن", ayas: 78 }, { id: 56, name: "الواقعة", ayas: 96 }, { id: 57, name: "الحديد", ayas: 29 },
+            { id: 58, name: "المجادلة", ayas: 22 }, { id: 59, name: "الحشر", ayas: 24 }, { id: 60, name: "الممتحنة", ayas: 13 },
+            { id: 61, name: "الصف", ayas: 14 }, { id: 62, name: "الجعة", ayas: 11 }, { id: 63, name: "المنافقون", ayas: 11 },
+            { id: 64, name: "التغابن", ayas: 18 }, { id: 65, name: "الطلاق", ayas: 12 }, { id: 66, name: "التحريم", ayas: 12 },
+            { id: 67, name: "الملك", ayas: 30 }, { id: 68, name: "القلم", ayas: 52 }, { id: 69, name: "الحاقة", ayas: 52 },
+            { id: 70, name: "المعارج", ayas: 44 }, { id: 71, name: "نوح", ayas: 28 }, { id: 72, name: "الجن", ayas: 28 },
+            { id: 73, name: "المزمل", ayas: 20 }, { id: 74, name: "المدثر", ayas: 56 }, { id: 75, name: "القيامة", ayas: 40 },
+            { id: 76, name: "الإنسان", ayas: 31 }, { id: 77, name: "المرسلات", ayas: 50 }, { id: 78, name: "النبأ", ayas: 40 },
+            { id: 79, name: "النازعات", ayas: 46 }, { id: 80, name: "عبس", ayas: 42 }, { id: 81, name: "التكوير", ayas: 29 },
+            { id: 82, name: "الإنفطار", ayas: 19 }, { id: 83, name: "المطففين", ayas: 36 }, { id: 84, name: "الإنشقاق", ayas: 25 },
+            { id: 85, name: "البروج", ayas: 22 }, { id: 86, name: "الطارق", ayas: 17 }, { id: 87, name: "الأعلى", ayas: 19 },
+            { id: 88, name: "الغاشية", ayas: 26 }, { id: 89, name: "الفجر", ayas: 30 }, { id: 90, name: "البلد", ayas: 20 },
+            { id: 91, name: "الشمس", ayas: 15 }, { id: 92, name: "الليل", ayas: 21 }, { id: 93, name: "الضحى", ayas: 11 },
+            { id: 94, name: "الشرح", ayas: 8 }, { id: 95, name: "التين", ayas: 8 }, { id: 96, name: "العلق", ayas: 19 },
+            { id: 97, name: "القدر", ayas: 5 }, { id: 98, name: "البينة", ayas: 8 }, { id: 99, name: "الزلزلة", ayas: 8 },
+            { id: 100, name: "العاديات", ayas: 11 }, { id: 101, name: "القارعة", ayas: 11 }, { id: 102, name: "التكاثر", ayas: 8 },
+            { id: 103, name: "العصر", ayas: 3 }, { id: 104, name: "الهمزة", ayas: 9 }, { id: 105, name: "الفيل", ayas: 5 },
+            { id: 106, name: "قريش", ayas: 4 }, { id: 107, name: "الماعون", ayas: 7 }, { id: 108, name: "الكوثر", ayas: 3 },
+            { id: 109, name: "الكافرون", ayas: 6 }, { id: 110, name: "النصر", ayas: 3 }, { id: 111, name: "المسد", ayas: 5 },
+            { id: 112, name: "الإخلاص", ayas: 4 }, { id: 113, name: "الفلق", ayas: 5 }, { id: 114, name: "الناس", ayas: 6 }
+        ];
+
         const surahSelect = document.getElementById('surahSelect');
         const playBtn = document.getElementById('playBtn');
-        const loading = document.getElementById('loading');
         const audioPlayer = document.getElementById('audioPlayer');
         const trackTitle = document.getElementById('trackTitle');
         const mainToggleBtn = document.getElementById('mainToggleBtn');
@@ -120,38 +163,20 @@
         const volumeBar = document.getElementById('volumeBar');
         const currentTimeEl = document.getElementById('currentTime');
         const durationEl = document.getElementById('duration');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
 
-        let surahsData = [];
+        // تعبئة القائمة بالسور
+        surahsData.forEach((surah, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${surah.id}. سورة ${surah.name} (${surah.ayas} آية)`;
+            surahSelect.appendChild(option);
+        });
 
-        // جلب قائمة السور من مستودع Quran JSON
-        async function fetchSurahs() {
-            try {
-                // رابط مباشر لجلب بيانات السور
-                const response = await fetch('https://raw.githubusercontent.com/semarketir/quranjson-web/master/json/surahs.json');
-                surahsData = await response.json();
-                
-                surahSelect.innerHTML = '';
-                surahsData.forEach((surah, index) => {
-                    const option = document.createElement('option');
-                    option.value = index;
-                    option.textContent = `${surah.surah_name} (${surah.ayas} آية)`;
-                    surahSelect.appendChild(option);
-                });
-
-                loading.style.display = 'none';
-                surahSelect.classList.remove('hidden');
-                playBtn.classList.remove('hidden');
-            } catch (error) {
-                loading.textContent = 'تعذر تحميل بيانات السور، تحقق من الاتصال.';
-            }
-        }
-
-        fetchSurahs();
-
-        // روابط تلاوات صوتية جاهزة وثابتة لكل سورة (باستخدام روابط صوتية عامة للقارئ مشاري العفاسي)
-        function getAudioUrl(surahIndex) {
-            // تنسيق رقم السورة ليكون بثلاثة أرقام مثل 001, 002
-            const formattedNum = String(surahIndex + 1).padStart(3, '0');
+        // توليد رابط الصوت (بصيغة ثلاثية الأرقام مثل 001.mp3)
+        function getAudioUrl(index) {
+            const formattedNum = String(surahsData[index].id).padStart(3, '0');
             return `https://server8.mp3quran.net/afs/${formattedNum}.mp3`;
         }
 
@@ -160,15 +185,15 @@
             const selectedIndex = surahSelect.value;
             const surah = surahsData[selectedIndex];
             
-            trackTitle.textContent = `سورة ${surah.surah_name}`;
-            audioPlayer.src = getAudioUrl(parseInt(selectedIndex));
+            trackTitle.textContent = `سورة ${surah.name}`;
+            audioPlayer.src = getAudioUrl(selectedIndex);
             audioPlayer.play();
             updatePlayIcon(true);
         }
 
         playBtn.addEventListener('click', playSelectedSurah);
 
-        // زر التشغيل والإيقاف الكبير في المشغل
+        // زر التشغيل والإيقاف الكبير
         mainToggleBtn.addEventListener('click', () => {
             if (!audioPlayer.src) {
                 playSelectedSurah();
@@ -183,6 +208,23 @@
             }
         });
 
+        // زر السورة السابقة والتالية
+        prevBtn.addEventListener('click', () => {
+            let currentIndex = parseInt(surahSelect.value);
+            if (currentIndex > 0) {
+                surahSelect.value = currentIndex - 1;
+                playSelectedSurah();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            let currentIndex = parseInt(surahSelect.value);
+            if (currentIndex < surahsData.length - 1) {
+                surahSelect.value = currentIndex + 1;
+                playSelectedSurah();
+            }
+        });
+
         function updatePlayIcon(isPlaying) {
             if (isPlaying) {
                 playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; // أيقونة الإيقاف المؤقت
@@ -191,7 +233,7 @@
             }
         }
 
-        // تحديث شريط التقدم مع الوقت
+        // تحديث شريط التقدم الزمني
         audioPlayer.addEventListener('timeupdate', () => {
             if (audioPlayer.duration) {
                 const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
